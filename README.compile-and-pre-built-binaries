@@ -20,19 +20,20 @@ Compilation and pre-built binaries FAQ
     full blown: fully developed
     full blown desktop system: 这里指那些各方面都成熟的，稳定的发行版
 
-如果你还没有一个 C 语言编译器(例如 gcc)，你可以通过包管理器安装一个。
+1. 安装 GCC
 
-然后进入到 vlmcsd 目录，并执行 "make".
-马上你就可以得到以下两个产品：
+2. 如果 GCC 不是默认的编译器，你可以执行 "make CC=gcc" 来显式指定 GCC 作为编译器。
 
-* vlmcs 
-* vlmcsd  
+3. 进入到 vlmcsd 目录，并执行 "make". （我的 make 版本会执行 GNUmakefile 里的内容）
+   马上你就可以得到以下两个产品：
+
+   * vlmcs 
+   * vlmcsd  
 
     right away:
     (注意与 right now 不一样)强调动作的迅速。
     这里接在 be built 动作后面，表示立马就可以编译完成。
 
-如果 GCC 不是默认的编译器，你可以执行 "make CC=gcc" 来显式指定 GCC 作为编译器。
 
 
 How do I compile a binary for my embedded device?
