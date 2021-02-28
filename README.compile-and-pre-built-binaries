@@ -12,6 +12,7 @@ Compilation and pre-built binaries FAQ
     in every respect 各个方面
 
 
+
 我应该怎样编译，才能得到属于我自己的可执行文件？
 -------------------------------
 
@@ -36,43 +37,19 @@ Compilation and pre-built binaries FAQ
 
 
 
-How do I compile a binary for my embedded device?
+怎样为我的嵌入式设备编译？
 -------------------------------------------------
 
-What you need is cross-compiling toolchain for your device. It consists of a
-C compiler, libraries, header files and some tools (called binutils). The
-toolchain must match the device in processor architecture, endianess, ABI,
-library and header files version, library configuration, ...
+1. "make CC=/path/to/toolchain/bindir/c-compiler-binary"
 
-If the endianess or ABI differs or the version of some library between
-toolchain and device differs too much, the resulting binary does not run
-on your device.
 
-Once you have a proper toolchain (probably found on the Internet for download),
-unpack it to any directory and type
+一旦你更改了 make 命令行的任何参数，你就必须 "clean" 源代码目录。
 
-     "make CC=/path/to/toolchain/bindir/c-compiler-binary"
-
-Building vlmcsd for using a cross-compiling toolchain is as easy as building
-vlmcsd for your local machine. The only question is, whether this you have
-a toolchain that actually matches your device.
-
-Whenever you change any parameter of the make command line, you must "clean"
-the source directory from intermediate files and output from previous runs
-of make. You can do so by typeing "make clean" or force make to behave as if
-the directory were clean by adding -B to the command line, e.g.
+你可以使用 "make clean" 命令，或者添加 -B 选项
+来强制 "make" 把目录当成是 "干净的"，例如：
 
      "make -B CC=/path/to/toolchain/bindir/c-compiler-binary"
 
-
-I have downloaded several promising toolchains for my device but they all
-don't work. Can I create my own toolchain?
--------------------------------------------------------------------------
-
-You can use tools like buildroot or OpenWRT. Both are able to create toolchains
-for many embedded devices. But this is out of the scope of this document.
-If you are unable to walk through thousands of configuration options and make
-the right choice, you may probably want to try the pre-built binaries.
 
 
 如何选择一个预编译版本?
@@ -90,15 +67,7 @@ binaries
          +
          +--<C-library>
 
-<C-library> can also be "static". That means no special library is required.
-Static binaries are much bigger and need more RAM than dynamic binaries but
-are more likely to run on your system. Use a static binary only, if none of
-the dynmic binaries run.
 
-Don't get confused when a binary is named after an OS or a specific device,
-e.g. the name contains "openwrt", "tomato" or "Fritzbox". This does not mean
-that the binary will run only on that OS or on that device. It is a hint only
-where I got or built the toolchain from.
 
 
 如何确定我的系统的字节序？
