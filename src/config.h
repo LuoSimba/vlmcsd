@@ -5,9 +5,9 @@
 
 /*
  * As a best practice do not change the original config.h as distributed with vlmcsd.
- * Instead make a copy, e.g. myconfig.h, customize it and type 'make CONFIG=myconfig.h'
- * to build vlmcsd. This prevents your copy being overwritten when you upgrade to a
- * new version.
+ *
+ * Please backup your config, and take care of it. Upgrade to new version may cause 
+ * your config to be lost.
  */
 
 

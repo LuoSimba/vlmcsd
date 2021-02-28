@@ -7,7 +7,6 @@ CLIENT_NAME ?= ../bin/vlmcs
 MULTI_NAME ?= ../bin/vlmcsdmulti
 OBJ_NAME ?= ../build/libkms-static.o
 A_NAME ?= ../lib/libkms.a
-CONFIG ?= config.h
 COMPILER_LANGUAGE ?= c
 
 BASE_PROGRAM_NAME=$(notdir $(PROGRAM_NAME))
@@ -158,7 +157,7 @@ else
   DLL_NAME ?= ../lib/libkms.so
 endif
 
-BASECFLAGS = -DVLMCSD_COMPILER=\"$(notdir $(CC))\" -DVLMCSD_PLATFORM=\"$(TARGETPLATFORM)\" -DCONFIG=\"$(CONFIG)\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
+BASECFLAGS = -DVLMCSD_COMPILER=\"$(notdir $(CC))\" -DVLMCSD_PLATFORM=\"$(TARGETPLATFORM)\" -DCONFIG=\"config.h\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
 BASELDFLAGS = 
 STRIPFLAGS =
 CLIENTLDFLAGS =
@@ -376,7 +375,7 @@ ifdef CAT
 endif
 
 SRCS = crypto.c kms.c endian.c output.c shared_globals.c helpers.c
-HEADERS = $(CONFIG) types.h rpc.h vlmcsd.h endian.h crypto.h kms.h network.h output.h shared_globals.h vlmcs.h helpers.h kmsdata.h
+HEADERS = config.h types.h rpc.h vlmcsd.h endian.h crypto.h kms.h network.h output.h shared_globals.h vlmcs.h helpers.h kmsdata.h
 DEPS = $(patsubst %,../build/%,$(MULTI_SRCS:.c=.d))
 
 VLMCSD_SRCS = vlmcsd.c kmsdata.c $(SRCS)

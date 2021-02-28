@@ -147,7 +147,6 @@ help:
 	@echo "    ${MAKE} libkms-static - to build the static library $(A_NAME)"
 	@echo ""
 	@echo "Options"
-	@echo "    CONFIG=<x>                   Compile <x> as instead of config.h."
 	@echo "    INI=<x>                      Compile $(BASE_PROGRAM_NAME) with default ini file <x>"
 	@echo "    DATA=<x>                     Compile $(BASE_PROGRAM_NAME) and $(BASE_CLIENT_NAME) with default KMS data file <x>"
 	@echo "    PROGRAM_NAME=<x>             Use <x> as output file name for the KMS server. Defaults to vlmcsd."
