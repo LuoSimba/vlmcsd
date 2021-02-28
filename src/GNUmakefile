@@ -9,7 +9,6 @@ OBJ_NAME ?= ../build/libkms-static.o
 A_NAME ?= ../lib/libkms.a
 COMPILER_LANGUAGE ?= c
 
-BASE_CLIENT_NAME=$(notdir $(CLIENT_NAME))
 BASE_MULTI_NAME=$(notdir $(MULTI_NAME))
 BASE_DLL_NAME=$(notdir $(DLL_NAME))
 BASE_A_NAME=$(notdir $(A_NAME))

@@ -8,7 +8,6 @@ MULTI_NAME ?= bin/vlmcsdmulti
 OBJ_NAME ?= build/libkms-static.o
 A_NAME ?= lib/libkms.a
 
-BASE_CLIENT_NAME=$(notdir $(CLIENT_NAME))
 BASE_MULTI_NAME=$(notdir $(MULTI_NAME))
 BASE_DLL_NAME=$(notdir $(DLL_NAME))
 BASE_A_NAME=$(notdir $(A_NAME))
@@ -132,22 +131,22 @@ GNUmakefile:
 
 help:
 	@echo "Type"
-	@echo "    ${MAKE}               - to build vlmcsd and $(BASE_CLIENT_NAME)"
+	@echo "    ${MAKE}               - to build vlmcsd and vlmcs"
 	@echo "    ${MAKE} clean         - to remove all targets and temporary files"
 	@echo "    ${MAKE} pdfdocs       - Create PDF versions of the documentation (Requires groff with PDF support)."
 	@echo "    ${MAKE} htmldocs      - Create HTML versions of the documentation."
 	@echo "    ${MAKE} unixdocs      - Create Unix TXT versions of the documentation."
 	@echo "    ${MAKE} dosdocs       - Create DOS/Windows TXT versions of the documentation."
 	@echo "    ${MAKE} alldocs       - Create all versions of the documentation."
-	@echo "    ${MAKE} vlmcsd        - to build KMS server $(PROGRAM_NAME)"
+	@echo "    ${MAKE} vlmcsd        - to build KMS server bin/vlmcsd"
 	@echo "    ${MAKE} vlmcs         - to build KMS client $(CLIENT_NAME)"
-	@echo "    ${MAKE} vlmcsdmulti   - to build vlmcsd and $(BASE_CLIENT_NAME) in a single multi-call binary $(MULTI_NAME)"
+	@echo "    ${MAKE} vlmcsdmulti   - to build vlmcsd and vlmcs in a single multi-call binary $(MULTI_NAME)"
 	@echo "    ${MAKE} libkms        - to build the shared library $(DLL_NAME)"
 	@echo "    ${MAKE} libkms-static - to build the static library $(A_NAME)"
 	@echo ""
 	@echo "Options"
 	@echo "    INI=<x>                      Compile vlmcsd with default ini file <x>"
-	@echo "    DATA=<x>                     Compile vlmcsd and $(BASE_CLIENT_NAME) with default KMS data file <x>"
+	@echo "    DATA=<x>                     Compile vlmcsd and vlmcs with default KMS data file <x>"
 	@echo "    PROGRAM_NAME=<x>             Use <x> as output file name for the KMS server. Defaults to vlmcsd."
 	@echo "    CLIENT_NAME=<x>              Use <x> as output file name for the KMS client. Defaults to vlmcs."
 	@echo "    MULTI_NAME=<x>               Use <x> as output file name for the multi-call binary. Defaults to vlmcsdmulti."
@@ -168,7 +167,7 @@ help:
 	@echo "    PLATFORMFLAGS=<x>            Pass <x> as additional arguments to the compiler and the linker."
 	@echo "    BASECFLAGS=<x>               Pass only <x> as arguments to the compiler (advanced users only)."
 	@echo "    BASELDFLAGS=<x>              Pass only <x> as arguments to the linker (advanced users only)."
-	@echo "    STRIP=0                      Don't strip debug information from vlmcsd and $(BASE_CLIENT_NAME) (for developers)."
+	@echo "    STRIP=0                      Don't strip debug information from vlmcsd and vlmcs (for developers)."
 	@echo "    VERBOSE=1                    Be verbose when making targets."
 	@echo "    VERBOSE=3                    Show name of compiler."
 	@echo "    THREADS=1                    Use threads instead of fork(). Automatically set for native Windows. Recommended for Cygwin."
@@ -195,12 +194,12 @@ help:
 	@echo "    -DNO_FREEBIND                Don't support binding to foreign IP addresses. Removes -F0 and -F1 options. Only affects FreeBSD and Linux."
 	@echo "    -DNO_SOCKETS                 Don't support standalone operation. Requires an internet superserver to start vlmcsd."
 	@echo "    -DSIMPLE_SOCKETS             Compile vlmcsd with basic socket support only. Removes -L option."
-	@echo "    -DSIMPLE_RPC                 Don't support RPC with NDR64 and BTFN in vlmcsd (but do in $(BASE_CLIENT_NAME)). Makes emulator detection easy."
+	@echo "    -DSIMPLE_RPC                 Don't support RPC with NDR64 and BTFN in vlmcsd (but do in vlmcs). Makes emulator detection easy."
 	@echo "    -DNO_TAP                     Compile vlmcsd without VPN support (Windows and Cygwin only)."
 	@echo "    -DNO_CL_PIDS                 Don't support specifying ePIDs and HwId from the command line in vlmcsd."
 	@echo "    -DNO_LIMIT                   Don't support limiting concurrent clients in vlmcsd."
 	@echo "    -DNO_SIGHUP                  Don't support SIGHUP handling in vlmcsd."
-	@echo "    -DNO_VERSION_INFORMATION     Don't support displaying version information in vlmcsd and $(BASE_CLIENT_NAME). Removes -V option."
+	@echo "    -DNO_VERSION_INFORMATION     Don't support displaying version information in vlmcsd and vlmcs. Removes -V option."
 	@echo "    -DNO_PRIVATE_IP_DETECT       Don't support protection against clients with public IP addresses in vlmcsd"	
 	@echo "    -DSMALL_AES                  Use a smaller (saves about 200 bytes) but slower implementation of AES."
 	@echo "    -DNO_EXTERNAL_DATA           Don't support loading an external database. Mutually exclusive with -DNO_INTERNAL_DATA"
@@ -217,10 +216,10 @@ help:
 	@echo "    OPENSSL_HMAC=0               Compile for openssl versions that don't have HMAC support (required on some embedded devices)."
 	@echo "    NO_TIMEOUT=1                 Do not set timeouts for sockets (for systems that don't support it)."
 	@echo "    CHILD_HANDLER=1              Install a handler for SIGCHLD (for systems that don't support SA_NOCLDWAIT)."
-	@echo "    NO_DNS=1                     Compile $(BASE_CLIENT_NAME) without support for detecting KMS servers via DNS."
+	@echo "    NO_DNS=1                     Compile vlmcs without support for detecting KMS servers via DNS."
 	@echo "    NO_GETIFADDRS=1              Compile vlmcsd without using getifaddrs()."
 	@echo "    GETIFADDRS=musl              Compile vlmcsd with its own implementation of getifaddrs() based on musl."
-	@echo "    DNS_PARSER=internal          Use $(BASE_CLIENT_NAME) internal DNS parsing routines. No effect on MingW (native Windows)."
+	@echo "    DNS_PARSER=internal          Use vlmcs internal DNS parsing routines. No effect on MingW (native Windows)."
 	@echo ""
 	@echo "Other useful CFLAGS"
 	@echo "    -DNO_COMPILER_UAA            Do not use compiler support for byte swapping and unaligned access"
