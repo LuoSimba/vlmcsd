@@ -1,4 +1,6 @@
 # call make from parent directory.
+#
+# compiler language: c
 ################################################################################
 
 .PHONY: clean
@@ -8,7 +10,6 @@ CLIENT_NAME ?= ../bin/vlmcs
 MULTI_NAME ?= ../bin/vlmcsdmulti
 OBJ_NAME ?= ../build/libkms-static.o
 A_NAME ?= ../lib/libkms.a
-COMPILER_LANGUAGE ?= c
 
 # Always from parent.
 FROM_PARENT := 1
@@ -366,11 +367,15 @@ ifdef CAT
   BASECFLAGS += -DONE_FILE
 endif
 
+# Common source files.
 SRCS = crypto.c kms.c endian.c output.c shared_globals.c helpers.c
+
 HEADERS = config.h types.h rpc.h vlmcsd.h endian.h crypto.h kms.h network.h output.h shared_globals.h vlmcs.h helpers.h kmsdata.h
 DEPS = $(patsubst %,../build/%,$(MULTI_SRCS:.c=.d))
 
+# Source files for KMS server.
 VLMCSD_SRCS = vlmcsd.c kmsdata.c $(SRCS)
+# Object files for KMS server.
 VLMCSD_OBJS = $(patsubst %,../build/%,$(VLMCSD_SRCS:.c=.o))
 
 VLMCS_SRCS = vlmcs.c kmsdata-full.c $(SRCS)
@@ -483,8 +488,6 @@ ifeq ($(VERBOSE),3)
     ARCHIVER := $(shell printf "%-40s" $(notdir $(AR)))
 endif
 
-ARCMD := AR
-
 ifdef CAT
     LDCMD := CC/LD
 else
@@ -495,67 +498,67 @@ endif
 
 ../build/%.o: %.c 
   ifeq ($(VERBOSE),1)
-	+$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -c $< -o $@
+	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -c $< -o $@
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
+	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -c $< -o $@
+	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -c $< -o $@
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
+	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
   endif
   endif
 
 ../build/%-m.o: %.c
   ifeq ($(VERBOSE),1)
-	+$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -o $@ -c $<
+	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
+	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -o $@ -c $<
+	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
+	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
   endif
   endif
 
 ../build/%-a.o: %.c
   ifeq ($(VERBOSE),1)
-	+$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -x$(COMPILER_LANGUAGE) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
   endif
   endif
 
 ../build/%-l.o: %.c
   ifeq ($(VERBOSE),1)
-	+$(CC) -x$(COMPILER_LANGUAGE) $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+$(CC) -xc $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -x$(COMPILER_LANGUAGE) $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+$(CC) -xc $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -x$(COMPILER_LANGUAGE) $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+@$(CC) -xc $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -x$(COMPILER_LANGUAGE) $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+@$(CC) -xc $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
   endif
   endif
 
 
 ifdef CAT
-  BUILDCOMMAND = cat $^ | $(CC) -x$(COMPILER_LANGUAGE) -o $@ -
+  BUILDCOMMAND = cat $^ | $(CC) -xc -o $@ -
   VLMCSD_PREREQUISITES = $(VLMCSD_SRCS)
   VLMCS_PREREQUISITES = $(VLMCS_SRCS)
   MULTI_PREREQUISITES = $(MULTI_SRCS)
@@ -579,19 +582,20 @@ else
 endif
 
 INFOCOMMAND = +@echo "$(COMPILER)	$(LDCMD)	$@ <- $(notdir $^)"
-ARINFOCOMMAND = +@echo "$(ARCHIVER)	$(ARCMD)	$@ <. $(notdir $^)"
+ARINFOCOMMAND = +@echo "$(ARCHIVER)	AR      	$@ <. $(notdir $^)"
 
-VLMCSD_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS)
 VLMCS_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(CLIENTLDFLAGS)
 MULTI_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(CLIENTLDFLAGS) $(SERVERLDFLAGS)
 DLL_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -shared -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
 OBJ_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
   
+
+# Rules for KMS server.
 $(REAL_PROGRAM_NAME): $(VLMCSD_PREREQUISITES)
   ifneq ($(VERBOSE),1)
 	$(INFOCOMMAND)
   endif
-	$(VLMCSD_COMMAND)
+	$(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS)
 
 $(REAL_CLIENT_NAME): $(VLMCS_PREREQUISITES)
   ifneq ($(VERBOSE),1)
