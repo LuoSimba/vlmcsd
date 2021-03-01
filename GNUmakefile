@@ -1,3 +1,4 @@
+# Support gcc. Others may or may not work.
 .NOTPARALLEL:
 
 MAX_THREADS ?= 16
@@ -8,9 +9,7 @@ MULTI_NAME ?= bin/vlmcsdmulti
 OBJ_NAME ?= build/libkms-static.o
 A_NAME ?= lib/libkms.a
 
-BASE_MULTI_NAME=$(notdir $(MULTI_NAME))
-BASE_DLL_NAME=$(notdir $(DLL_NAME))
-BASE_A_NAME=$(notdir $(A_NAME))
+$(warning $(CC))
 
 TARGETPLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
 
@@ -100,6 +99,8 @@ else
   DLL_NAME ?= lib/libkms.so
 endif
 
+
+# 只有 .DEFAULT all clean 三个才用到了 src 目录
 .DEFAULT:
 	+@(test -d bin || mkdir bin) & (test -d lib || mkdir lib) & (test -d build || mkdir build)
 	+@$(MAKE) -j$(MAX_THREADS) -C src $@ FROM_PARENT=1 PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=$(DLL_NAME) A_NAME=$(A_NAME)
@@ -157,8 +158,7 @@ help:
 	@echo "    CRYPTO=polarssl              Use polarssl instead of internal crypto code for SHA256/HMAC calculations."
 	@echo "    CRYPTO=windows               Use Windows CryptoAPI instead of internal crypto code for SHA256/HMAC calculations."
 	@echo "    MSRPC=1                      Use Microsoft RPC instead of vlmcsd's internal RPC. Only works with Windows and Cygwin targets."
-	@echo "    CC=<x>                       Use compiler <x>. Supported compilers are gcc, icc, tcc and clang. Others may or may not work."
-	@echo "    AR=<x>                       Use <x> instead of ar to build $(BASE_A_NAME). Set to gcc-ar if you want to use gcc's LTO feature."
+	@echo "    AR=<x>                       Use <x> instead of ar to build libkms.a. Set to gcc-ar if you want to use gcc's LTO feature."
 	@echo "    COMPILER_LANGUAGE=<x>        May be c or c++."
 	@echo "    TERMINAL_WIDTH=<x>           Assume a fixed terminal width of <x> columns. Use in case of problems only."  
 	@echo "    VLMCSD_VERSION=<x>           Sets <x> as your version identifier. Defaults to \"private build\"."
