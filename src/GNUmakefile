@@ -644,5 +644,5 @@ clean:
 dnsclean:
 	rm -f ../build/dns_srv.o
 
-help:
-	@echo "Help is available by typing 'make help' in directory $(shell realpath `pwd`/..). Use 'cd ..' to get there."
+
+# shell command: realpath `pwd`/..

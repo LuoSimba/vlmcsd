@@ -39,6 +39,3 @@ htmldocs : $(HTMLDOCS)
 clean:
 	rm -f $(PDFDOCS) $(DOSDOCS) $(UNIXDOCS) $(HTMLDOCS)
 
-help:
-	@echo "Help is available by typing 'make help' in directory $(shell realpath `pwd`/..). Use 'cd ..' to get there."
-

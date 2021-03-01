@@ -1,7 +1,6 @@
 # Support gcc. Others may or may not work.
 .NOTPARALLEL:
 
-MAX_THREADS ?= 16
 
 PROGRAM_NAME ?= bin/vlmcsd
 CLIENT_NAME ?= bin/vlmcs
@@ -92,30 +91,30 @@ endif
 # 只有 .DEFAULT all clean 三个才用到了 src 目录
 .DEFAULT:
 	+@(test -d bin || mkdir bin) & (test -d lib || mkdir lib) & (test -d build || mkdir build)
-	+@$(MAKE) -j$(MAX_THREADS) -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
+	+@$(MAKE) -j16 -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
 
 all:
 	+@(test -d bin || mkdir bin) & (test -d lib || mkdir lib) & (test -d build || mkdir build)
-	+@$(MAKE) -j$(MAX_THREADS) -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
+	+@$(MAKE) -j16 -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
 
 clean:
-	+@$(MAKE) -j$(MAX_THREADS) -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
-	+@$(MAKE) -j$(MAX_THREADS) -C man $@
+	+@$(MAKE) -j16 -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
+	+@$(MAKE) -j16 -C man $@
 
 alldocs:
-	+@$(MAKE) -j$(MAX_THREADS) -C man $@
+	+@$(MAKE) -j16 -C man $@
 
 dosdocs:
-	+@$(MAKE) -j$(MAX_THREADS) -C man $@
+	+@$(MAKE) -j16 -C man $@
 
 unixdocs:
-	+@$(MAKE) -j$(MAX_THREADS) -C man $@
+	+@$(MAKE) -j16 -C man $@
 
 htmldocs:
-	+@$(MAKE) -j$(MAX_THREADS) -C man $@
+	+@$(MAKE) -j16 -C man $@
 
 pdfdocs:
-	+@$(MAKE) -j$(MAX_THREADS) -C man $@
+	+@$(MAKE) -j16 -C man $@
 
 GNUmakefile:
 
