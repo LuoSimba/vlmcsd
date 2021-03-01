@@ -1,19 +1,31 @@
 ################################################################################
 
+# ============================
+# 一共有四种文档：
+#
+# PDF
+# HTML
+# DOS
+# UNIX
+#
+# 主要是用 groff 命令生成
+# ============================
+
 .PHONY: clean
 
 
+# PDF files to create
 PDFDOCS = vlmcs.1.pdf vlmcsd.7.pdf vlmcsd.8.pdf vlmcsdmulti.1.pdf vlmcsd.ini.5.pdf vlmcsd-floppy.7.pdf
+
 HTMLDOCS = $(PDFDOCS:.pdf=.html)
 UNIXDOCS = $(PDFDOCS:.pdf=.unix.txt)
 DOSDOCS = $(PDFDOCS:.pdf=.dos.txt)
 
 %.pdf : %
-  ifeq ($(shell uname), Darwin)
-	groff -Tps -mandoc -c $< | pstopdf -i -o $@
-  else
+	# For Mac:
+	#groff -Tps -mandoc -c $< | pstopdf -i -o $@
+	# For Others:
 	groff -Tpdf -mandoc -c $< > $@
-  endif
 
 %.html : %
 	groff -Thtml -mandoc -c $< > $@ 
@@ -26,6 +38,7 @@ DOSDOCS = $(PDFDOCS:.pdf=.dos.txt)
 #	sed -e 's/$$/\r/' $< > $@
 	awk 'sub("$$", "\r")' $< > $@
 
+
 alldocs : $(UNIXDOCS) $(HTMLDOCS) $(PDFDOCS) $(DOSDOCS)
 
 pdfdocs : $(PDFDOCS)
@@ -35,6 +48,7 @@ dosdocs : $(DOSDOCS)
 unixdocs : $(UNIXDOCS)
 
 htmldocs : $(HTMLDOCS)
+
 
 clean:
 	rm -f $(PDFDOCS) $(DOSDOCS) $(UNIXDOCS) $(HTMLDOCS)

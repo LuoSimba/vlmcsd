@@ -101,6 +101,9 @@ clean:
 	+@$(MAKE) -j16 -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
 	+@$(MAKE) -j16 -C man $@
 
+
+
+# ========== DOCs ===========
 alldocs:
 	+@$(MAKE) -j16 -C man $@
 
@@ -115,6 +118,10 @@ htmldocs:
 
 pdfdocs:
 	+@$(MAKE) -j16 -C man $@
+
+# ===========================
+
+
 
 GNUmakefile:
 
