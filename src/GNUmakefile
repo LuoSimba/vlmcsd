@@ -1,3 +1,4 @@
+# call make from parent directory.
 ################################################################################
 
 .PHONY: clean
@@ -9,6 +10,8 @@ OBJ_NAME ?= ../build/libkms-static.o
 A_NAME ?= ../lib/libkms.a
 COMPILER_LANGUAGE ?= c
 
+# Always from parent.
+FROM_PARENT := 1
 
 ifeq (1,$(FROM_PARENT))
 
@@ -64,22 +67,22 @@ VERBOSE ?= NO
 ################################################################################
 
 CC ?= gcc
-TARGETPLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
+
+#TARGETPLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
+# set target platform manually.
+TARGETPLATFORM := i486-linux-gnu
 
 ifneq (,$(findstring darwin,$(TARGETPLATFORM)))
   DARWIN := 1
-  UNIX := 1
 endif
 
 ifneq (,$(findstring android,$(TARGETPLATFORM)))
   ANDROID := 1
-  UNIX := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring minix,$(TARGETPLATFORM)))
   MINIX := 1
-  UNIX := 1
   ELF := 1
 endif
 
@@ -103,40 +106,34 @@ endif
 
 ifneq (,$(findstring freebsd,$(TARGETPLATFORM)))
   FREEBSD := 1
-  UNIX := 1
   BSD := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring netbsd,$(TARGETPLATFORM)))
   NETBSD := 1
-  UNIX := 1
   BSD := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring openbsd,$(TARGETPLATFORM)))
   OPENBSD := 1
-  UNIX := 1
   BSD := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring solaris,$(TARGETPLATFORM)))
   SOLARIS := 1
-  UNIX := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring linux,$(TARGETPLATFORM)))
   LINUX := 1
-  UNIX := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring gnu,$(TARGETPLATFORM)))
 ifeq (,$(findstring linux,$(TARGETPLATFORM)))
-  UNIX := 1
   HURD := 1
   ELF := 1
 endif

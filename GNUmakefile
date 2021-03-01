@@ -9,24 +9,19 @@ MULTI_NAME ?= bin/vlmcsdmulti
 OBJ_NAME ?= build/libkms-static.o
 A_NAME ?= lib/libkms.a
 
-$(warning $(CC))
-
-TARGETPLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
+# set target platform manually.
+TARGETPLATFORM := i486-linux-gnu
 
 ifneq (,$(findstring darwin,$(TARGETPLATFORM)))
   DARWIN := 1
-  UNIX := 1
 endif
 
 ifneq (,$(findstring android,$(TARGETPLATFORM)))
-  ANDROID := 1
-  UNIX := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring minix,$(TARGETPLATFORM)))
   MINIX := 1
-  UNIX := 1
   ELF := 1
 endif
 
@@ -50,40 +45,34 @@ endif
 
 ifneq (,$(findstring freebsd,$(TARGETPLATFORM)))
   FREEBSD := 1
-  UNIX := 1
   BSD := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring netbsd,$(TARGETPLATFORM)))
   NETBSD := 1
-  UNIX := 1
   BSD := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring openbsd,$(TARGETPLATFORM)))
   OPENBSD := 1
-  UNIX := 1
   BSD := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring solaris,$(TARGETPLATFORM)))
   SOLARIS := 1
-  UNIX := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring linux,$(TARGETPLATFORM)))
   LINUX := 1
-  UNIX := 1
   ELF := 1
 endif
 
 ifneq (,$(findstring gnu,$(TARGETPLATFORM)))
 ifeq (,$(findstring linux,$(TARGETPLATFORM)))
-  UNIX := 1
   HURD := 1
   ELF := 1
 endif
@@ -96,21 +85,21 @@ else ifeq ($(WIN),1)
 else ifeq ($(DARWIN),1)
   DLL_NAME ?= lib/libkms.dylib
 else
-  DLL_NAME ?= lib/libkms.so
+  DLL_NAME ?= lib/libkms.so # --
 endif
 
 
 # 只有 .DEFAULT all clean 三个才用到了 src 目录
 .DEFAULT:
 	+@(test -d bin || mkdir bin) & (test -d lib || mkdir lib) & (test -d build || mkdir build)
-	+@$(MAKE) -j$(MAX_THREADS) -C src $@ FROM_PARENT=1 PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=$(DLL_NAME) A_NAME=$(A_NAME)
+	+@$(MAKE) -j$(MAX_THREADS) -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
 
 all:
 	+@(test -d bin || mkdir bin) & (test -d lib || mkdir lib) & (test -d build || mkdir build)
-	+@$(MAKE) -j$(MAX_THREADS) -C src $@ FROM_PARENT=1 PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=$(DLL_NAME) A_NAME=$(A_NAME)
+	+@$(MAKE) -j$(MAX_THREADS) -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
 
 clean:
-	+@$(MAKE) -j$(MAX_THREADS) -C src $@ FROM_PARENT=1 PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=$(DLL_NAME) A_NAME=$(A_NAME)
+	+@$(MAKE) -j$(MAX_THREADS) -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
 	+@$(MAKE) -j$(MAX_THREADS) -C man $@
 
 alldocs:
@@ -142,7 +131,7 @@ help:
 	@echo "    ${MAKE} vlmcsd        - to build KMS server bin/vlmcsd"
 	@echo "    ${MAKE} vlmcs         - to build KMS client $(CLIENT_NAME)"
 	@echo "    ${MAKE} vlmcsdmulti   - to build vlmcsd and vlmcs in a single multi-call binary $(MULTI_NAME)"
-	@echo "    ${MAKE} libkms        - to build the shared library $(DLL_NAME)"
+	@echo "    ${MAKE} libkms        - to build the shared library lib/libkms.so"
 	@echo "    ${MAKE} libkms-static - to build the static library $(A_NAME)"
 	@echo ""
 	@echo "Options"
