@@ -75,37 +75,23 @@ TARGETPLATFORM := i486-linux-gnu
 
 ifneq (,$(findstring android,$(TARGETPLATFORM)))
   ANDROID := 1
-  ELF := 1
 endif
 
 ifneq (,$(findstring freebsd,$(TARGETPLATFORM)))
-  FREEBSD := 1
   BSD := 1
-  ELF := 1
 endif
 
 ifneq (,$(findstring netbsd,$(TARGETPLATFORM)))
-  NETBSD := 1
   BSD := 1
-  ELF := 1
 endif
 
 ifneq (,$(findstring openbsd,$(TARGETPLATFORM)))
   OPENBSD := 1
   BSD := 1
-  ELF := 1
 endif
 
 ifneq (,$(findstring linux,$(TARGETPLATFORM)))
   LINUX := 1
-  ELF := 1
-endif
-
-ifneq (,$(findstring gnu,$(TARGETPLATFORM)))
-ifeq (,$(findstring linux,$(TARGETPLATFORM)))
-  HURD := 1
-  ELF := 1
-endif
 endif
 
 
@@ -121,9 +107,7 @@ SERVERLDFLAGS =
 ifndef SAFE_MODE
   BASECFLAGS += -fvisibility=hidden -pipe -fno-common -fno-exceptions -fno-stack-protector -fno-unwind-tables -fno-asynchronous-unwind-tables -fmerge-all-constants
   
-  ifeq ($(ELF),1)
-    BASELDFLAGS += -Wl,-z,norelro
-  endif
+  BASELDFLAGS += -Wl,-z,norelro
 
   ifneq (,$(findstring gcc,$(notdir $(CC))))
     BASECFLAGS += -flto
@@ -131,9 +115,7 @@ ifndef SAFE_MODE
 
 endif
 
-ifeq ($(ELF), 1)
-  PICFLAGS += -fPIC
-endif
+PICFLAGS += -fPIC
 
 ifeq ($(NOLIBS),1)
   NOLRESOLV=1
@@ -145,10 +127,6 @@ ifneq ($(NO_DNS),1)
   ifneq ($(NOLRESOLV),1)
 
     ifeq ($(LINUX),1)
-      CLIENTLDFLAGS += -lresolv
-    endif
-
-    ifeq ($(HURD),1)
       CLIENTLDFLAGS += -lresolv
     endif
 

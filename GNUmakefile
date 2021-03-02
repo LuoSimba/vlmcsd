@@ -1,6 +1,6 @@
 # Support gcc. Others may or may not work.
 #
-# Not Support: MinGW Cygwin Minix Solaris Darwin
+# Not Support: MinGW Cygwin Minix Solaris Darwin Hurd
 #
 # lib name:
 # Cygwin: lib/cygkms.dll
@@ -15,45 +15,6 @@ CLIENT_NAME ?= bin/vlmcs
 MULTI_NAME ?= bin/vlmcsdmulti
 OBJ_NAME ?= build/libkms-static.o
 A_NAME ?= lib/libkms.a
-
-# set target platform manually.
-TARGETPLATFORM := i486-linux-gnu
-
-ifneq (,$(findstring android,$(TARGETPLATFORM)))
-  ELF := 1
-endif
-
-ifneq (,$(findstring freebsd,$(TARGETPLATFORM)))
-  FREEBSD := 1
-  BSD := 1
-  ELF := 1
-endif
-
-ifneq (,$(findstring netbsd,$(TARGETPLATFORM)))
-  NETBSD := 1
-  BSD := 1
-  ELF := 1
-endif
-
-ifneq (,$(findstring openbsd,$(TARGETPLATFORM)))
-  OPENBSD := 1
-  BSD := 1
-  ELF := 1
-endif
-
-ifneq (,$(findstring linux,$(TARGETPLATFORM)))
-  LINUX := 1
-  ELF := 1
-endif
-
-ifneq (,$(findstring gnu,$(TARGETPLATFORM)))
-ifeq (,$(findstring linux,$(TARGETPLATFORM)))
-  HURD := 1
-  ELF := 1
-endif
-endif
-
-
 
 # 只有 .DEFAULT all clean 三个才用到了 src 目录
 .DEFAULT:
