@@ -64,15 +64,11 @@ VERBOSE ?= NO
 
 ################################################################################
 
-CC ?= gcc
+CC := gcc
 
 #TARGETPLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
 # set target platform manually.
 TARGETPLATFORM := i486-linux-gnu
-
-ifneq (,$(findstring android,$(TARGETPLATFORM)))
-  ANDROID := 1
-endif
 
 ifneq (,$(findstring freebsd,$(TARGETPLATFORM)))
   BSD := 1
@@ -95,7 +91,7 @@ endif
 DLL_NAME ?= ../lib/libkms.so
 
 
-BASECFLAGS = -DVLMCSD_COMPILER=\"$(notdir $(CC))\" -DVLMCSD_PLATFORM=\"$(TARGETPLATFORM)\" -DCONFIG=\"config.h\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
+BASECFLAGS = -DVLMCSD_COMPILER=\"$(CC)\" -DVLMCSD_PLATFORM=\"$(TARGETPLATFORM)\" -DCONFIG=\"config.h\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
 BASELDFLAGS = 
 STRIPFLAGS =
 CLIENTLDFLAGS =
@@ -106,9 +102,7 @@ ifndef SAFE_MODE
   
   BASELDFLAGS += -Wl,-z,norelro
 
-  ifneq (,$(findstring gcc,$(notdir $(CC))))
-    BASECFLAGS += -flto
-  endif
+  BASECFLAGS += -flto
 
 endif
 
@@ -120,7 +114,6 @@ ifeq ($(NOLIBS),1)
 endif
 
 ifneq ($(NO_DNS),1)
-  ifneq ($(ANDROID),1)
   ifneq ($(NOLRESOLV),1)
 
     ifeq ($(LINUX),1)
@@ -131,7 +124,6 @@ ifneq ($(NO_DNS),1)
       DNS_PARSER := internal
     endif
 
-  endif
   endif
 else
   BASECFLAGS += -DNO_DNS
@@ -216,9 +208,7 @@ ifeq ($(AUXV), 1)
   BASECFLAGS += -DUSE_AUXV
 endif
 
-ifneq ($(ANDROID), 1)
 ifneq ($(NOLPTHREAD), 1)
-
   ifeq ($(THREADS), 1)
     SERVERLDFLAGS += -lpthread
   endif
@@ -226,8 +216,6 @@ ifneq ($(NOLPTHREAD), 1)
   ifeq (,$(findstring NO_LIMIT,$(CFLAGS) $(BASECFLAGS)))  
     SERVERLDFLAGS += -lpthread
   endif
-
-endif
 endif
 
 $(REAL_MULTI_NAME): BASECFLAGS += -DMULTI_CALL_BINARY=1
@@ -321,14 +309,13 @@ ifneq ($(NO_GETIFADDRS),1)
 endif
 endif
 
-ifeq ($(ANDROID),1)
-ifneq ($(NO_GETIFADDRS),1)
-  VLMCSD_SRCS += ifaddrs-android.c
-  MULTI_SRCS += ifaddrs-android.c
-  DLL_SRCS += ifaddrs-android.c
-  MULTI_OBJS += ../build/ifaddrs-android.o
-endif
-endif
+# Android
+#ifneq ($(NO_GETIFADDRS),1)
+#  VLMCSD_SRCS += ifaddrs-android.c
+#  MULTI_SRCS += ifaddrs-android.c
+#  DLL_SRCS += ifaddrs-android.c
+#  MULTI_OBJS += ../build/ifaddrs-android.o
+#endif
 
 # MinGW & Cygwin
 # VLMCSD_SRCS += ntservice.c wintap.c
@@ -371,7 +358,7 @@ ifeq ($(DEPENDENCIES),2)
 endif
 
 ifeq ($(VERBOSE),3)
-    COMPILER := $(shell printf "%-40s" $(notdir $(CC)))
+    COMPILER := $(shell printf "%-40s" $(CC))
     ARCHIVER := $(shell printf "%-40s" $(notdir $(AR)))
 endif
 

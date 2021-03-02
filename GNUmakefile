@@ -1,6 +1,6 @@
 # Support gcc. Others may or may not work.
 #
-# Not Support: MinGW Cygwin Minix Solaris Darwin Hurd
+# Not Support: MinGW Cygwin Minix Solaris Darwin Hurd Android
 #
 # lib name:
 # Cygwin: lib/cygkms.dll
