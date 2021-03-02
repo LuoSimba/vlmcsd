@@ -1,4 +1,3 @@
-# call make from parent directory.
 #
 # compiler language: c
 # target platform:   linux
@@ -8,13 +7,12 @@
 
 OBJ_NAME := ../build/libkms-static.o
 
-A_NAME := lib/libkms.a
 
-REAL_PROGRAM_NAME=../bin/vlmcsd
-REAL_CLIENT_NAME=../bin/vlmcs
-REAL_MULTI_NAME=../bin/vlmcsdmulti
-REAL_DLL_NAME=../lib/libkms.so
-REAL_A_NAME=../$(A_NAME)
+PROGRAM_NAME=../bin/vlmcsd
+CLIENT_NAME=../bin/vlmcs
+MULTI_NAME=../bin/vlmcsdmulti
+DLL_NAME=../lib/libkms.so
+A_NAME=../lib/libkms.a
 
 
 # crypto library to use for standard algos, could save ~1-2kb ;)
@@ -52,7 +50,7 @@ ifndef SAFE_MODE
 # ABOUT -flto
 #
 # -------------------------------------------------------
-# GCC 10.2 Manual
+# GCC Manual (version 10.2)
 # 3. GCC Command Options
 # 3.11 Options That Control Optimization
 #
@@ -167,25 +165,25 @@ ifneq ($(NOLPTHREAD), 1)
   endif
 endif
 
-$(REAL_MULTI_NAME): BASECFLAGS += -DMULTI_CALL_BINARY=1
+$(MULTI_NAME): BASECFLAGS += -DMULTI_CALL_BINARY=1
 
-all: $(REAL_CLIENT_NAME) $(REAL_PROGRAM_NAME)
+all: $(CLIENT_NAME) $(PROGRAM_NAME)
 
-allmulti: $(REAL_CLIENT_NAME) $(REAL_PROGRAM_NAME) $(REAL_MULTI_NAME)
+allmulti: $(CLIENT_NAME) $(PROGRAM_NAME) $(MULTI_NAME)
 
-vlmcsd: $(REAL_PROGRAM_NAME)
+vlmcsd: $(PROGRAM_NAME)
 	+@true
 
-vlmcs: $(REAL_CLIENT_NAME)
+vlmcs: $(CLIENT_NAME)
 	+@true
 
-vlmcsdmulti: $(REAL_MULTI_NAME)
+vlmcsdmulti: $(MULTI_NAME)
 	+@true
 
-libkms: $(REAL_DLL_NAME)
+libkms: $(DLL_NAME)
 	+@true
 
-libkms-static: $(REAL_A_NAME)
+libkms-static: $(A_NAME)
 
 # add vlmcsd version
 BASECFLAGS += -DVERSION=\"my-private,\ built\ $(shell date -u '+%Y-%m-%d %H:%M:%S' | sed -e 's/ /\\ /g')\ UTC\" 
@@ -413,26 +411,29 @@ DLL_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PICFLAGS) $(PLATFORMFLAGS) 
 OBJ_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
   
 
-# Rules for KMS server.
-$(REAL_PROGRAM_NAME): $(VLMCSD_PREREQUISITES)
+# KMS server.
+$(PROGRAM_NAME): $(VLMCSD_PREREQUISITES)
   ifneq ($(VERBOSE),1)
 	$(INFOCOMMAND)
   endif
 	$(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS)
 
-$(REAL_CLIENT_NAME): $(VLMCS_PREREQUISITES)
+# KMS client
+$(CLIENT_NAME): $(VLMCS_PREREQUISITES)
   ifneq ($(VERBOSE),1)
 	$(INFOCOMMAND)
   endif
 	$(VLMCS_COMMAND)
 
-$(REAL_MULTI_NAME): $(MULTI_PREREQUISITES)
+# Multi binary
+$(MULTI_NAME): $(MULTI_PREREQUISITES)
   ifneq ($(VERBOSE),1)
 	$(INFOCOMMAND)
   endif
 	$(MULTI_COMMAND)
 
-$(REAL_DLL_NAME): $(DLL_PREREQUISITES)
+# lib
+$(DLL_NAME): $(DLL_PREREQUISITES)
   ifneq ($(VERBOSE),1)
 	$(INFOCOMMAND)
   endif
@@ -449,11 +450,12 @@ $(OBJ_NAME): $(OBJ_PREREQUISITES)
 	$(OBJ_COMMAND)
 endif
 
+
 ifdef CAT
-$(REAL_A_NAME): $(OBJ_NAME)
+$(A_NAME): $(OBJ_NAME)
 else
-$(REAL_A_NAME): BASECFLAGS += -fvisibility=hidden -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
-$(REAL_A_NAME): $(A_OBJS)
+$(A_NAME): BASECFLAGS += -fvisibility=hidden -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
+$(A_NAME): $(A_OBJS)
 endif
   ifneq ($(VERBOSE),1)
 	$(ARINFOCOMMAND)
@@ -462,7 +464,7 @@ endif
 	$(BUILDCOMMANDPREFIX)$(AR) rcs $@ $^
 
 clean:
-	rm -f $(REAL_PROGRAM_NAME) $(REAL_MULTI_NAME) $(REAL_DLL_NAME) $(REAL_CLIENT_NAME)  $(OBJ_NAME) $(REAL_A_NAME) ../bin/* ../build/* *.d
+	rm -f $(PROGRAM_NAME) $(MULTI_NAME) $(DLL_NAME) $(CLIENT_NAME)  $(OBJ_NAME) $(A_NAME) ../bin/* ../build/* *.d
 
 dnsclean:
 	rm -f ../build/dns_srv.o
