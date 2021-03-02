@@ -83,7 +83,6 @@ help:
 	@echo "    MSRPC=1                      Use Microsoft RPC instead of vlmcsd's internal RPC. Only works with Windows and Cygwin targets."
 	@echo "    AR=<x>                       Use <x> instead of ar to build libkms.a. Set to gcc-ar if you want to use gcc's LTO feature."
 	@echo "    TERMINAL_WIDTH=<x>           Assume a fixed terminal width of <x> columns. Use in case of problems only."  
-	@echo "    VLMCSD_VERSION=<x>           Sets <x> as your version identifier. Defaults to \"private build\"."
 	@echo "    CFLAGS=<x>                   Pass <x> as additional arguments to the compiler."
 	@echo "    LDFLAGS=<x>                  Pass <x> as additional arguments to the linker."
 	@echo "    PLATFORMFLAGS=<x>            Pass <x> as additional arguments to the compiler and the linker."

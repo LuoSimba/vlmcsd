@@ -59,8 +59,8 @@ CRYPTO ?= internal
 DNS_PARSER ?= OS
 
 # You should supply your own version string here
-
-VLMCSD_VERSION ?= $(shell test -d ../.git && git describe)
+# default to "private build"
+VLMCSD_VERSION := my-private
 
 FEATURES ?= full
 VERBOSE ?= NO
