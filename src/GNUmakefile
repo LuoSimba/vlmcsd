@@ -1,6 +1,7 @@
 # call make from parent directory.
 #
 # compiler language: c
+# target platform:   linux
 ################################################################################
 
 .PHONY: clean
@@ -64,7 +65,7 @@ VERBOSE ?= NO
 
 ################################################################################
 
-CC := gcc
+CC ?= gcc
 
 # show current platform:
 #PLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
@@ -84,7 +85,9 @@ ifndef SAFE_MODE
   
   BASELDFLAGS += -Wl,-z,norelro
 
-  BASECFLAGS += -flto
+  ifneq (,$(findstring gcc, $(notdir $(CC))))
+    BASECFLAGS += -flto
+  endif
 
 endif
 
