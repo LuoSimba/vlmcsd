@@ -85,9 +85,21 @@ ifndef SAFE_MODE
   
   BASELDFLAGS += -Wl,-z,norelro
 
-  ifneq (,$(findstring gcc, $(notdir $(CC))))
-    BASECFLAGS += -flto
-  endif
+# ABOUT -flto
+#
+# -------------------------------------------------------
+# GCC 10.2 Manual
+# 3. GCC Command Options
+# 3.11 Options That Control Optimization
+#
+#  -flto[=n]
+#
+#   This option runs the standard link-time optimizer.
+# -------------------------------------------------------
+#
+# BUT -- My gcc version is 4.4.1, and not support this option.
+# this option is introduced after version 4.4.7
+  #BASECFLAGS += -flto
 
 endif
 
