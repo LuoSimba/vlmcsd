@@ -24,24 +24,6 @@ ifneq (,$(findstring minix,$(TARGETPLATFORM)))
   ELF := 1
 endif
 
-ifneq (,$(findstring mingw,$(TARGETPLATFORM)))
-  MINGW := 1
-  WIN := 1
-  PE := 1 
-endif
-
-ifneq (,$(findstring cygwin,$(TARGETPLATFORM)))
-  CYGWIN := 1
-  WIN := 1
-  PE := 1
-endif
-
-ifneq (,$(findstring cygnus,$(TARGETPLATFORM)))
-  CYGWIN := 1
-  WIN := 1
-  PE := 1
-endif
-
 ifneq (,$(findstring freebsd,$(TARGETPLATFORM)))
   FREEBSD := 1
   BSD := 1
@@ -77,11 +59,10 @@ ifeq (,$(findstring linux,$(TARGETPLATFORM)))
 endif
 endif
 
-ifeq ($(CYGWIN),1)
-  DLL_NAME ?= lib/cygkms.dll
-else ifeq ($(WIN),1)
-  DLL_NAME ?= lib/libkms.dll
-else ifeq ($(DARWIN),1)
+# Cygwin: lib/cygkms.dll
+# MinGW:  lib/libkms.dll
+#
+ifeq ($(DARWIN),1)
   DLL_NAME ?= lib/libkms.dylib
 else
   DLL_NAME ?= lib/libkms.so # --

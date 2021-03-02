@@ -87,24 +87,6 @@ ifneq (,$(findstring minix,$(TARGETPLATFORM)))
   ELF := 1
 endif
 
-ifneq (,$(findstring mingw,$(TARGETPLATFORM)))
-  MINGW := 1
-  WIN := 1
-  PE := 1 
-endif
-
-ifneq (,$(findstring cygwin,$(TARGETPLATFORM)))
-  CYGWIN := 1
-  WIN := 1
-  PE := 1
-endif
-
-ifneq (,$(findstring cygnus,$(TARGETPLATFORM)))
-  CYGWIN := 1
-  WIN := 1
-  PE := 1
-endif
-
 ifneq (,$(findstring freebsd,$(TARGETPLATFORM)))
   FREEBSD := 1
   BSD := 1
@@ -140,11 +122,8 @@ ifeq (,$(findstring linux,$(TARGETPLATFORM)))
 endif
 endif
 
-ifeq ($(CYGWIN),1)
-  DLL_NAME ?= ../lib/cygkms.dll
-else ifeq ($(WIN),1)
-  DLL_NAME ?= ../lib/libkms.dll
-else ifeq ($(DARWIN),1)
+  
+ifeq ($(DARWIN),1)
   DLL_NAME ?= ../lib/libkms.dylib
 else
   DLL_NAME ?= ../lib/libkms.so
@@ -178,25 +157,9 @@ ifeq ($(NOLIBS),1)
   NOLPTHREAD=1
 endif
 
-ifneq ($(NOLIBS),1)
-  ifeq ($(MINGW),1)
-    BASELDFLAGS += -lws2_32 -liphlpapi -lshlwapi
-  endif
-endif 
-
-ifneq ($(NOLIBS),1)
-  ifeq ($(CYGWIN),1)
-    BASELDFLAGS += -liphlpapi
-  endif
-endif 
-
 ifneq ($(NO_DNS),1)
   ifneq ($(ANDROID),1)
   ifneq ($(NOLRESOLV),1)
-
-    ifeq ($(MINGW),1)
-      CLIENTLDFLAGS += -ldnsapi
-    endif
 
     ifeq ($(LINUX),1)
       CLIENTLDFLAGS += -lresolv
@@ -207,11 +170,6 @@ ifneq ($(NO_DNS),1)
     endif
 
     ifeq ($(DARWIN),1)
-      CLIENTLDFLAGS += -lresolv
-    endif
-
-    ifeq ($(CYGWIN),1)
-      DNS_PARSER := internal
       CLIENTLDFLAGS += -lresolv
     endif
 
@@ -400,12 +358,10 @@ ifneq ($(NO_DNS),1)
   MULTI_OBJS += ../build/dns_srv.o
 
 ifeq ($(DNS_PARSER),internal)
-ifneq ($(MINGW),1)
   VLMCS_SRCS += ns_parse.c ns_name.c
   MULTI_SRCS += ns_parse.c ns_name.c
   MULTI_OBJS += ../build/ns_parse.o ../build/ns_name.o
   BASECFLAGS += "-DDNS_PARSER_INTERNAL"
-endif
 endif
 
 endif
@@ -442,11 +398,10 @@ ifneq ($(NO_GETIFADDRS),1)
 endif
 endif
 
-ifeq "$(WIN)" "1"
-	VLMCSD_SRCS += ntservice.c wintap.c
-	MULTI_SRCS += ntservice.c wintap.c
-	MULTI_OBJS += ../build/ntservice.o ../build/wintap.o
-endif
+# MinGW & Cygwin
+# VLMCSD_SRCS += ntservice.c wintap.c
+# MULTI_SRCS += ntservice.c wintap.c
+# MULTI_OBJS += ../build/ntservice.o ../build/wintap.o
 
 ifeq ($(CRYPTO), openssl_with_aes)
 	BASECFLAGS += -D_CRYPTO_OPENSSL -D_USE_AES_FROM_OPENSSL
