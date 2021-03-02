@@ -14,14 +14,17 @@
 
  /*
   * ----------------------------------------------------------------------------------------
-  * Useful customizations. These options are mandatory. You cannot comment them out.
+  * Useful customizations.
+  *
+  * These options are mandatory.
+  * 你不可以将它们注释掉。
   * Feel free to change them to fit your needs.
   * ----------------------------------------------------------------------------------------
   */
 
 #ifndef VERSION
   /*
-   * Define your own version identifier here, e.g. '#define VERSION "my vlmcsd based on 1103"'
+   * 软件的版本号。在 makefile 中已经给出。
    */
 
 #define VERSION "private build"
@@ -42,17 +45,9 @@
 /*
  * 以下是可选项.
  *
- * If you want to use any of these options
- * uncomment one or more lines starting with "//#define"
+ * 如果你需要用到这些选项，请将以 "//#define" 开头的这些行的注释去掉。
  */
 
-
-
- /*
-  * -------------------------------
-  * Defaults
-  * -------------------------------
-  */
 
 
 

@@ -6,50 +6,15 @@
 
 .PHONY: clean
 
-PROGRAM_NAME ?= ../bin/vlmcsd
-CLIENT_NAME ?= ../bin/vlmcs
-MULTI_NAME ?= ../bin/vlmcsdmulti
-OBJ_NAME ?= ../build/libkms-static.o
-A_NAME ?= ../lib/libkms.a
+OBJ_NAME := ../build/libkms-static.o
 
-# Always from parent.
-FROM_PARENT := 1
+A_NAME := lib/libkms.a
 
-ifeq (1,$(FROM_PARENT))
-
-  CLIENT_NAME_TEST=$(patsubst /%,/,$(CLIENT_NAME))
-  MULTI_NAME_TEST=$(patsubst /%,/,$(MULTI_NAME))
-  DLL_NAME_TEST=$(patsubst /%,/,$(DLL_NAME))
-  A_NAME_TEST=$(patsubst /%,/,$(A_NAME))
-  PROGRAM_NAME_TEST=$(patsubst /%,/,$(PROGRAM_NAME))
-
-  ifneq (/,$(PROGRAM_NAME_TEST))
-    PROGRAM_PREFIX=../
-  endif
-
-  ifneq (/,$(CLIENT_NAME_TEST))
-    CLIENT_PREFIX=../
-  endif
-
-  ifneq (/,$(MULTI_NAME_TEST))
-    MULTI_PREFIX=../
-  endif
-
-  ifneq (/,$(DLL_NAME_TEST))
-    DLL_PREFIX=../
-  endif
-
-  ifneq (/,$(A_NAME_TEST))
-    A_PREFIX=../
-  endif
-
-endif
-
-REAL_PROGRAM_NAME=$(PROGRAM_PREFIX)$(PROGRAM_NAME)
-REAL_CLIENT_NAME=$(CLIENT_PREFIX)$(CLIENT_NAME)
-REAL_MULTI_NAME=$(MULTI_PREFIX)$(MULTI_NAME)
-REAL_DLL_NAME=$(DLL_PREFIX)$(DLL_NAME)
-REAL_A_NAME=$(A_PREFIX)$(A_NAME)
+REAL_PROGRAM_NAME=../bin/vlmcsd
+REAL_CLIENT_NAME=../bin/vlmcs
+REAL_MULTI_NAME=../bin/vlmcsdmulti
+REAL_DLL_NAME=../lib/libkms.so
+REAL_A_NAME=../$(A_NAME)
 
 
 # crypto library to use for standard algos, could save ~1-2kb ;)
@@ -71,7 +36,6 @@ CC ?= gcc
 #PLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
 
 
-DLL_NAME ?= ../lib/libkms.so
 
 
 BASECFLAGS = -DVLMCSD_COMPILER=\"$(CC)\" -DVLMCSD_PLATFORM=\"i486-linux-gnu\" -DCONFIG=\"config.h\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections

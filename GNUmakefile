@@ -10,23 +10,17 @@
 .NOTPARALLEL:
 
 
-PROGRAM_NAME ?= bin/vlmcsd
-CLIENT_NAME ?= bin/vlmcs
-MULTI_NAME ?= bin/vlmcsdmulti
-OBJ_NAME ?= build/libkms-static.o
-A_NAME ?= lib/libkms.a
-
 # 只有 .DEFAULT all clean 三个才用到了 src 目录
 .DEFAULT:
 	+@(test -d bin || mkdir bin) & (test -d lib || mkdir lib) & (test -d build || mkdir build)
-	+@$(MAKE) -j16 -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
+	+@$(MAKE) -j16 -C src $@
 
 all:
 	+@(test -d bin || mkdir bin) & (test -d lib || mkdir lib) & (test -d build || mkdir build)
-	+@$(MAKE) -j16 -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
+	+@$(MAKE) -j16 -C src $@
 
 clean:
-	+@$(MAKE) -j16 -C src $@ PROGRAM_NAME=$(PROGRAM_NAME) CLIENT_NAME=$(CLIENT_NAME) MULTI_NAME=$(MULTI_NAME) DLL_NAME=lib/libkms.so A_NAME=$(A_NAME)
+	+@$(MAKE) -j16 -C src $@
 	+@$(MAKE) -j16 -C man $@
 
 
@@ -63,17 +57,14 @@ help:
 	@echo "    ${MAKE} dosdocs       - Create DOS/Windows TXT versions of the documentation."
 	@echo "    ${MAKE} alldocs       - Create all versions of the documentation."
 	@echo "    ${MAKE} vlmcsd        - to build KMS server bin/vlmcsd"
-	@echo "    ${MAKE} vlmcs         - to build KMS client $(CLIENT_NAME)"
-	@echo "    ${MAKE} vlmcsdmulti   - to build vlmcsd and vlmcs in a single multi-call binary $(MULTI_NAME)"
+	@echo "    ${MAKE} vlmcs         - to build KMS client bin/vlmcs"
+	@echo "    ${MAKE} vlmcsdmulti   - to build vlmcsd and vlmcs in a single multi-call binary bin/vlmcsdmulti"
 	@echo "    ${MAKE} libkms        - to build the shared library lib/libkms.so"
-	@echo "    ${MAKE} libkms-static - to build the static library $(A_NAME)"
+	@echo "    ${MAKE} libkms-static - to build the static library lib/libkms.a"
 	@echo ""
 	@echo "Options"
 	@echo "    INI=<x>                      Compile vlmcsd with default ini file <x>"
 	@echo "    DATA=<x>                     Compile vlmcsd and vlmcs with default KMS data file <x>"
-	@echo "    PROGRAM_NAME=<x>             Use <x> as output file name for the KMS server. Defaults to vlmcsd."
-	@echo "    CLIENT_NAME=<x>              Use <x> as output file name for the KMS client. Defaults to vlmcs."
-	@echo "    MULTI_NAME=<x>               Use <x> as output file name for the multi-call binary. Defaults to vlmcsdmulti."
 	@echo "    DEPENDENCIES=1               Create dependency files."
 	@echo "    CRYPTO=openssl               Use openssl for SHA256/HMAC calculations."
 	@echo "    CRYPTO=openssl_with_aes      EXPERIMENTAL: Use openssl for SHA256/HMAC and AES calculations (hardware, e.g. AES-NI on x86)."

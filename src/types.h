@@ -9,10 +9,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 #if defined(NO_INTERNAL_DATA) && defined(NO_EXTERNAL_DATA)
 #error NO_INTERAL_DATA and NO_EXTERNAL_DATA cannot be used together
