@@ -66,32 +66,14 @@ VERBOSE ?= NO
 
 CC := gcc
 
-#TARGETPLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
-# set target platform manually.
-TARGETPLATFORM := i486-linux-gnu
-
-ifneq (,$(findstring freebsd,$(TARGETPLATFORM)))
-  BSD := 1
-endif
-
-ifneq (,$(findstring netbsd,$(TARGETPLATFORM)))
-  BSD := 1
-endif
-
-ifneq (,$(findstring openbsd,$(TARGETPLATFORM)))
-  OPENBSD := 1
-  BSD := 1
-endif
-
-ifneq (,$(findstring linux,$(TARGETPLATFORM)))
-  LINUX := 1
-endif
+# show current platform:
+#PLATFORM := $(shell LANG=en_US.UTF-8 $(CC) -v 2>&1 | grep '^Target: ' | cut -f 2 -d ' ')
 
 
 DLL_NAME ?= ../lib/libkms.so
 
 
-BASECFLAGS = -DVLMCSD_COMPILER=\"$(CC)\" -DVLMCSD_PLATFORM=\"$(TARGETPLATFORM)\" -DCONFIG=\"config.h\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
+BASECFLAGS = -DVLMCSD_COMPILER=\"$(CC)\" -DVLMCSD_PLATFORM=\"i486-linux-gnu\" -DCONFIG=\"config.h\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
 BASELDFLAGS = 
 STRIPFLAGS =
 CLIENTLDFLAGS =
@@ -115,15 +97,7 @@ endif
 
 ifneq ($(NO_DNS),1)
   ifneq ($(NOLRESOLV),1)
-
-    ifeq ($(LINUX),1)
       CLIENTLDFLAGS += -lresolv
-    endif
-
-    ifeq ($(OPENBSD),1)
-      DNS_PARSER := internal
-    endif
-
   endif
 else
   BASECFLAGS += -DNO_DNS
