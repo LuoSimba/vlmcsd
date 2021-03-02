@@ -1,4 +1,12 @@
 # Support gcc. Others may or may not work.
+#
+# Not Support: MinGW Cygwin Minix Solaris Darwin
+#
+# lib name:
+# Cygwin: lib/cygkms.dll
+# MinGW:  lib/libkms.dll
+# Darwin: lib/libkms.dylib
+#
 .NOTPARALLEL:
 
 
@@ -11,16 +19,7 @@ A_NAME ?= lib/libkms.a
 # set target platform manually.
 TARGETPLATFORM := i486-linux-gnu
 
-ifneq (,$(findstring darwin,$(TARGETPLATFORM)))
-  DARWIN := 1
-endif
-
 ifneq (,$(findstring android,$(TARGETPLATFORM)))
-  ELF := 1
-endif
-
-ifneq (,$(findstring minix,$(TARGETPLATFORM)))
-  MINIX := 1
   ELF := 1
 endif
 
@@ -42,11 +41,6 @@ ifneq (,$(findstring openbsd,$(TARGETPLATFORM)))
   ELF := 1
 endif
 
-ifneq (,$(findstring solaris,$(TARGETPLATFORM)))
-  SOLARIS := 1
-  ELF := 1
-endif
-
 ifneq (,$(findstring linux,$(TARGETPLATFORM)))
   LINUX := 1
   ELF := 1
@@ -59,14 +53,6 @@ ifeq (,$(findstring linux,$(TARGETPLATFORM)))
 endif
 endif
 
-# Cygwin: lib/cygkms.dll
-# MinGW:  lib/libkms.dll
-#
-ifeq ($(DARWIN),1)
-  DLL_NAME ?= lib/libkms.dylib
-else
-  DLL_NAME ?= lib/libkms.so # --
-endif
 
 
 # 只有 .DEFAULT all clean 三个才用到了 src 目录

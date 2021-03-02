@@ -73,17 +73,8 @@ CC ?= gcc
 # set target platform manually.
 TARGETPLATFORM := i486-linux-gnu
 
-ifneq (,$(findstring darwin,$(TARGETPLATFORM)))
-  DARWIN := 1
-endif
-
 ifneq (,$(findstring android,$(TARGETPLATFORM)))
   ANDROID := 1
-  ELF := 1
-endif
-
-ifneq (,$(findstring minix,$(TARGETPLATFORM)))
-  MINIX := 1
   ELF := 1
 endif
 
@@ -105,11 +96,6 @@ ifneq (,$(findstring openbsd,$(TARGETPLATFORM)))
   ELF := 1
 endif
 
-ifneq (,$(findstring solaris,$(TARGETPLATFORM)))
-  SOLARIS := 1
-  ELF := 1
-endif
-
 ifneq (,$(findstring linux,$(TARGETPLATFORM)))
   LINUX := 1
   ELF := 1
@@ -122,12 +108,9 @@ ifeq (,$(findstring linux,$(TARGETPLATFORM)))
 endif
 endif
 
-  
-ifeq ($(DARWIN),1)
-  DLL_NAME ?= ../lib/libkms.dylib
-else
-  DLL_NAME ?= ../lib/libkms.so
-endif
+
+DLL_NAME ?= ../lib/libkms.so
+
 
 BASECFLAGS = -DVLMCSD_COMPILER=\"$(notdir $(CC))\" -DVLMCSD_PLATFORM=\"$(TARGETPLATFORM)\" -DCONFIG=\"config.h\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
 BASELDFLAGS = 
@@ -169,16 +152,8 @@ ifneq ($(NO_DNS),1)
       CLIENTLDFLAGS += -lresolv
     endif
 
-    ifeq ($(DARWIN),1)
-      CLIENTLDFLAGS += -lresolv
-    endif
-
     ifeq ($(OPENBSD),1)
       DNS_PARSER := internal
-    endif
-
-    ifeq ($(SOLARIS),1)
-      CLIENTLDFLAGS += -lresolv
     endif
 
   endif
@@ -191,21 +166,8 @@ ifneq ($(CAT),2)
   BASECFLAGS += "-Wall"
 endif  
 
-ifeq ($(DARWIN), 1)
-  STRIPFLAGS += -Wl,-S -Wl,-x
-  BASECFLAGS += -Wno-deprecated-declarations
-else ifeq ($(shell uname), SunOS)
-  STRIPFLAGS += -s
-  ifeq ($(notdir $(LD_ALTEXEC)),gld)
-    BASELDFLAGS += -Wl,--gc-sections
-  endif
-  BASELDFLAGS += -lsocket
-else
-  ifneq ($(CC),tcc)
-  	BASELDFLAGS += -Wl,--gc-sections
-  endif
-  STRIPFLAGS += -s
-endif
+BASELDFLAGS += -Wl,--gc-sections
+STRIPFLAGS += -s
 
 LIBRARY_CFLAGS = -DSIMPLE_SOCKETS -DNO_TIMEOUT -DNO_SIGHUP -DNO_CL_PIDS -DNO_LOG -DNO_RANDOM_EPID -DNO_INI_FILE -DNO_HELP -DNO_CUSTOM_INTERVALS -DNO_PID_FILE -DNO_USER_SWITCH -DNO_VERBOSE_LOG -DNO_LIMIT -DNO_VERSION_INFORMATION -DNO_PRIVATE_IP_DETECT -DNO_STRICT_MODES -DNO_CLIENT_LIST -DNO_TAP -UNO_SOCKETS -USIMPLE_RPC
 
@@ -280,9 +242,7 @@ ifeq ($(AUXV), 1)
 endif
 
 ifneq ($(ANDROID), 1)
-ifneq ($(MINIX), 1)
 ifneq ($(NOLPTHREAD), 1)
-ifneq ($(DARWIN), 1)
 
   ifeq ($(THREADS), 1)
     SERVERLDFLAGS += -lpthread
@@ -292,8 +252,6 @@ ifneq ($(DARWIN), 1)
     SERVERLDFLAGS += -lpthread
   endif
 
-endif
-endif
 endif
 endif
 
