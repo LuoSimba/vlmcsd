@@ -58,9 +58,6 @@ CRYPTO ?= internal
 # use DNS_PARSER=internal if your OS doesn't supply the DNS parser routines
 DNS_PARSER ?= OS
 
-# You should supply your own version string here
-# default to "private build"
-VLMCSD_VERSION := my-private
 
 FEATURES ?= full
 VERBOSE ?= NO
@@ -253,9 +250,8 @@ libkms: $(REAL_DLL_NAME)
 
 libkms-static: $(REAL_A_NAME)
 
-ifneq ($(strip $(VLMCSD_VERSION)),)
-  BASECFLAGS += -DVERSION=\"$(VLMCSD_VERSION),\ built\ $(shell date -u '+%Y-%m-%d %H:%M:%S' | sed -e 's/ /\\ /g')\ UTC\" 
-endif
+# add vlmcsd version
+BASECFLAGS += -DVERSION=\"my-private,\ built\ $(shell date -u '+%Y-%m-%d %H:%M:%S' | sed -e 's/ /\\ /g')\ UTC\" 
 
 ifdef CAT
   BASECFLAGS += -DONE_FILE
