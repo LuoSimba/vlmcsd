@@ -92,7 +92,6 @@ help:
 	@echo "    VERBOSE=1                    Be verbose when making targets."
 	@echo "    VERBOSE=3                    Show name of compiler."
 	@echo "    THREADS=1                    Use threads instead of fork(). Automatically set for native Windows. Recommended for Cygwin."
-	@echo "    HWID=<x>                     Use <x> as the default HWID (when it can't be found in an ini file)."
 	@echo "    FEATURES=full                Compile vlmcsd with all features (default)."
 	@echo "    FEATURES=most                Compile vlmcsd without rarely used features."
 	@echo "    FEATURES=embedded            Compile vlmcsd with typical features for embedded systems."

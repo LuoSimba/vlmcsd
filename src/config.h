@@ -32,16 +32,17 @@
 
 
 
-#ifndef HWID // HwId from the Ratiborus VM
+// HwId from the Ratiborus VM
 #define HWID 0x3A, 0x1C, 0x04, 0x96, 0x00, 0xB6, 0x00, 0x76
-#endif
 
 
 
 
 
 /*
- * Anything below this line is optional. If you want to use any of these options
+ * 以下是可选项.
+ *
+ * If you want to use any of these options
  * uncomment one or more lines starting with "//#define"
  */
 

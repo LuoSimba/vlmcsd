@@ -2,10 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 #if defined(USE_MSRPC) && !defined(_WIN32) && !defined(__CYGWIN__)
 #error Microsoft RPC is only available on Windows and Cygwin

@@ -1,10 +1,7 @@
 #ifndef __main_h
 #define __main_h
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 #define __T(x)    #x
 #define  _T(x) __T(x)
