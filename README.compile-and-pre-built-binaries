@@ -1,18 +1,6 @@
 Compilation and pre-built binaries FAQ
 ======================================
 
-哪个预编译版本最适合我的系统（或我的设备）？
-----------------------------------------------------------
-
-没有这样的版本.
-最好的版本肯定是由你自己编译得到的版本--因为你系统
-自带的工具链是各个方面都经过优化的（最适合当前环境的）。
-
-    respect （事物的）方面，细节；尊重
-    in every respect 各个方面
-
-
-
 我应该怎样编译，才能得到属于我自己的可执行文件？
 -------------------------------
 
@@ -23,7 +11,9 @@ Compilation and pre-built binaries FAQ
 
 1. 安装 GCC
 
-2. 进入到 vlmcsd 目录，并执行 "make". （我的 make 版本会执行 GNUmakefile 里的内容）
+2. 你需要 GNU make.
+
+3. 进入到 vlmcsd 目录，并执行 "make". 
    马上你就可以得到以下两个产品：
 
    * vlmcs 
@@ -57,30 +47,5 @@ binaries
       +--<endianess> (omitted if CPU or OS does not allow multi-endianess)
          +
          +--<C-library>
-
-
-
-
-如何确定我的系统的字节序？
---------------------------------------------
-
-    endian: 字节序
-    big-endian: 大端字节序
-    little-endian: 小端字节序
-    virtually: almostly, 几乎，实际上
-    virtually does not exist: 几乎不存在
-
-- 所有的英特尔 CPU 一定是小端。(指x86, x32, x64)
-- Windows 系统一定是小端，即使 CPU 支持大端
-- 大端的 ARM 极其罕见. 你可以直接假设它是小端
-
-你可以尝试执行：
-
-     echo -n I | od -o | awk 'FNR==1{ print substr($2,6,1)}'
-
-如果返回 1 是小端系统
-如果返回 0 是大端系统.
-
-注意！有些设备没有 "od" 这个命令，因此这个方法就行不通。
 
 

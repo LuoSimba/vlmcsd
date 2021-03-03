@@ -1,20 +1,20 @@
 输入：
     make,
-    make vlmcsd        - to build KMS server bin/vlmcsd
-    make vlmcs         - to build KMS client bin/vlmcs
+    make vlmcsd        - 生成 KMS 服务端文件 bin/vlmcsd
+    make vlmcs         - 生成 KMS 客户端文件 bin/vlmcs
     make vlmcsdmulti   - to build vlmcsd and vlmcs in a single multi-call binary bin/vlmcsdmulti
-    make libkms        - to build the shared library lib/libkms.so
-    make libkms-static - to build the static library lib/libkms.a
-    make clean         - to remove all targets and temporary files
+    make libkms        - 生成共享库(shared library) lib/libkms.so
+    make libkms-static - 生成静态库(static library) lib/libkms.a
+    make clean         - 清理所有的目标文件和中间文件(不包括 man 目录)
 
-生成文档：
+进入 man 目录生成文档：
     make pdfdocs       - Create PDF versions of the documentation (Requires groff with PDF support).
     make htmldocs      - Create HTML versions of the documentation.
     make unixdocs      - Create Unix TXT versions of the documentation.
     make dosdocs       - Create DOS/Windows TXT versions of the documentation.
-    make alldocs       - Create all versions of the documentation.
+    make clean         - 执行清理
 
-Options
+选项：
     INI=<x>                      Compile vlmcsd with default ini file <x>
     DATA=<x>                     Compile vlmcsd and vlmcs with default KMS data file <x>
     DEPENDENCIES=1               Create dependency files.
@@ -43,7 +43,7 @@ Options
     FEATURES=minimum             Compiles only basic features of vlmcsd.
     FEATURES=fixedepids          vlmcsd only uses bultin internal ePIDs.
 
-Useful CFLAGS to save memory when running vlmcsd on very small embedded devices (finer control than FEATURES=)
+有用的 CFLAGS 用以在迷你嵌入式设备中节省内存空间(与 FEATURES= 相比可以得到更细腻的控制)：
     -DNO_STRICT_MODES            Don't support enhanced emulator detection prevention.
     -DNO_CLIENT_LIST             Don't support maintaining a client list (CMIDs).
     -DNO_VERBOSE_LOG             Don't support verbose logging. Removes -v option.
@@ -84,7 +84,7 @@ Troubleshooting options
     GETIFADDRS=musl              Compile vlmcsd with its own implementation of getifaddrs() based on musl.
     DNS_PARSER=internal          Use vlmcs internal DNS parsing routines. No effect on MingW (native Windows).
 
-Other useful CFLAGS
+其他有用的 CFLAGS：
     -DNO_COMPILER_UAA            Do not use compiler support for byte swapping and unaligned access
     -DFULL_INTERNAL_DATA         Embed full internal KMS data in vlmcsd.
     -DSUPPORT_WINE               Add code that the Windows version of vlmcsd runs on Wine if MSRPC=1

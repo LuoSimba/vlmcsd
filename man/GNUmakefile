@@ -43,8 +43,6 @@ DOSDOCS = $(PDFDOCS:.pdf=.dos.txt)
 	awk 'sub("$$", "\r")' $< > $@
 
 
-alldocs : $(UNIXDOCS) $(HTMLDOCS) $(PDFDOCS) $(DOSDOCS)
-
 pdfdocs : $(PDFDOCS)
 
 dosdocs : $(DOSDOCS)
