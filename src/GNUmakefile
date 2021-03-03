@@ -167,10 +167,7 @@ endif
 
 $(MULTI_NAME): BASECFLAGS += -DMULTI_CALL_BINARY=1
 
-all: $(CLIENT_NAME) $(PROGRAM_NAME)
-
-allmulti: $(CLIENT_NAME) $(PROGRAM_NAME) $(MULTI_NAME)
-
+# default
 vlmcsd: $(PROGRAM_NAME)
 	+@true
 
@@ -200,8 +197,6 @@ DEPS = $(patsubst %,../build/%,$(MULTI_SRCS:.c=.d))
 
 # Source files for KMS server.
 VLMCSD_SRCS = vlmcsd.c kmsdata.c $(SRCS)
-# Object files for KMS server.
-VLMCSD_OBJS = $(patsubst %,../build/%,$(VLMCSD_SRCS:.c=.o))
 
 VLMCS_SRCS = vlmcs.c kmsdata-full.c $(SRCS)
 VLMCS_OBJS = $(patsubst %,../build/%,$(VLMCS_SRCS:.c=.o))
@@ -317,6 +312,7 @@ endif
 
 -include $(MULTI_SRCS:.c=.d)
 
+# Object files
 ../build/%.o: %.c 
   ifeq ($(VERBOSE),1)
 	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -c $< -o $@
@@ -388,7 +384,8 @@ ifdef CAT
   A_PREREQUISITES = $(DLL_SRCS)
 else
   BUILDCOMMAND = $(CC) -o $@ $^
-  VLMCSD_PREREQUISITES = $(VLMCSD_OBJS)
+  # Object files for KMS server.
+  VLMCSD_PREREQUISITES = $(patsubst %,../build/%,$(VLMCSD_SRCS:.c=.o))
   VLMCS_PREREQUISITES = $(VLMCS_OBJS)
   MULTI_PREREQUISITES = $(MULTI_OBJS)
   DLL_PREREQUISITES = $(DLL_OBJS)

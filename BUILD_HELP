@@ -1,16 +1,18 @@
-Type
-    make               - to build vlmcsd and vlmcs
-    make clean         - to remove all targets and temporary files
-    make pdfdocs       - Create PDF versions of the documentation (Requires groff with PDF support).
-    make htmldocs      - Create HTML versions of the documentation.
-    make unixdocs      - Create Unix TXT versions of the documentation.
-    make dosdocs       - Create DOS/Windows TXT versions of the documentation.
-    make alldocs       - Create all versions of the documentation.
+输入：
+    make,
     make vlmcsd        - to build KMS server bin/vlmcsd
     make vlmcs         - to build KMS client bin/vlmcs
     make vlmcsdmulti   - to build vlmcsd and vlmcs in a single multi-call binary bin/vlmcsdmulti
     make libkms        - to build the shared library lib/libkms.so
     make libkms-static - to build the static library lib/libkms.a
+    make clean         - to remove all targets and temporary files
+
+生成文档：
+    make pdfdocs       - Create PDF versions of the documentation (Requires groff with PDF support).
+    make htmldocs      - Create HTML versions of the documentation.
+    make unixdocs      - Create Unix TXT versions of the documentation.
+    make dosdocs       - Create DOS/Windows TXT versions of the documentation.
+    make alldocs       - Create all versions of the documentation.
 
 Options
     INI=<x>                      Compile vlmcsd with default ini file <x>
