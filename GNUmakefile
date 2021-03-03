@@ -17,7 +17,7 @@
 
 all:
 	+@(test -d bin || mkdir bin) & (test -d lib || mkdir lib) & (test -d build || mkdir build)
-	+@$(MAKE) -j16 -C src $@
+	+@$(MAKE) -j16 -C src
 
 clean:
 	+@$(MAKE) -j16 -C src $@
@@ -40,11 +40,4 @@ htmldocs:
 
 pdfdocs:
 	+@$(MAKE) -j16 -C man $@
-
-# ===========================
-
-
-
-GNUmakefile:
-
 
