@@ -1664,6 +1664,9 @@ int setupListeningSockets()
 #endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
 
 
+/**
+ * 服务端入口函数
+ */
 int server_main(int argc, CARGV argv)
 {
 	global_argc = argc;

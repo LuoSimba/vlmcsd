@@ -1,3 +1,5 @@
+
+
 To view the documentation cd to the directory containing the distribution
 files and type
 
@@ -10,5 +12,5 @@ man man/vlmcs.1
 man man/vlmcsd.7
 	to see general documentation for kms
 
-If you don't have man, you may also use the .txt, .html and .pdf files
-in the man directory
+如果你没有 man 命令, 你仍然可以使用 .txt, .html and .pdf 文件（需要自行 make 生成）。
+
