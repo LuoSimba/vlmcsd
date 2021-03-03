@@ -26,7 +26,7 @@
 #include "shared_globals.h"
 #include "output.h"
 
-#if (defined(_WIN32) || defined(__CYGWIN__))
+#if (defined(__CYGWIN__))
 #define compare strcasecmp // Best for case-preserving (but otherwise case-insensitive) filesystems
 #else // native Unix
 #define compare strcmp // for case-sensitive filesystems
@@ -59,6 +59,9 @@ static char* basename(const char* fullname)
 }
 #endif // _MSC_VER
 
+/**
+ * Multi Entry
+ */
 int main(int argc, CARGV argv)
 {
 	multi_argv = argv;
@@ -70,13 +73,6 @@ int main(int argc, CARGV argv)
 	if (!compare(basename((char*)*argv), "vlmcs"))
 		return client_main(argc, argv);
 
-#ifdef _WIN32
-	if (!compare(basename((char*)*argv), "vlmcsd.exe"))
-		return server_main(argc, argv);
-
-	if (!compare(basename((char*)*argv), "vlmcs.exe"))
-		return client_main(argc, argv);
-#endif // _WIN32
 
 	if (argc > 1)
 	{

@@ -10,7 +10,6 @@ OBJ_NAME := ../build/libkms-static.o
 
 PROGRAM_NAME=../bin/vlmcsd
 CLIENT_NAME=../bin/vlmcs
-MULTI_NAME=../bin/vlmcsdmulti
 DLL_NAME=../lib/libkms.so
 A_NAME=../lib/libkms.a
 
@@ -165,16 +164,13 @@ ifneq ($(NOLPTHREAD), 1)
   endif
 endif
 
-$(MULTI_NAME): BASECFLAGS += -DMULTI_CALL_BINARY=1
+vlmcsdmulti: BASECFLAGS += -DMULTI_CALL_BINARY=1
 
 # default
 vlmcsd: $(PROGRAM_NAME)
 	+@true
 
 vlmcs: $(CLIENT_NAME)
-	+@true
-
-vlmcsdmulti: $(MULTI_NAME)
 	+@true
 
 libkms: $(DLL_NAME)
@@ -198,6 +194,7 @@ DEPS = $(patsubst %,../build/%,$(MULTI_SRCS:.c=.d))
 # Source files for KMS server.
 VLMCSD_SRCS = vlmcsd.c kmsdata.c $(SRCS)
 
+# Source files for KMS client.
 VLMCS_SRCS = vlmcs.c kmsdata-full.c $(SRCS)
 VLMCS_OBJS = $(patsubst %,../build/%,$(VLMCS_SRCS:.c=.o))
 
@@ -208,10 +205,6 @@ DLL_SRCS = libkms.c vlmcs.c $(SRCS)
 DLL_OBJS = $(patsubst %,../build/%,$(DLL_SRCS:.c=-l.o))
 A_OBJS = $(patsubst %,../build/%,$(DLL_SRCS:.c=-a.o))
 
-PDFDOCS = vlmcs.1.pdf vlmcsd.7.pdf vlmcsd.8.pdf vlmcsdmulti.1.pdf vlmcsd.ini.5.pdf vlmcsd-floppy.7.pdf
-HTMLDOCS = $(PDFDOCS:.pdf=.html)
-UNIXDOCS = $(PDFDOCS:.pdf=.unix.txt)
-DOSDOCS = $(PDFDOCS:.pdf=.dos.txt)
 
 ifneq ($(NO_DNS),1)
 
@@ -312,64 +305,65 @@ endif
 
 -include $(MULTI_SRCS:.c=.d)
 
+
 # Object files
 ../build/%.o: %.c 
   ifeq ($(VERBOSE),1)
-	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -c $< -o $@
+	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -c $< -o $@
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
+	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -MM -MF $*.d $< -MT $@
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -c $< -o $@
+	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -c $< -o $@
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
+	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -MM -MF $*.d $< -MT $@
   endif
   endif
 
 ../build/%-m.o: %.c
   ifeq ($(VERBOSE),1)
-	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -o $@ -c $<
+	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
+	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -MM -MF $*.d $< -MT $@
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -o $@ -c $<
+	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) -MM -MF $*.d $< -MT $@
+	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -MM -MF $*.d $< -MT $@
   endif
   endif
 
 ../build/%-a.o: %.c
   ifeq ($(VERBOSE),1)
-	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -xc $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
   endif
   endif
 
 ../build/%-l.o: %.c
   ifeq ($(VERBOSE),1)
-	+$(CC) -xc $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -xc $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -xc $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+@$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -xc $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(PLATFORMFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+@$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
   endif
   endif
 
@@ -402,10 +396,10 @@ endif
 INFOCOMMAND = +@echo "$(COMPILER)	$(LDCMD)	$@ <- $(notdir $^)"
 ARINFOCOMMAND = +@echo "$(ARCHIVER)	AR      	$@ <. $(notdir $^)"
 
-VLMCS_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(CLIENTLDFLAGS)
-MULTI_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(CLIENTLDFLAGS) $(SERVERLDFLAGS)
-DLL_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PICFLAGS) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -shared -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
-OBJ_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
+
+VLMCS_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(CLIENTLDFLAGS)
+DLL_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -shared -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
+OBJ_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
   
 
 # KMS server.
@@ -413,7 +407,7 @@ $(PROGRAM_NAME): $(VLMCSD_PREREQUISITES)
   ifneq ($(VERBOSE),1)
 	$(INFOCOMMAND)
   endif
-	$(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PLATFORMFLAGS) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(LDFLAGS) $(SERVERLDFLAGS)
+	$(BUILDCOMMANDPREFIX)$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS)
 
 # KMS client
 $(CLIENT_NAME): $(VLMCS_PREREQUISITES)
@@ -423,11 +417,11 @@ $(CLIENT_NAME): $(VLMCS_PREREQUISITES)
 	$(VLMCS_COMMAND)
 
 # Multi binary
-$(MULTI_NAME): $(MULTI_PREREQUISITES)
+vlmcsdmulti: $(MULTI_PREREQUISITES)
   ifneq ($(VERBOSE),1)
 	$(INFOCOMMAND)
   endif
-	$(MULTI_COMMAND)
+	+@$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(CLIENTLDFLAGS) $(SERVERLDFLAGS)
 
 # lib
 $(DLL_NAME): $(DLL_PREREQUISITES)
@@ -461,7 +455,7 @@ endif
 	$(BUILDCOMMANDPREFIX)$(AR) rcs $@ $^
 
 clean:
-	rm -f $(PROGRAM_NAME) $(MULTI_NAME) $(DLL_NAME) $(CLIENT_NAME)  $(OBJ_NAME) $(A_NAME) ../bin/* ../build/* *.d
+	rm -f $(PROGRAM_NAME) vlmcsdmulti $(DLL_NAME) $(CLIENT_NAME)  $(OBJ_NAME) $(A_NAME) ../bin/* ../build/* *.d
 
 dnsclean:
 	rm -f ../build/dns_srv.o
