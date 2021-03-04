@@ -26,10 +26,6 @@
 #include <errno.h>
 #include <stdint.h>
 
-#if _MSC_VER
-#include "wingetopt.h"
-#endif
-
 #ifndef _WIN32
 #include <pwd.h>
 #include <grp.h>
@@ -50,10 +46,6 @@
 #include <semaphore.h>
 #endif // NO_LIMIT
 #endif // !_WIN32
-
-#if __APPLE__
-#include <mach-o/dyld.h>
-#endif // __APPLE__
 
 #if __linux__ && defined(USE_AUXV)
 #include <sys/auxv.h>
@@ -1436,11 +1428,7 @@ static void writePidFile()
 
 		if (file)
 		{
-#			if _MSC_VER
-			fprintf(file, "%u", (unsigned int)GetCurrentProcessId());
-#			else
 			fprintf(file, "%u", (unsigned int)getpid());
-#			endif
 			fclose(file);
 		}
 
@@ -1667,24 +1655,11 @@ int setupListeningSockets()
 /**
  * 服务端入口函数
  */
-int server_main(int argc, CARGV argv)
+int main(int argc, CARGV argv)
 {
 	global_argc = argc;
 	global_argv = argv;
-
-#	ifdef _NTSERVICE
-	DWORD lasterror = ERROR_SUCCESS;
-
-	if (!StartServiceCtrlDispatcher(NTServiceDispatchTable) && (lasterror = GetLastError()) == ERROR_FAILED_SERVICE_CONTROLLER_CONNECT)
-	{
-		IsNTService = FALSE;
-		return newmain();
-	}
-
-	return lasterror;
-#	else // !_NTSERVICE
 	return newmain();
-#	endif // !_NTSERVICE
 }
 
 
@@ -1953,24 +1928,3 @@ int newmain()
 	return rc;
 }
 
-
-#if _MSC_VER && !defined(_DEBUG)
-int __stdcall WinStartUp(void)
-{
-	WCHAR** szArgList;
-	int argc;
-	szArgList = CommandLineToArgvW(GetCommandLineW(), &argc);
-
-	int i;
-	char** argv = (char**)vlmcsd_malloc(sizeof(char*) * argc);
-
-	for (i = 0; i < argc; i++)
-	{
-		int size = WideCharToMultiByte(CP_UTF8, 0, szArgList[i], -1, argv[i], 0, NULL, NULL);
-		argv[i] = (char*)vlmcsd_malloc(size);
-		WideCharToMultiByte(CP_UTF8, 0, szArgList[i], -1, argv[i], size, NULL, NULL);
-	}
-
-	exit(server_main(argc, argv));
-}
-#endif // _MSC_VER && !defined(_DEBUG)

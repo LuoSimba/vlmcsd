@@ -54,6 +54,7 @@ static VOID WINAPI ServiceMain(const int argc_unused, CARGV argv_unused)
 	ReportServiceStatus(SERVICE_STOPPED, newmain(), 3000);
 }
 
+/* 没有使用到 */
 SERVICE_TABLE_ENTRY NTServiceDispatchTable[] = {
 	{
 		(LPSTR)NT_SERVICE_NAME,

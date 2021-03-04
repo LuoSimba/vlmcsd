@@ -15,8 +15,6 @@ extern void cleanup();
 
 int newmain();
 
-#define server_main main
-
 #ifndef SA_NOCLDWAIT    // required for Cygwin
 #define SA_NOCLDWAIT 0
 #endif
