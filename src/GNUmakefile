@@ -35,7 +35,7 @@ CC ?= gcc
 
 
 
-BASECFLAGS = -DVLMCSD_COMPILER=\"$(CC)\" -DVLMCSD_PLATFORM=\"i486-linux-gnu\" -DCONFIG=\"config.h\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
+BASECFLAGS = -DVLMCSD_COMPILER=\"$(CC)\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
 BASELDFLAGS = 
 STRIPFLAGS =
 CLIENTLDFLAGS =
@@ -45,23 +45,6 @@ ifndef SAFE_MODE
   BASECFLAGS += -fvisibility=hidden -pipe -fno-common -fno-exceptions -fno-stack-protector -fno-unwind-tables -fno-asynchronous-unwind-tables -fmerge-all-constants
   
   BASELDFLAGS += -Wl,-z,norelro
-
-# ABOUT -flto
-#
-# -------------------------------------------------------
-# GCC Manual (version 10.2)
-# 3. GCC Command Options
-# 3.11 Options That Control Optimization
-#
-#  -flto[=n]
-#
-#   This option runs the standard link-time optimizer.
-# -------------------------------------------------------
-#
-# BUT -- My gcc version is 4.4.1, and not support this option.
-# this option is introduced after version 4.4.7
-  #BASECFLAGS += -flto
-
 endif
 
 PICFLAGS += -fPIC
@@ -164,7 +147,6 @@ ifneq ($(NOLPTHREAD), 1)
   endif
 endif
 
-vlmcsdmulti: BASECFLAGS += -DMULTI_CALL_BINARY=1
 
 # default
 vlmcsd: $(PROGRAM_NAME)
@@ -179,7 +161,7 @@ libkms: $(DLL_NAME)
 libkms-static: $(A_NAME)
 
 # add vlmcsd version
-BASECFLAGS += -DVERSION=\"my-private,\ built\ $(shell date -u '+%Y-%m-%d %H:%M:%S' | sed -e 's/ /\\ /g')\ UTC\" 
+BASECFLAGS += -DVERSION=\"private-version,\ $(shell date -u '+%Y-%m-%d %H:%M' | sed -e 's/ /\\ /g')\ UTC\" 
 
 ifdef CAT
   BASECFLAGS += -DONE_FILE
@@ -276,7 +258,6 @@ else ifeq ($(CRYPTO), windows)
 	BASECFLAGS += -D_CRYPTO_WINDOWS
 	SRCS += crypto_windows.c
 else
-	BASECFLAGS += -D_CRYPTO_INTERNAL
 	SRCS += crypto_internal.c
 endif
 
@@ -417,10 +398,11 @@ $(CLIENT_NAME): $(VLMCS_PREREQUISITES)
 	$(VLMCS_COMMAND)
 
 # Multi binary
+vlmcsdmulti: BASECFLAGS += -DMULTI_CALL_BINARY=1
+
 vlmcsdmulti: $(MULTI_PREREQUISITES)
-  ifneq ($(VERBOSE),1)
-	$(INFOCOMMAND)
-  endif
+	@echo "build vlmcsdmulti"
+	+@echo "$(COMPILER)	$(LDCMD)	$@ <- $(notdir $^)"
 	+@$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(CLIENTLDFLAGS) $(SERVERLDFLAGS)
 
 # lib
