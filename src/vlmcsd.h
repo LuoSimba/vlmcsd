@@ -15,7 +15,7 @@ extern void cleanup();
 
 int newmain();
 
-#if MULTI_CALL_BINARY < 1
+#ifndef MULTI_CALL_BINARY
 #define server_main main
 #else
 int server_main(int argc, CARGV argv);

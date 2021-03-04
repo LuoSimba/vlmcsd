@@ -1,4 +1,4 @@
-IMPORTANT
+重要说明
 =========
 
 1. Do not use any of the OpenSSL binaries
@@ -6,7 +6,7 @@ IMPORTANT
 
 (except for doing some research into the deep internals of OpenSSL)
 
-REASONS
+理由
 =======
 
 All OpenSSL binaries included are highly experimental and are likely to fail
@@ -37,10 +37,10 @@ at compile time (whether it is configured to use compiled C code or assembler
 code), CPU architecture and CPU features (whether it can perform AES in
 hardware).
 
-SUMMARY
+总结
 =======
 
-If you use OpenSSL in a safe way (compile with CRYPTO=openssl), there is not
+If you use OpenSSL in a safe way (用 CRYPTO=openssl 来编译), there is not
 much benefit from it. The binary may become bigger or smaller and you
 definitely need more RAM when you run vlmcsd or vlmcs.
 

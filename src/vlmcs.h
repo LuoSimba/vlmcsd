@@ -17,7 +17,7 @@
 #endif // USE_MSRPC
 #include "kms.h"
 
-#if MULTI_CALL_BINARY < 1
+#ifndef MULTI_CALL_BINARY
 #define client_main main
 #else
 int client_main(int argc, CARGV argv);
