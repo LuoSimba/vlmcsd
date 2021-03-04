@@ -10,7 +10,6 @@ extern char *fn_log;
 
 #include "types.h"
 
-//int main(int argc, CARGV);
 extern void cleanup();
 
 int newmain();

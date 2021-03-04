@@ -303,6 +303,7 @@ static VOID ServiceInstaller(const char *restrict ServiceUser, const char *const
 	CloseServiceHandle(schSCManager);
 }
 
+/* 不再使用 */
 int NtServiceInstallation(const int_fast8_t installService, const char *restrict ServiceUser, const char *const ServicePassword)
 {
 	if (IsNTService) return 0;

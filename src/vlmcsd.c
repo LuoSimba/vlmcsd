@@ -1666,47 +1666,21 @@ int main(int argc, CARGV argv)
 int newmain()
 {
 	// Initialize thread synchronization objects for Windows and Cygwin
-#	ifdef USE_THREADS
+#ifdef USE_THREADS
 
-#	ifndef NO_LOG
+#  ifndef NO_LOG
 // Initialize the Critical Section for proper logging
-#	if _WIN32 || __CYGWIN__
+#    if _WIN32 || __CYGWIN__
 	InitializeCriticalSection(&logmutex);
-#	endif // _WIN32 || __CYGWIN__
-#	endif // NO_LOG
+#    endif // _WIN32 || __CYGWIN__
+#  endif // NO_LOG
 
-#	endif // USE_THREADS
+#endif // USE_THREADS
 
-#	ifdef _WIN32
-
-#	ifndef USE_MSRPC
-	WSADATA wsadata;
-	{
-		// Windows Sockets must be initialized
-		int error;
-		if ((error = WSAStartup(0x0202, &wsadata)))
-		{
-			printerrorf("Fatal: Could not initialize Windows sockets (Error: %d).\n", error);
-			return error;
-		}
-	}
-#	endif // USE_MSRPC
-
-	// Windows can never daemonize
-	//nodaemon = 1;
-
-#	else // __CYGWIN__
-
-	// Do not daemonize if we are a Windows service
-#	ifdef _NTSERVICE 
-	if (IsNTService) nodaemon = 1;
-#	endif
-
-#	endif // _WIN32 / __CYGWIN__
 
 	parseGeneralArguments(); // Does not return if an error occurs
 
-#	if !defined(_WIN32) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(_WIN32) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
 	struct stat statbuf;
 	fstat(STDIN_FILENO, &statbuf);
@@ -1714,35 +1688,37 @@ int newmain()
 	if (S_ISSOCK(statbuf.st_mode))
 	{
 		InetdMode = 1;
-#		ifndef NO_CLIENT_LIST
+#  ifndef NO_CLIENT_LIST
 		MaintainClients = FALSE;
-#		endif // !NO_CLIENT_LIST
+#  endif // !NO_CLIENT_LIST
 		nodaemon = 1;
-#		ifndef SIMPLE_SOCKETS
+#  ifndef SIMPLE_SOCKETS
 		maxsockets = 0;
-#		endif // !SIMPLE_SOCKETS
-#		ifndef NO_LOG
+#  endif // !SIMPLE_SOCKETS
+#  ifndef NO_LOG
 		logstdout = 0;
-#		endif // !NO_LOG
+#  endif // !NO_LOG
 	}
 
-#	endif // !defined(_WIN32) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(_WIN32) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
-#	ifndef NO_INI_FILE
+
+
+#ifndef NO_INI_FILE
 
 	if (fn_ini && !readIniFile(INI_FILE_PASS_1))
 	{
-#		ifdef INI_FILE
+#  ifdef INI_FILE
 		if (strcmp(fn_ini, INI_FILE))
-#		endif // INI_FILE
+#  endif // INI_FILE
 			printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
 	}
 
-#	endif // NO_INI_FILE
+#endif // NO_INI_FILE
 
 	loadKmsData();
 
-#	if !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#if !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
 
 	if
 		(
@@ -1750,19 +1726,20 @@ int newmain()
 			)
 	{
 		UseServerRpcNDR64 = !!(KmsData->Flags & KMS_OPTIONS_USENDR64);
-#		ifndef NO_RANDOM_EPID
+#  ifndef NO_RANDOM_EPID
 		if (HostBuild && RandomizationLevel)
 		{
 			UseServerRpcNDR64 = HostBuild > 7601;
 		}
-#		endif 
+#  endif 
 	}
-#	endif // !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#endif // !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
 
-#	if !defined(NO_RANDOM_EPID) || !defined(NO_CL_PIDS) || !defined(NO_INI_FILE)
+
+#if !defined(NO_RANDOM_EPID) || !defined(NO_CL_PIDS) || !defined(NO_INI_FILE)
 	KmsResponseParameters = (KmsResponseParam_t*)vlmcsd_malloc(sizeof(KmsResponseParam_t) * KmsData->CsvlkCount);
 	memset(KmsResponseParameters, 0, sizeof(KmsResponseParam_t) * KmsData->CsvlkCount);
-#	endif // !defined(NO_RANDOM_EPID) || !defined(NO_CL_PIDS) || !defined(NO_INI_FILE)
+#endif // !defined(NO_RANDOM_EPID) || !defined(NO_CL_PIDS) || !defined(NO_INI_FILE)
 
 #ifndef NO_CL_PIDS
 	optReset();
@@ -1784,61 +1761,58 @@ int newmain()
 
 #endif // NO_CL_PIDS
 
-#	ifndef NO_INI_FILE
+#ifndef NO_INI_FILE
 
 	if (fn_ini && !readIniFile(INI_FILE_PASS_2))
 	{
-#		ifdef INI_FILE
+#  ifdef INI_FILE
 		if (strcmp(fn_ini, INI_FILE))
-#		endif // INI_FILE
+#  endif // INI_FILE
 			printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
 	}
 
-#	endif // NO_INI_FILE
+#endif // NO_INI_FILE
 
-#	ifndef NO_CLIENT_LIST
+
+#ifndef NO_CLIENT_LIST
 	if (MaintainClients) InitializeClientLists();
-#	endif // !NO_CLIENT_LIST
+#endif // !NO_CLIENT_LIST
 
-#	if defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
+#if defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
 	if (PublicIPProtectionLevel)
 	{
 		printerrorf("Warning: Public IP address protection using MS RPC is poor. See vlmcsd.8\n");
 	}
-#	endif // defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
+#endif // defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
 
-#	if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !__minix__ && !defined(USE_MSRPC)
+#if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !__minix__ && !defined(USE_MSRPC)
 	allocateSemaphore();
-#	endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && __minix__
+#endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && __minix__
 
-#	ifdef _NTSERVICE
-	if (installService)
-		return NtServiceInstallation(installService, ServiceUser, ServicePassword);
-#	endif // _NTSERVICE
-
-#	ifndef NO_TAP
+		
+#ifndef NO_TAP
 	if (tapArgument && !InetdMode) startTap(tapArgument);
-#	endif // NO_TAP
+#endif // NO_TAP
 
-#	if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 	if (!InetdMode)
 	{
 		int error;
-#		ifdef SIMPLE_SOCKETS
+#  ifdef SIMPLE_SOCKETS
 		if ((error = listenOnAllAddresses())) return error;
-#		else // !SIMPLE_SOCKETS
+#  else // !SIMPLE_SOCKETS
 		if ((error = setupListeningSockets())) return error;
-#		endif // !SIMPLE_SOCKETS
+#  endif // !SIMPLE_SOCKETS
 	}
-#	endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
 	// After sockets have been set up, we may switch to a lower privileged user
-#	if !defined(_WIN32) && !defined(NO_USER_SWITCH)
+#if !defined(_WIN32) && !defined(NO_USER_SWITCH)
 
-#	ifndef NO_SIGHUP
+#  ifndef NO_SIGHUP
 	if (!IsRestarted)
 	{
-#	endif // NO_SIGHUP
+#  endif // NO_SIGHUP
 		if (gid != INVALID_GID)
 		{
 			if (setgid(gid))
@@ -1859,19 +1833,19 @@ int newmain()
 			printerrorf("Fatal: %s for %s failed: %s\n", "setuid", uname, strerror(errno));
 			return errno;
 		}
-#	ifndef NO_SIGHUP
+#  ifndef NO_SIGHUP
 	}
-#	endif // NO_SIGHUP
+#  endif // NO_SIGHUP
 
-#	endif // !defined(_WIN32) && !defined(NO_USER_SWITCH)
+#endif // !defined(_WIN32) && !defined(NO_USER_SWITCH)
 
 	randomNumberInit();
 
 	// Randomization Level 1 means generate ePIDs at startup and use them during
 	// the lifetime of the process. So we generate them now
-#	ifndef NO_RANDOM_EPID
+#ifndef NO_RANDOM_EPID
 	if (RandomizationLevel == 1) randomPidInit();
-#   if !defined(NO_LOG) && !defined(NO_VERBOSE_LOG)
+#  if !defined(NO_LOG) && !defined(NO_VERBOSE_LOG)
 	if (logverbose)
 	{
 		int32_t i;
@@ -1886,44 +1860,29 @@ int newmain()
 			logger("Using CSVLK %s (%s) with %s ePID %s\n", csvlkIniName, csvlkFullName, (RandomizationLevel == 1 && KmsResponseParameters[i].IsRandom) || (RandomizationLevel == 2 && !KmsResponseParameters[i].Epid) ? "random" : "fixed", ePid);
 		}
 	}
-#   endif // !defined(NO_LOG) && !defined(NO_VERBOSE_LOG)
-#	endif
+#  endif // !defined(NO_LOG) && !defined(NO_VERBOSE_LOG)
+#endif
 
-#	if !defined(NO_SOCKETS)
-#	ifdef _WIN32
-	if (!IsNTService)
-	{
-#	endif // _WIN32
-		int error;
-		if ((error = daemonizeAndSetSignalAction())) return error;
-#	ifdef _WIN32
-	}
-#	endif // _WIN32
-#	endif // !defined(NO_SOCKETS)
+#if !defined(NO_SOCKETS)
+    int error;
+    if ((error = daemonizeAndSetSignalAction()))
+        return error;
+#endif // !defined(NO_SOCKETS)
 
 	writePidFile();
 
-#	if !defined(NO_LOG) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_LOG) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 	if (!InetdMode)
 		logger("vlmcsd %s started successfully\n", Version);
-#	endif // !defined(NO_LOG) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_LOG) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
-#	if defined(_NTSERVICE) && !defined(USE_MSRPC)
-	if (IsNTService) ReportServiceStatus(SERVICE_RUNNING, NO_ERROR, 200);
-#	endif // defined(_NTSERVICE) && !defined(USE_MSRPC)
 
 	int rc;
 	rc = runServer();
 
+		
 	// Clean up things and exit
-#	ifdef _NTSERVICE
-	if (!ServiceShutdown)
-#	endif
-		cleanup();
-#	ifdef _NTSERVICE
-	else
-		ReportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
-#	endif
+    cleanup();
 
 	return rc;
 }
