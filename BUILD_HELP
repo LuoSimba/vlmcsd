@@ -2,7 +2,6 @@
     make,
     make vlmcsd        - 生成 KMS 服务端文件 bin/vlmcsd
     make vlmcs         - 生成 KMS 客户端文件 bin/vlmcs
-    make vlmcsdmulti   - to build vlmcsd and vlmcs in a single multi-call binary.
     make libkms        - 生成共享库(shared library) lib/libkms.so
     make libkms-static - 生成静态库(static library) lib/libkms.a
     make clean         - 清理所有的目标文件和中间文件(不包括 man 目录)

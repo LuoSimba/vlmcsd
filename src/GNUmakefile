@@ -171,7 +171,9 @@ endif
 SRCS = crypto.c kms.c endian.c output.c shared_globals.c helpers.c
 
 HEADERS = config.h types.h rpc.h vlmcsd.h endian.h crypto.h kms.h network.h output.h shared_globals.h vlmcs.h helpers.h kmsdata.h
-DEPS = $(patsubst %,../build/%,$(MULTI_SRCS:.c=.d))
+
+## what's this??
+##DEPS = $(patsubst %,../build/%,$(MULTI_SRCS:.c=.d))
 
 # Source files for KMS server.
 VLMCSD_SRCS = vlmcsd.c kmsdata.c $(SRCS)
@@ -179,9 +181,6 @@ VLMCSD_SRCS = vlmcsd.c kmsdata.c $(SRCS)
 # Source files for KMS client.
 VLMCS_SRCS = vlmcs.c kmsdata-full.c $(SRCS)
 VLMCS_OBJS = $(patsubst %,../build/%,$(VLMCS_SRCS:.c=.o))
-
-MULTI_SRCS = vlmcsd.c vlmcs.c vlmcsdmulti.c kmsdata-full.c $(SRCS)
-MULTI_OBJS = $(patsubst %,../build/%,$(SRCS:.c=.o)) ../build/kmsdata-full.o ../build/vlmcsd-m.o ../build/vlmcs-m.o ../build/vlmcsdmulti-m.o
 
 DLL_SRCS = libkms.c vlmcs.c $(SRCS)
 DLL_OBJS = $(patsubst %,../build/%,$(DLL_SRCS:.c=-l.o))
@@ -191,13 +190,9 @@ A_OBJS = $(patsubst %,../build/%,$(DLL_SRCS:.c=-a.o))
 ifneq ($(NO_DNS),1)
 
   VLMCS_SRCS += dns_srv.c
-  MULTI_SRCS += dns_srv.c
-  MULTI_OBJS += ../build/dns_srv.o
 
 ifeq ($(DNS_PARSER),internal)
   VLMCS_SRCS += ns_parse.c ns_name.c
-  MULTI_SRCS += ns_parse.c ns_name.c
-  MULTI_OBJS += ../build/ns_parse.o ../build/ns_name.o
   BASECFLAGS += "-DDNS_PARSER_INTERNAL"
 endif
 
@@ -206,8 +201,6 @@ endif
 ifeq ($(MSRPC),1)
   VLMCSD_SRCS += msrpc-server.c
   VLMCS_SRCS += msrpc-client.c
-  MULTI_SRCS += msrpc-server.c msrpc-client.c
-  MULTI_OBJS += ../build/msrpc-server-m.o ../build/msrpc-client-m.o
   DLL_SRCS += msrpc-server.c
   BASECFLAGS += -DUSE_MSRPC -Wno-unknown-pragmas
   BASELDFLAGS += -lrpcrt4
@@ -219,25 +212,19 @@ ifeq ($(GETIFADDRS),musl)
 ifneq ($(NO_GETIFADDRS),1)
   BASECFLAGS += -DGETIFADDRS_MUSL
   VLMCSD_SRCS += getifaddrs-musl.c
-  MULTI_SRCS += getifaddrs-musl.c
   VLMCS_SRCS += getifaddrs-musl.c
   DLL_SRCS += getifaddrs-musl.c
-  MULTI_OBJS += ../build/getifaddrs-musl.o
 endif
 endif
 
 # Android
 #ifneq ($(NO_GETIFADDRS),1)
 #  VLMCSD_SRCS += ifaddrs-android.c
-#  MULTI_SRCS += ifaddrs-android.c
 #  DLL_SRCS += ifaddrs-android.c
-#  MULTI_OBJS += ../build/ifaddrs-android.o
 #endif
 
 # MinGW & Cygwin
 # VLMCSD_SRCS += ntservice.c wintap.c
-# MULTI_SRCS += ntservice.c wintap.c
-# MULTI_OBJS += ../build/ntservice.o ../build/wintap.o
 
 ifeq ($(CRYPTO), openssl_with_aes)
 	BASECFLAGS += -D_CRYPTO_OPENSSL -D_USE_AES_FROM_OPENSSL
@@ -284,7 +271,8 @@ else
     LDCMD := LD    
 endif
 
--include $(MULTI_SRCS:.c=.d)
+## what's this??
+##-include $(MULTI_SRCS:.c=.d)
 
 
 # Object files
@@ -297,21 +285,6 @@ endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
 	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -c $< -o $@
-  ifeq ($(DEPENDENCIES),1)
-	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -MM -MF $*.d $< -MT $@
-  endif
-  endif
-
-../build/%-m.o: %.c
-  ifeq ($(VERBOSE),1)
-	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -o $@ -c $<
-  ifeq ($(DEPENDENCIES),1)
-	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -MM -MF $*.d $< -MT $@
-  endif
-  else
-	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
 	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  -MM -MF $*.d $< -MT $@
@@ -353,7 +326,6 @@ ifdef CAT
   BUILDCOMMAND = cat $^ | $(CC) -xc -o $@ -
   VLMCSD_PREREQUISITES = $(VLMCSD_SRCS)
   VLMCS_PREREQUISITES = $(VLMCS_SRCS)
-  MULTI_PREREQUISITES = $(MULTI_SRCS)
   DLL_PREREQUISITES = $(DLL_SRCS)
   OBJ_PREREQUISITES = $(DLL_SRCS)
   A_PREREQUISITES = $(DLL_SRCS)
@@ -362,7 +334,6 @@ else
   # Object files for KMS server.
   VLMCSD_PREREQUISITES = $(patsubst %,../build/%,$(VLMCSD_SRCS:.c=.o))
   VLMCS_PREREQUISITES = $(VLMCS_OBJS)
-  MULTI_PREREQUISITES = $(MULTI_OBJS)
   DLL_PREREQUISITES = $(DLL_OBJS)
   OBJ_PREREQUISITES = $(A_OBJS)
   A_PREREQUISITES = $(A_OBJS)
@@ -381,7 +352,7 @@ ARINFOCOMMAND = +@echo "$(ARCHIVER)	AR      	$@ <. $(notdir $^)"
 VLMCS_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(CLIENTLDFLAGS)
 DLL_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -shared -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
 OBJ_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
-  
+
 
 # KMS server.
 $(PROGRAM_NAME): $(VLMCSD_PREREQUISITES)
@@ -397,13 +368,6 @@ $(CLIENT_NAME): $(VLMCS_PREREQUISITES)
   endif
 	$(VLMCS_COMMAND)
 
-# Multi binary
-vlmcsdmulti: BASECFLAGS += -DMULTI_CALL_BINARY 
-
-vlmcsdmulti: $(MULTI_PREREQUISITES)
-	@echo "build vlmcsdmulti"
-	+@echo "$(COMPILER)	$(LDCMD)	$@ <- $(notdir $^)"
-	+@$(BUILDCOMMAND) $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(CLIENTLDFLAGS) $(SERVERLDFLAGS)
 
 # lib
 $(DLL_NAME): $(DLL_PREREQUISITES)
@@ -437,7 +401,7 @@ endif
 	$(BUILDCOMMANDPREFIX)$(AR) rcs $@ $^
 
 clean:
-	rm -f $(PROGRAM_NAME) vlmcsdmulti $(DLL_NAME) $(CLIENT_NAME)  $(OBJ_NAME) $(A_NAME) ../bin/* ../build/* *.d
+	rm -f $(PROGRAM_NAME) $(DLL_NAME) $(CLIENT_NAME)  $(OBJ_NAME) $(A_NAME) ../bin/* ../build/* *.d
 
 dnsclean:
 	rm -f ../build/dns_srv.o

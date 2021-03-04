@@ -1954,7 +1954,7 @@ int newmain()
 }
 
 
-#if _MSC_VER && !defined(_DEBUG)&& !MULTI_CALL_BINARY
+#if _MSC_VER && !defined(_DEBUG)
 int __stdcall WinStartUp(void)
 {
 	WCHAR** szArgList;
@@ -1973,4 +1973,4 @@ int __stdcall WinStartUp(void)
 
 	exit(server_main(argc, argv));
 }
-#endif // _MSC_VER && !defined(_DEBUG)&& !MULTI_CALL_BINARY
+#endif // _MSC_VER && !defined(_DEBUG)

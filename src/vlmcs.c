@@ -1418,7 +1418,7 @@ static void CreateRequestBase(REQUEST *Request)
 #	endif // NO_VERBOSE_LOG
 }
 
-#if _MSC_VER && !defined(_DEBUG)&& !MULTI_CALL_BINARY
+#if _MSC_VER && !defined(_DEBUG)
 int __stdcall WinStartUp(void)
 {
 	WCHAR **szArgList;
@@ -1437,7 +1437,7 @@ int __stdcall WinStartUp(void)
 
 	exit(client_main(argc, argv));
 }
-#endif // _MSC_VER && !defined(_DEBUG)&& !MULTI_CALL_BINARY
+#endif // _MSC_VER && !defined(_DEBUG)
 
 
 #endif // IS_LIBRARY

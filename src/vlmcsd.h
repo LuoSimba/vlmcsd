@@ -15,11 +15,7 @@ extern void cleanup();
 
 int newmain();
 
-#ifndef MULTI_CALL_BINARY
 #define server_main main
-#else
-int server_main(int argc, CARGV argv);
-#endif
 
 #ifndef SA_NOCLDWAIT    // required for Cygwin
 #define SA_NOCLDWAIT 0

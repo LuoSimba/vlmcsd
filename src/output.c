@@ -141,7 +141,9 @@ int printerrorf(const char *const fmt, ...)
 }
 
 
-// Always output to stderr
+/**
+ * 总是输出到 stderr .
+ */
 int errorout(const char* fmt, ...)
 {
 	va_list args;

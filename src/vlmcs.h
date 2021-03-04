@@ -17,11 +17,7 @@
 #endif // USE_MSRPC
 #include "kms.h"
 
-#ifndef MULTI_CALL_BINARY
 #define client_main main
-#else
-int client_main(int argc, CARGV argv);
-#endif
 
 int SendActivationRequest(const RpcCtx sock, RESPONSE *baseResponse, REQUEST *baseRequest, RESPONSE_RESULT *result, BYTE *const hwid);
 
