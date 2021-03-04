@@ -254,7 +254,6 @@ void logResponseVerbose(const char *const ePID, const BYTE *const hwid, RESPONSE
 #endif // !defined(NO_VERBOSE_LOG) && !defined(NO_LOG)
 
 
-#ifndef NO_VERSION_INFORMATION
 void printPlatform()
 {
 	int testNumber = 0x1234;
@@ -287,44 +286,12 @@ void printPlatform()
 		" ARM"
 #		endif
 
-#		if __thumb__
-		" thumb"
-#		endif
-
 #		if __aarch64__
 		" ARM64"
 #		endif
 
-#		if __hppa__
-		" HP/PA RISC"
-#		endif
-
 #		if __ia64__
 		" Intel Itanium"
-#		endif
-
-#		if __mips__
-		" MIPS"
-#		endif
-
-#		if defined(_MIPS_ARCH)
-		" " _MIPS_ARCH
-#		endif
-
-#		if __mips16
-		" mips16"
-#		endif
-
-#		if __mips_micromips
-		" micromips"
-#		endif
-
-#		if __ppc__ || __powerpc__
-		" PowerPC"
-#		endif
-
-#		if __powerpc64__ || __ppc64__
-		" PowerPC64"
 #		endif
 
 #		if __sparc__
@@ -337,10 +304,6 @@ void printPlatform()
 
 #		if __zarch__ || __s390x__
 		" IBM z/Arch (S/390x)"
-#		endif
-
-#		if __m68k__
-		" Motorola 68k"
 #		endif
 
 #		if __ANDROID__
@@ -399,10 +362,6 @@ void printPlatform()
 		" Minix"
 #		endif
 
-#		if __QNX__
-		" QNX"
-#		endif
-
 #		if __svr4__ || __SVR4
 		" SYSV R4"
 #		endif	
@@ -421,10 +380,6 @@ void printPlatform()
 
 #		if defined(_WIN32) && defined(_WIN64)
 		" Windows64"
-#		endif
-
-#		if __MVS__ || __TOS_MVS__
-		" z/OS"
 #		endif
 
 #		if defined(__GLIBC__) && !defined(__UCLIBC__)
@@ -446,10 +401,6 @@ void printPlatform()
 		//#		if _MIPSEB || __MIPSEB__ || __ARMEB__ || __THUMBEB__
 		//		" big-endian"
 		//#		endif
-
-#		if __PIE__ || __pie__
-		" PIE"
-#		endif
 		,
 		*((uint8_t*)&testNumber) == 0x34 ? "little-endian" : "big-endian"
 	);
@@ -666,4 +617,4 @@ void printServerFlags()
 #		endif // defined(NO_PRIVATE_IP_DETECT)
 	);
 }
-#endif // NO_VERSION_INFORMATION
+

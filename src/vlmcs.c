@@ -609,7 +609,6 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 		incompatibleOptions |= VLMCS_OPTION_NO_GRAB_INI;
 		break;
 
-#	ifndef NO_VERSION_INFORMATION
 
 	case 'V':
 #				if defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
@@ -622,7 +621,6 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 		printClientFlags();
 		exit(0);
 
-#			endif // NO_VERSION_INFORMATION
 
 	default:
 		clientUsage(programName);

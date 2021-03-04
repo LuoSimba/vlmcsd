@@ -359,9 +359,7 @@ static __noreturn void usage()
 		"  -q\t\t\tdon't log verbose (default)\n"
 #		endif // NO_VERBOSE_LOG
 #		endif // NO_LOG
-#		ifndef NO_VERSION_INFORMATION
 		"  -V\t\t\tdisplay version information and exit\n"
-#		endif // NO_VERSION_INFORMATION
 		,
 		Version, global_argv[0]);
 
@@ -1092,10 +1090,12 @@ __pure static char* getCommandLineArg(char* const restrict arg)
 #endif // !defined(NO_INI_FILE) || !defined(NO_LOG) || !defined(NO_CL_PIDS) || !defined(NO_EXTERNAL_DATA)
 
 
-static void parseGeneralArguments() {
+static void parseGeneralArguments()
+{
 	int o;
 
-	for (opterr = 0; (o = getopt(global_argc, (char* const*)global_argv, (const char*)optstring)) > 0; ) switch (o)
+	for (opterr = 0; (o = getopt(global_argc, (char* const*)global_argv, (const char*)optstring)) > 0; )
+    switch (o)
 	{
 #	if !defined(NO_SOCKETS) && !defined(NO_SIGHUP) && !defined(_WIN32)
 	case 'Z':
@@ -1384,11 +1384,7 @@ static void parseGeneralArguments() {
 #	endif // !SIMPLE_RPC
 #	endif // !USE_MSRPC
 
-#	ifndef NO_VERSION_INFORMATION
 	case 'V':
-#		ifdef _NTSERVICE
-		if (IsNTService) break;
-#		endif
 #		if defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
 		printf("vlmcsd %s %i-bit\n", Version, sizeof(void*) == 4 ? 31 : (int)sizeof(void*) << 3);
 #		else
@@ -1398,7 +1394,6 @@ static void parseGeneralArguments() {
 		printCommonFlags();
 		printServerFlags();
 		exit(0);
-#	endif // NO_VERSION_INFORMATION
 
 	default:
 		usage();

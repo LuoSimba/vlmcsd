@@ -369,18 +369,6 @@
 
 
 
-#ifndef NO_VERSION_INFORMATION
-/*
- * Removes the -V option from vlmcsd and vlmcs that displays the version information
- */
-
- //#define NO_VERSION_INFORMATION
-
-#endif // NO_VERSION_INFORMATION
-
-
-
-
 #ifndef NO_VERBOSE_LOG
 /*
  * Removes the ability to do verbose logging and disables -v and -q in vlmcsd. It does not remove the -v
