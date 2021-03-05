@@ -532,10 +532,6 @@ void printServerFlags()
 		" NO_USER_SWITCH"
 #		endif // NO_USER_SWITCH
 
-#		ifdef NO_HELP
-		" NO_HELP"
-#		endif // NO_HELP
-
 #		ifdef NO_STRICT_MODES
 		" NO_STRICT_MODES"
 #		endif // NO_STRICT_MODES

@@ -126,8 +126,6 @@ static void string2UuidOrExit(const char *const restrict input, GUID *const rest
 }
 
 
-#ifndef NO_HELP
-
 __noreturn static void clientUsage(const char* const programName)
 {
 	errorout(
@@ -305,17 +303,8 @@ __noreturn static void examples(const char* const programName)
 	exit(0);
 }
 
-#else // NO_HELP
 
 
-__noreturn static void clientUsage(const char* const programName)
-{
-	errorout("Incorrect parameter specified.\n");
-	exit(VLMCSD_EINVAL);
-}
-
-
-#endif // NO_HELP
 
 
 static void parseProtocolVersion(void)
@@ -404,9 +393,7 @@ static void parseCommandLinePass1(const int argc, CARGV argv)
 		if (ActiveProductIndex < 0)
 		{
 			errorout("Invalid client application. \"%s\" is not valid for -l.\n\n", optarg);
-#ifndef NO_HELP
 			showProducts(&errorout);
-#endif // !NO_HELP
 		}
 
 		break;
@@ -434,7 +421,6 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 
 	for (opterr = 0; (o = getopt(argc, (char* const*)argv, client_optstring)) > 0; ) switch (o)
 	{
-#ifndef NO_HELP
 
 	case 'j':
 		break;
@@ -446,8 +432,6 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 	case 'x': // Show Apps
 
 		showProducts(&printf);
-
-#endif // NO_HELP
 
 #			ifndef NO_DNS
 

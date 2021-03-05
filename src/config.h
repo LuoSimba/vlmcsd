@@ -521,18 +521,6 @@
 
 
 
-#ifndef NO_HELP
-/*
- * Disables display of help in both vlmcsd and vlmcs. Saves some bytes but only makes sense if you have
- * access to the man files vlmcsd.8 and vlmcs.1
- */
-
- //#define NO_HELP
-
-#endif // NO_HELP
-
-
-
 
 #ifndef NO_CUSTOM_INTERVALS
 /*

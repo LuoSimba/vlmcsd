@@ -32,13 +32,15 @@
     VERBOSE=1                    Be verbose when making targets.
     VERBOSE=3                    Show name of compiler.
     THREADS=1                    Use threads instead of fork(). Automatically set for native Windows. Recommended for Cygwin.
-    FEATURES=full                Compile vlmcsd with all features (default).
-    FEATURES=most                Compile vlmcsd without rarely used features.
-    FEATURES=embedded            Compile vlmcsd with typical features for embedded systems.
-    FEATURES=autostart           Removes features typically not needed if you place vlmcsd in an autostart script.
-    FEATURES=inetd               Compile vlmcsd for running through an internet superserver only.
-    FEATURES=minimum             Compiles only basic features of vlmcsd.
-    FEATURES=fixedepids          vlmcsd only uses bultin internal ePIDs.
+
+Features:
+    full                Compile vlmcsd with all features.(默认)
+    most                Compile vlmcsd without rarely used features.
+    embedded            Compile vlmcsd with typical features for embedded systems.
+    autostart           Removes features typically not needed if you place vlmcsd in an autostart script.
+    inetd               Compile vlmcsd for running through an internet superserver only.
+    fixedepids          vlmcsd only uses bultin internal ePIDs.
+    minimum             Compiles only basic features of vlmcsd.
 
 有用的 CFLAGS 用以在迷你嵌入式设备中节省内存空间(与 FEATURES= 相比可以得到更细腻的控制)：
     -DNO_STRICT_MODES            Don't support enhanced emulator detection prevention.
@@ -49,7 +51,6 @@
     -DNO_INI_FILE                Don't support reading ePIDs/HWIDs from a file.
     -DNO_PID_FILE                Don't support writing a PID file. Removes -p option.
     -DNO_USER_SWITCH             Don't support changing uid/gid after program start. Removes -u and -g options.
-    -DNO_HELP                    Don't support command line help.
     -DNO_CUSTOM_INTERVALS        Don't support custom intervals for retry and refresh activation. Removes -A and -R options.
     -DNO_FREEBIND                Don't support binding to foreign IP addresses. Removes -F0 and -F1 options. Only affects FreeBSD and Linux.
     -DNO_SOCKETS                 Don't support standalone operation. Requires an internet superserver to start vlmcsd.

@@ -242,13 +242,6 @@ static char GetUid()
 #endif // _WIN32
 #endif //NO_USER_SWITCH
 
-#ifdef NO_HELP
-static __noreturn void usage()
-{
-	printerrorf("Incorrect parameters\n\n");
-	exit(VLMCSD_EINVAL);
-}
-#else // HELP
 
 
 static __noreturn void usage()
@@ -365,7 +358,6 @@ static __noreturn void usage()
 
 	exit(VLMCSD_EINVAL);
 }
-#endif // HELP
 
 
 #ifndef NO_CUSTOM_INTERVALS
