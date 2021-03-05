@@ -62,12 +62,11 @@ int32_t getProductIndex(const GUID* guid, const PVlmcsdData_t list, const int32_
 	return i;
 }
 
-#if !defined(NO_INI_FILE)||!defined(NO_VERBOSE_LOG)
 const char* getNextString(const char* s)
 {
 	return s + strlen(s) + 1;
 }
-#endif //!defined(NO_INI_FILE)||!defined(NO_VERBOSE_LOG)
+
 
 #endif // IS_LIBRARY
 

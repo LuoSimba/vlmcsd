@@ -390,9 +390,9 @@ __pure int64_t fileTimeToUnixTime(FILETIME* ts);
 
 #ifndef IS_LIBRARY
 int32_t getProductIndex(const GUID* guid, const PVlmcsdData_t list, const int32_t count, char** name, char** ePid);
-#if !defined(NO_INI_FILE)||!defined(NO_VERBOSE_LOG)
+
 const char* getNextString(const char* s);
-#endif  // !defined(NO_INI_FILE)||!defined(NO_VERBOSE_LOG)
+
 #endif // IS_LIBRARY
 
 #ifndef NO_STRICT_MODES
