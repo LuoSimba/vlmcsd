@@ -273,7 +273,9 @@ __pure unsigned int getOptionArgumentInt(const char o, const unsigned int min, c
 	return result;
 }
 
-// Resets getopt() to start parsing from the beginning
+/**
+ * Resets getopt() to start parsing from the beginning
+ */
 void optReset(void)
 {
 #if __minix__ || defined(__BSD__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__)

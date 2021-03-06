@@ -322,13 +322,16 @@ static int32_t findLicensePackByName(const char* const name)
 static const char* const client_optstring = "+N:B:i:j:l:a:s:k:c:w:r:n:t:g:G:o:K:pPTv456mexdV";
 
 
-//We handle only "-j". Many other options do not run without a loaded database
+/**
+ * We handle only "-j". Many other options do not run without a loaded database
+ */
 static void parseCommandLinePass0(const int argc, CARGV argv)
 {
 	int o;
 	optReset();
 
-	for (opterr = 0; (o = getopt(argc, (char* const*)argv, client_optstring)) > 0; ) switch (o)
+	for (opterr = 0; (o = getopt(argc, (char* const*)argv, client_optstring)) > 0; )
+    switch (o)
 	{
 #	ifndef NO_EXTERNAL_DATA
 	case 'j': // Set "License Pack" and protocol version (e.g. Windows8, Office2013v5, ...)
@@ -344,13 +347,16 @@ static void parseCommandLinePass0(const int argc, CARGV argv)
 	}
 }
 
-//First pass. We handle only "-l". Since -a -k -s -4 -5 and -6 are exceptions to -l, we process -l first
+/**
+ * First pass. We handle only "-l". Since -a -k -s -4 -5 and -6 are exceptions to -l, we process -l first
+ */
 static void parseCommandLinePass1(const int argc, CARGV argv)
 {
 	int o;
 	optReset();
 
-	for (opterr = 0; (o = getopt(argc, (char* const*)argv, client_optstring)) > 0; ) switch (o)
+	for (opterr = 0; (o = getopt(argc, (char* const*)argv, client_optstring)) > 0; )
+    switch (o)
 	{
 	case 'l': // Set "License Pack" and protocol version (e.g. Windows8, Office2013v5, ...)
 		if (stringToInt(optarg, 1, KmsData->SkuItemCount, (unsigned int*)&ActiveProductIndex))
@@ -383,7 +389,9 @@ static void parseCommandLinePass1(const int argc, CARGV argv)
 }
 
 
-// Second Pass. Handle all options except "-l"
+/**
+ * Second Pass. Handle all options except "-l"
+ */
 static void parseCommandLinePass2(const char *const programName, const int argc, CARGV argv)
 {
 	int o;
@@ -872,6 +880,7 @@ static void displayRequestError(RpcCtx *const s, const int status, const int cur
 
 static void newIniBackupFile(const char* const restrict fname)
 {
+    // open a file with mode 'binary write'
 	FILE *restrict f = fopen(fname, "wb");
 
 	if (!f)
@@ -922,7 +931,9 @@ static void updateIniFile(char*** restrict lines)
 	}
 	else
 	{
-		vlmcsd_unlink(fn_bak); // Required for Windows. Most Unix systems don't need it.
+        // Required for Windows. Most Unix systems don't need it.
+		vlmcsd_unlink(fn_bak);
+
 		if (rename(fn_ini_client, fn_bak))
 		{
 			const int error = errno;
@@ -931,10 +942,13 @@ static void updateIniFile(char*** restrict lines)
 		}
 	}
 
-	printf("\n%s file %s\n", iniFileExistedBefore ? "Updating" : "Creating", fn_ini_client);
+	printf("\n%s file %s\n",
+            iniFileExistedBefore ? "Updating" : "Creating",
+            fn_ini_client);
 
 	FILE *restrict in, *restrict out;
 
+    // open a file with mode 'binary read'
 	in = fopen(fn_bak, "rb");
 
 	if (!in)
@@ -979,7 +993,11 @@ static void updateIniFile(char*** restrict lines)
 	if (ferror(in))
 	{
 		int error = errno;
-		errorout("Fatal: Cannot read from %s: %s\n", fn_bak, strerror(error));
+
+		errorout("Fatal: Cannot read from %s: %s\n",
+                fn_bak,
+                strerror(error));
+
 		exit(error);
 	}
 
@@ -1001,7 +1019,8 @@ static void updateIniFile(char*** restrict lines)
 		exit(error);
 	}
 
-	if (!iniFileExistedBefore) vlmcsd_unlink(fn_bak);
+	if (!iniFileExistedBefore)
+        vlmcsd_unlink(fn_bak);
 
 	free(fn_bak);
 }

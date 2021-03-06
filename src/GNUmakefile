@@ -190,7 +190,12 @@ ifdef CAT
 endif
 
 # Common source files.
-SRCS = crypto.c kms.c endian.c output.c shared_globals.c helpers.c
+SRCS = crypto.c \
+	   kms.c \
+	   endian.c \
+	   output.c \
+	   shared_globals.c \
+	   helpers.c
 
 HEADERS = config.h types.h rpc.h vlmcsd.h endian.h crypto.h kms.h network.h output.h shared_globals.h vlmcs.h helpers.h kmsdata.h
 
