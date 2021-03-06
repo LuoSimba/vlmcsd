@@ -1,7 +1,5 @@
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+
+#include "config.h"
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -12,38 +10,47 @@
 #endif
 
 #include "vlmcs.h"
+
 #if _MSC_VER
 #include <Shlwapi.h>
 #endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <stdint.h>
+
 #if _MSC_VER
 #include "wingetopt.h"
 #else
 #include <getopt.h>
 #endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
+
 #ifndef _WIN32
 #include <sys/ioctl.h>
 #include <termios.h>
 #else // _WIN32
 #endif // _WIN32
+
 #include "endian.h"
 #include "shared_globals.h"
 #include "output.h"
+
 #ifndef USE_MSRPC
 #include "network.h"
 #include "rpc.h"
 #else // USE_MSRPC
 #include "msrpc-client.h"
 #endif // USE_MSRPC
+
 #include "kms.h"
 #include "helpers.h"
 #include "dns_srv.h"
@@ -73,11 +80,13 @@ static const char *WorkstationName = NULL;
 static int BindingExpiration = 43200; //30 days
 static const char *RemoteAddr;
 static int_fast8_t ReconnectForEachRequest = FALSE;
+
 #ifndef USE_MSRPC
 static int AddressFamily = AF_UNSPEC;
 #else
 static int AddressFamily = 0;
 #endif // USE_MSRPC
+
 static int_fast8_t incompatibleOptions = 0;
 static const char* fn_ini_client = NULL;
 //static int_fast16_t kmsVersionMinor = 0;
@@ -87,6 +96,7 @@ static int32_t NCountPolicy = 0;
 static GUID AppGuid, KmsGuid, SkuGuid;
 static uint16_t MinorVersion = 0;
 static uint16_t MajorVersion;
+
 
 #ifndef NO_DNS
 static int_fast8_t NoSrvRecordPriority = FALSE;
@@ -1185,7 +1195,10 @@ static void grabServerData()
 }
 
 
-int client_main(int argc, CARGV argv)
+/**
+ * Client Entry
+ */
+int main(int argc, CARGV argv)
 {
 #if defined(_WIN32) && !defined(USE_MSRPC)
 
@@ -1417,7 +1430,7 @@ int __stdcall WinStartUp(void)
 		WideCharToMultiByte(CP_UTF8, 0, szArgList[i], -1, argv[i], size, NULL, NULL);
 	}
 
-	exit(client_main(argc, argv));
+	exit(main(argc, argv));
 }
 #endif // _MSC_VER && !defined(_DEBUG)
 

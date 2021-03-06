@@ -10,20 +10,19 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 #ifndef _WIN32
 #include <errno.h>
 #include <libgen.h>
 #endif // _WIN32
+
 #ifndef _MSC_VER
 #include <getopt.h>
 #else
 #include "wingetopt.h"
 #endif
+
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -339,7 +338,11 @@ void parseAddress(char *const addr, char** szHost, char** szPort)
 }
 
 
-// Initialize random generator (needs to be done in each thread)
+/**
+ * Initialize random generator
+ *
+ * 每个线程都需要执行一次
+ */
 void randomNumberInit()
 {
 #	if _MSC_VER
@@ -352,10 +355,13 @@ void randomNumberInit()
 }
 
 
-// We always exit immediately if any OOM condition occurs
+/**
+ * if any OOM condition occurs ...
+ */
 __noreturn void OutOfMemory(void)
 {
 	errorout("Fatal: Out of memory");
+    // 立即退出
 	exit(VLMCSD_ENOMEM);
 }
 
@@ -363,7 +369,11 @@ __noreturn void OutOfMemory(void)
 void* vlmcsd_malloc(size_t len)
 {
 	void* buf = malloc(len);
-	if (!buf) OutOfMemory();
+
+    // 如果申请内存失败
+	if (!buf)
+        OutOfMemory();
+
 	return buf;
 }
 

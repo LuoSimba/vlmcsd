@@ -17,7 +17,6 @@
 #endif // USE_MSRPC
 #include "kms.h"
 
-#define client_main main
 
 int SendActivationRequest(const RpcCtx sock, RESPONSE *baseResponse, REQUEST *baseRequest, RESPONSE_RESULT *result, BYTE *const hwid);
 
