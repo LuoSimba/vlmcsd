@@ -494,10 +494,6 @@ void printClientFlags()
 		" DNS_PARSER=OS"
 #		endif // !defined(DNS_PARSER_INTERNAL) || defined(_WIN32)
 #		endif // !defined(NO_DNS)
-
-#		if defined(DISPLAY_WIDTH)
-		" TERMINAL_WIDTH=" DISPLAY_WIDTH
-#		endif
 	);
 }
 

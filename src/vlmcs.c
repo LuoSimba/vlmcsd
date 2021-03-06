@@ -11,34 +11,17 @@
 
 #include "vlmcs.h"
 
-#if _MSC_VER
-#include <Shlwapi.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <stdint.h>
-
-#if _MSC_VER
-#include "wingetopt.h"
-#else
 #include <getopt.h>
-#endif
-
 #include <sys/types.h>
 #include <sys/stat.h>
-
-#ifndef _MSC_VER
 #include <unistd.h>
-#endif
-
-#ifndef _WIN32
 #include <sys/ioctl.h>
 #include <termios.h>
-#else // _WIN32
-#endif // _WIN32
 
 #include "endian.h"
 #include "shared_globals.h"
@@ -66,9 +49,7 @@ static void CreateRequestBase(REQUEST *Request);
 
 
 // KMS Parameters
-#ifndef NO_VERBOSE_LOG
 static int_fast8_t verbose = FALSE;
-#endif
 
 static int_fast8_t VMInfo = FALSE;
 static int_fast8_t dnsnames = TRUE;
@@ -148,9 +129,7 @@ __noreturn static void clientUsage(const char* const programName)
 
 		"Options:\n\n"
 
-#		ifndef NO_VERBOSE_LOG
 		"  -v Be verbose\n"
-#		endif
 		"  -l <app>\n"
 		"  -4 Force V4 protocol\n"
 		"  -5 Force V5 protocol\n"
@@ -206,13 +185,11 @@ __noreturn static void clientUsage(const char* const programName)
 	exit(VLMCSD_EINVAL);
 }
 
+/**
+ * get terminal width
+ */
 __pure static int getLineWidth(void)
 {
-#ifdef TERMINAL_FIXED_WIDTH // For Toolchains that to not have winsize
-	return TERMINAL_FIXED_WIDTH;
-#else // Can determine width of terminal
-#ifndef _WIN32
-
 	struct winsize w;
 
 	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w))
@@ -221,23 +198,6 @@ __pure static int getLineWidth(void)
 	}
 
 	return w.ws_col;
-
-#else // _WIN32
-
-	CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
-	{
-		return 80; // Return this if stdout is not a Console
-	}
-
-	return csbiInfo.srWindow.Right - csbiInfo.srWindow.Left;
-
-#endif // WIN32
-
-#endif // Can determine width of terminal
-
 }
 
 __noreturn static void showProducts(PRINTFUNC p)
@@ -559,14 +519,9 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 		dnsnames = FALSE;
 		break;
 
-#			ifndef NO_VERBOSE_LOG
-
 	case 'v': // Be verbose
-
 		verbose = TRUE;
 		break;
-
-#			endif // NO_VERBOSE_LOG
 
 	case 'm': // Pretend to be a virtual machine
 
@@ -685,9 +640,7 @@ static void displayResponse(const RESPONSE_RESULT result, const REQUEST* request
 	}
 
 	// Read KMSPID from Response
-#	ifndef NO_VERBOSE_LOG
 	if (!verbose)
-#	endif // NO_VERBOSE_LOG
 	{
 		printf(" -> %s", ePID);
 
@@ -702,7 +655,6 @@ static void displayResponse(const RESPONSE_RESULT result, const REQUEST* request
 
 		printf("\n");
 	}
-#	ifndef NO_VERBOSE_LOG
 	else
 	{
 		printf(
@@ -713,7 +665,6 @@ static void displayResponse(const RESPONSE_RESULT result, const REQUEST* request
 		logResponseVerbose(ePID, hwid, response, &printf);
 		printf("\n");
 	}
-#	endif // NO_VERBOSE_LOG
 }
 
 
@@ -762,7 +713,6 @@ static void connectRpc(RpcCtx *s)
 
 		if (!NoSrvRecordPriority) sortSrvRecords(serverlist, numServers);
 
-#		ifndef NO_VERBOSE_LOG
 		if (verbose /*&& !ServerListAlreadyPrinted*/)
 		{
 			for (i = 0; i < numServers; i++)
@@ -778,7 +728,6 @@ static void connectRpc(RpcCtx *s)
 			printf("\n");
 			//ServerListAlreadyPrinted = TRUE;
 		}
-#		endif // NO_VERBOSE_LOG
 	}
 	else // Just use the server supplied on the command line
 	{
@@ -799,21 +748,17 @@ static void connectRpc(RpcCtx *s)
 		if (*s == INVALID_RPCCTX) continue;
 		RpcDiag_t rpcDiag;
 
-#		ifndef NO_VERBOSE_LOG
-		if (verbose) printf("\nPerforming RPC bind ...\n");
+		if (verbose)
+            printf("\nPerforming RPC bind ...\n");
 
 		if (rpcBindClient(*s, verbose, &rpcDiag))
-#		else
-		if (rpcBindClient(*s, FALSE, &rpcDiag))
-#		endif
 		{
 			errorout("Warning: Could not bind RPC\n");
 			continue;
 		}
 
-#		ifndef NO_VERBOSE_LOG
-		if (verbose) printf("... successful\n");
-#		endif
+		if (verbose)
+            printf("... successful\n");
 
 		return;
 	}
@@ -921,9 +866,6 @@ static void displayRequestError(RpcCtx *const s, const int status, const int cur
 		break;
 
 	default:
-#		if _WIN32
-		errorout("%s\n", win_strerror(status));
-#		endif // _WIN32
 		break;
 	}
 }
@@ -952,9 +894,7 @@ static void newIniBackupFile(const char* const restrict fname)
 static void updateIniFile(char*** restrict lines)
 {
 	int_fast8_t* lineWritten = (int_fast8_t*)malloc(KmsData->CsvlkCount * sizeof(int_fast8_t));
-#	if !_MSC_VER
 	struct stat statbuf;
-#	endif
 	uint_fast8_t i;
 	int_fast8_t iniFileExistedBefore = TRUE;
 	unsigned int lineNumber;
@@ -966,13 +906,6 @@ static void updateIniFile(char*** restrict lines)
 	strcpy(fn_bak, fn_ini_client);
 	strcat(fn_bak, "~");
 
-#	if _MSC_VER
-	if (!PathFileExists(fn_ini_client))
-	{
-		iniFileExistedBefore = FALSE;
-		newIniBackupFile(fn_bak);
-	}
-#	else
 	if (stat(fn_ini_client, &statbuf))
 	{
 		if (errno != ENOENT)
@@ -987,7 +920,6 @@ static void updateIniFile(char*** restrict lines)
 			newIniBackupFile(fn_bak);
 		}
 	}
-#	endif
 	else
 	{
 		vlmcsd_unlink(fn_bak); // Required for Windows. Most Unix systems don't need it.
@@ -1200,28 +1132,6 @@ static void grabServerData()
  */
 int main(int argc, CARGV argv)
 {
-#if defined(_WIN32) && !defined(USE_MSRPC)
-
-	// Windows Sockets must be initialized
-
-	WSADATA wsaData;
-	int error;
-
-	if ((error = WSAStartup(0x0202, &wsaData)))
-	{
-		errorout("Fatal: Could not initialize Windows sockets (Error: %d).\n", error);
-		return error;
-	}
-
-#endif // _WIN32
-
-#ifdef _NTSERVICE
-
-	// We are not a service
-	IsNTService = FALSE;
-
-#endif // _NTSERVICE
-
 	randomNumberInit();
 
 	//#	ifndef NO_EXTERNAL_DATA
@@ -1403,36 +1313,13 @@ static void CreateRequestBase(REQUEST *Request)
 		Request->WorkstationName[size] = 0;
 	}
 
-#	ifndef NO_VERBOSE_LOG
 	if (verbose)
 	{
 		printf("\nRequest Parameters\n==================\n\n");
 		logRequestVerbose(Request, &printf);
 		printf("\n");
 	}
-#	endif // NO_VERBOSE_LOG
 }
-
-#if _MSC_VER && !defined(_DEBUG)
-int __stdcall WinStartUp(void)
-{
-	WCHAR **szArgList;
-	int argc;
-	szArgList = CommandLineToArgvW(GetCommandLineW(), &argc);
-
-	int i;
-	char **argv = (char**)vlmcsd_malloc(sizeof(char*)*argc);
-
-	for (i = 0; i < argc; i++)
-	{
-		int size = WideCharToMultiByte(CP_UTF8, 0, szArgList[i], -1, argv[i], 0, NULL, NULL);
-		argv[i] = (char*)vlmcsd_malloc(size);
-		WideCharToMultiByte(CP_UTF8, 0, szArgList[i], -1, argv[i], size, NULL, NULL);
-	}
-
-	exit(main(argc, argv));
-}
-#endif // _MSC_VER && !defined(_DEBUG)
 
 
 #endif // IS_LIBRARY

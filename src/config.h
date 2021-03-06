@@ -123,18 +123,6 @@
 #endif // NO_DNS
 
 
-#ifndef TERMINAL_FIXED_WIDTH
-/*
- * Uncomment the following #define and optionally change its value if you are compiling for
- * a platform that cannot properly determine the width of a terminal/command prompt.
- * This affects the output of "vlmcsd -x" only. It should be rarely necessary to use this.
- */
-
- //#define TERMINAL_FIXED_WIDTH 80
-
-#endif // TERMINAL_FIXED_WIDTH
-
-
 
 
 #ifndef _PEDANTIC

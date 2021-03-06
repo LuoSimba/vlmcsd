@@ -67,7 +67,6 @@ Compilation FAQ
     CRYPTO=windows               Use Windows CryptoAPI instead of internal crypto code for SHA256/HMAC calculations.
     MSRPC=1                      Use Microsoft RPC instead of vlmcsd's internal RPC. Only works with Windows and Cygwin targets.
     AR=<x>                       Use <x> instead of ar to build libkms.a. Set to gcc-ar if you want to use gcc's LTO feature.
-    TERMINAL_WIDTH=<x>           Assume a fixed terminal width of <x> columns. Use in case of problems only.
     CFLAGS=<x>                   Pass <x> as additional arguments to the compiler.
     BASECFLAGS=<x>               Pass only <x> as arguments to the compiler (advanced users only).
     BASELDFLAGS=<x>              Pass only <x> as arguments to the linker (advanced users only).
@@ -131,3 +130,4 @@ Troubleshooting options
     -DSUPPORT_WINE               Add code that the Windows version of vlmcsd runs on Wine if MSRPC=1
     -D_PEDANTIC                  Report rare error/warning conditions instead of silently ignoring them.
     -DFD_SETSIZE=<x>             Allow <x> -L statements in vlmcsd (default: 64 on Windows, 1024 on most Unixes).
+
