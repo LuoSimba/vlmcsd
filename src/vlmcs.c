@@ -568,11 +568,10 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 
 
 	case 'V':
-#				if defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
-		printf("vlmcs %s %i-bit\n", Version, sizeof(void*) == 4 ? 31 : (int)sizeof(void*) << 3);
-#				else
-		printf("vlmcs %s %i-bit\n", Version, (int)sizeof(void*) << 3);
-#				endif // defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
+
+		printf("vlmcs %s %i-bit\n",
+                Version,
+                (int)sizeof(void*) << 3);
 		printPlatform();
 		printCommonFlags();
 		printClientFlags();

@@ -1377,11 +1377,10 @@ static void parseGeneralArguments()
 #	endif // !USE_MSRPC
 
 	case 'V':
-#		if defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
-		printf("vlmcsd %s %i-bit\n", Version, sizeof(void*) == 4 ? 31 : (int)sizeof(void*) << 3);
-#		else
-		printf("vlmcsd %s %i-bit\n", Version, (int)sizeof(void*) << 3);
-#		endif // defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
+
+		printf("vlmcsd %s %i-bit\n",
+                Version,
+                (int)sizeof(void*) << 3);
 		printPlatform();
 		printCommonFlags();
 		printServerFlags();

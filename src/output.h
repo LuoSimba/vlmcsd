@@ -1,10 +1,7 @@
 #ifndef INCLUDED_OUTPUT_H
 #define INCLUDED_OUTPUT_H
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 #include <errno.h>
 #include "types.h"

@@ -38,7 +38,6 @@ CC ?= gcc
 
 BASECFLAGS = -DVLMCSD_COMPILER=\"$(CC)\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
 BASELDFLAGS = 
-STRIPFLAGS =
 CLIENTLDFLAGS =
 SERVERLDFLAGS =
 
@@ -68,7 +67,6 @@ ifneq ($(CAT),2)
 endif  
 
 BASELDFLAGS += -Wl,--gc-sections
-STRIPFLAGS += -s
 
 LIBRARY_CFLAGS = -DSIMPLE_SOCKETS -DNO_TIMEOUT -DNO_SIGHUP -DNO_CL_PIDS -DNO_LOG -DNO_RANDOM_EPID -DNO_INI_FILE -DNO_HELP -DNO_CUSTOM_INTERVALS -DNO_PID_FILE -DNO_USER_SWITCH -DNO_VERBOSE_LOG -DNO_LIMIT -DNO_VERSION_INFORMATION -DNO_PRIVATE_IP_DETECT -DNO_STRICT_MODES -DNO_CLIENT_LIST -DNO_TAP -UNO_SOCKETS -USIMPLE_RPC
 
@@ -273,10 +271,6 @@ else ifeq ($(CRYPTO), windows)
 	SRCS += crypto_windows.c
 else
 	SRCS += crypto_internal.c
-endif
-
-ifneq ($(STRIP),0)
-	BASELDFLAGS += $(STRIPFLAGS)
 endif
 
 ifeq ($(OPENSSL_HMAC),0)

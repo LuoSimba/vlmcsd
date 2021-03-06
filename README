@@ -70,7 +70,6 @@ Compilation FAQ
     CFLAGS=<x>                   Pass <x> as additional arguments to the compiler.
     BASECFLAGS=<x>               Pass only <x> as arguments to the compiler (advanced users only).
     BASELDFLAGS=<x>              Pass only <x> as arguments to the linker (advanced users only).
-    STRIP=0                      Don't strip debug information from vlmcsd and vlmcs (for developers).
     VERBOSE=1                    Be verbose when making targets.
     VERBOSE=3                    Show name of compiler.
     THREADS=1                    Use threads instead of fork(). Automatically set for native Windows. Recommended for Cygwin.

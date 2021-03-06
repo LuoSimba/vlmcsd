@@ -6,11 +6,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
-
+#include "config.h"
 #include "output.h"
 #include "shared_globals.h"
 #include "endian.h"
@@ -90,7 +86,9 @@ static void vlogger(const char *message, va_list args)
 }
 
 
-// Always sends to log output
+/**
+ * Always sends to log output
+ */
 int logger(const char *const fmt, ...)
 {
 	va_list args;
@@ -104,7 +102,11 @@ int logger(const char *const fmt, ...)
 #endif //NO_LOG
 
 
-// Output to stderr if it is available or to log otherwise (e.g. if running as daemon/service)
+/**
+ * Output to stderr if it is available or to log otherwise
+ *
+ * (e.g. if running as daemon/service)
+ */
 int printerrorf(const char *const fmt, ...)
 {
 	int error = errno;
@@ -185,6 +187,7 @@ void uuid2StringLE(const GUID *const guid, char *const string)
 	);
 }
 
+
 void logRequestVerbose(REQUEST* Request, const PRINTFUNC p)
 {
 	char guidBuffer[GUID_STRING_LENGTH + 1];
@@ -226,6 +229,7 @@ void logRequestVerbose(REQUEST* Request, const PRINTFUNC p)
 	p("Workstation name                : %s\n", WorkstationBuffer);
 	p("N count policy (minimum clients): %u\n", (uint32_t)LE32(Request->N_Policy));
 }
+
 
 void logResponseVerbose(const char *const ePID, const BYTE *const hwid, RESPONSE* response, const PRINTFUNC p)
 {
@@ -298,14 +302,6 @@ void printPlatform()
 
 #		if __sparc__
 		" SPARC"
-#		endif
-
-#		if defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
-		" IBM S/390"
-#		endif
-
-#		if __zarch__ || __s390x__
-		" IBM z/Arch (S/390x)"
 #		endif
 
 #		if __ANDROID__
