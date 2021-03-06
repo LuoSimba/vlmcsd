@@ -40,6 +40,9 @@
 
 
 
+#ifndef BUILD_TIME
+# define BUILD_TIME 1538922811
+#endif
 
 
 /*
@@ -47,20 +50,6 @@
  *
  * 如果你需要用到这些选项，请将以 "//#define" 开头的这些行的注释去掉。
  */
-
-
-
-
-#ifndef INI_FILE
-  /*
-   * Uncomment and customize the following line if you want vlmcsd to look for an ini file
-   * at a default location.
-   */
-
-   //#define INI_FILE "/etc/vlmcsd.ini"
-
-#endif // INI_FILE
-
 
 
 

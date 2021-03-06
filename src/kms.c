@@ -1,7 +1,4 @@
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -342,11 +339,8 @@ static void generateRandomPid(const int index, char *const szPid, int16_t lang, 
 	time_t maxTime;
 	time(&maxTime);
 
-#	ifndef BUILD_TIME
-#	define BUILD_TIME 1538922811
-#   endif
-
-	if (maxTime < (time_t)BUILD_TIME) // Just in case the system time is < 10/17/2013 1:00 pm
+    // Just in case the system time is < 10/17/2013 1:00 pm
+	if (maxTime < (time_t)BUILD_TIME)
 		maxTime = (time_t)BUILD_TIME;
 
 	time_t kmsTime = (rand32() % (maxTime - minTime)) + minTime;

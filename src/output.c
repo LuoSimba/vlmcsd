@@ -514,10 +514,6 @@ void printServerFlags()
 		" NO_INI_FILE"
 #		endif // NO_INI_FILE
 
-#		if !defined(NO_INI_FILE) && defined(INI_FILE)
-		" INI=" INI_FILE
-#		endif // !defined(NO_INI_FILE)
-
 #		ifdef NO_PID_FILE
 		" NO_PID_FILE"
 #		endif // NO_PID_FILE

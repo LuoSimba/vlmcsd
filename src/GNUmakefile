@@ -109,10 +109,6 @@ else ifeq ($(FEATURES), fixedepids)
   BASECFLAGS += -DNO_SIGHUP -DNO_CL_PIDS -DNO_RANDOM_EPID -DNO_INI_FILE
 endif
 
-ifdef INI
-  BASECFLAGS += -DINI_FILE=\"$(INI)\"
-endif
-
 ifdef DATA
   BASECFLAGS += -DDATA_FILE=\"$(DATA)\"
 endif

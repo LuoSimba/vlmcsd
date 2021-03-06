@@ -93,11 +93,7 @@ static const char* fn_pid = NULL;
 #if !defined(NO_INI_FILE) || !defined(NO_CL_PIDS)
 
 #ifndef NO_INI_FILE
-#ifdef INI_FILE
-static const char* fn_ini = INI_FILE;
-#else // !INI_FILE
 static const char* fn_ini = NULL;
-#endif // !INI_FILE
 #endif // NO_INI_FILE
 
 #ifndef NO_TAP
@@ -1592,10 +1588,8 @@ int setupListeningSockets()
 	{
 		if (fn_ini && !readIniFile(INI_FILE_PASS_3))
 		{
-#			ifdef INI_FILE
-			if (strcmp(fn_ini, INI_FILE))
-#			endif // INI_FILE
-				printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
+
+            printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
 		}
 	}
 #	endif
@@ -1694,10 +1688,7 @@ int newmain()
 
 	if (fn_ini && !readIniFile(INI_FILE_PASS_1))
 	{
-#  ifdef INI_FILE
-		if (strcmp(fn_ini, INI_FILE))
-#  endif // INI_FILE
-			printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
+        printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
 	}
 
 #endif // NO_INI_FILE
@@ -1751,10 +1742,7 @@ int newmain()
 
 	if (fn_ini && !readIniFile(INI_FILE_PASS_2))
 	{
-#  ifdef INI_FILE
-		if (strcmp(fn_ini, INI_FILE))
-#  endif // INI_FILE
-			printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
+        printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
 	}
 
 #endif // NO_INI_FILE

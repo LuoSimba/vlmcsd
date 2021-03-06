@@ -57,7 +57,6 @@ Compilation FAQ
     make clean         - 执行清理
 
 选项：
-    INI=<x>                      Compile vlmcsd with default ini file <x>
     DATA=<x>                     Compile vlmcsd and vlmcs with default KMS data file <x>
     DEPENDENCIES=1               Create dependency files.
     CRYPTO=openssl               Use openssl for SHA256/HMAC calculations.
