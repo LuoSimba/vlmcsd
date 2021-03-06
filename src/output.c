@@ -157,12 +157,16 @@ int errorout(const char* fmt, ...)
 }
 
 
-#if !defined(NO_VERBOSE_LOG) && !defined(NO_LOG)
 static const char *LicenseStatusText[] =
 {
-	"Unlicensed", "Licensed", "OOB grace", "OOT grace", "Non-Genuine", "Notification", "Extended grace"
+	"Unlicensed",
+    "Licensed",
+    "OOB grace",
+    "OOT grace",
+    "Non-Genuine",
+    "Notification",
+    "Extended grace"
 };
-#endif // !defined(NO_VERBOSE_LOG) && !defined(NO_LOG)
 
 
 void uuid2StringLE(const GUID *const guid, char *const string)
