@@ -36,7 +36,7 @@ CC ?= gcc
 
 
 
-BASECFLAGS = -DVLMCSD_COMPILER=\"$(CC)\" -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
+BASECFLAGS = -DBUILD_TIME=$(shell date '+%s') -g -Os -fno-strict-aliasing -fomit-frame-pointer -ffunction-sections -fdata-sections
 BASELDFLAGS = 
 CLIENTLDFLAGS =
 SERVERLDFLAGS =

@@ -262,23 +262,9 @@ void logResponseVerbose(const char *const ePID, const BYTE *const hwid, RESPONSE
 
 void printPlatform()
 {
-	int testNumber = 0x1234;
-
-#	if _MSC_VER
-	printf("Compiler: VC++ %02i.%02i build %i\n", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000);
-#	elif defined(VLMCSD_COMPILER)
 	printf
 	(
-		"Compiler: %s\n", VLMCSD_COMPILER
-#		ifdef __VERSION__
-		" " __VERSION__
-#		endif // __VERSION__
-	);
-#	endif // VLMCSD_COMPILER
-
-	printf
-	(
-		"Intended platform:%s %s\n", ""
+		"Intended platform:%s\n", ""
 
 #		if __i386__ || _M_IX86
 		" Intel x86"
@@ -344,32 +330,12 @@ void printPlatform()
 		" Hurd"
 #		endif
 
-#		if __MACH__
-		" Mach"
-#		endif
-
 #		if __linux__
 		" Linux"
 #		endif
 
-#		if __APPLE__ && __MACH__
-		" Darwin"
-#		endif
-
 #		if  __minix__
 		" Minix"
-#		endif
-
-#		if __svr4__ || __SVR4
-		" SYSV R4"
-#		endif	
-
-#		if (defined(__sun__) || defined(sun) || defined(__sun)) && (defined(__SVR4) || defined(__svr4__))
-		" Solaris"
-#		endif
-
-#		if (defined(__sun__) || defined(sun) || defined(__sun)) && !defined(__SVR4) && !defined(__svr4__)
-		" SunOS"
 #		endif
 
 #		if defined(_WIN32) && !defined(_WIN64)
@@ -399,10 +365,7 @@ void printPlatform()
 		//#		if _MIPSEB || __MIPSEB__ || __ARMEB__ || __THUMBEB__
 		//		" big-endian"
 		//#		endif
-		,
-		*((uint8_t*)&testNumber) == 0x34 ? "little-endian" : "big-endian"
 	);
-
 }
 
 
