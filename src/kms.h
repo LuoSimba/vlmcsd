@@ -1,10 +1,7 @@
 #ifndef __kms_h
 #define __kms_h
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 #if _MSC_VER
 //#include <time.h>

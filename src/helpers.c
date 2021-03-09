@@ -12,17 +12,9 @@
 
 #include "config.h"
 
-#ifndef _WIN32
 #include <errno.h>
 #include <libgen.h>
-#endif // _WIN32
-
-#ifndef _MSC_VER
 #include <getopt.h>
-#else
-#include "wingetopt.h"
-#endif
-
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -34,14 +26,6 @@
 #ifndef NO_INTERNAL_DATA
 #include "kmsdata.h"
 #endif // NO_INTERNAL_DATA
-
-#ifdef _WIN32
-#include <shlwapi.h>
-#endif // _WIN32
-
-#if __APPLE__
-#include <mach-o/dyld.h>
-#endif // __APPLE__
 
 #if (__GLIBC__ || __linux__) && defined(USE_AUXV)
 #include <sys/auxv.h>
@@ -291,19 +275,18 @@ void optReset(void)
 }
 #endif // !IS_LIBRARY
 
-#if _WIN32 || __CYGWIN__
-
-// Returns a static message buffer containing text for a given Win32 error. Not thread safe (same as strerror)
+/**
+ * Returns a static message buffer containing text
+ * for a given Win32 error.
+ *
+ * Not thread safe (same as strerror)
+ * (没有用到)
+ */
 char* win_strerror(const int message)
 {
-#define STRERROR_BUFFER_SIZE 256
-	static char buffer[STRERROR_BUFFER_SIZE];
-
-	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK, NULL, message, 0, buffer, STRERROR_BUFFER_SIZE, NULL);
-	return buffer;
+    return "(win_strerror)";
 }
 
-#endif // _WIN32 || __CYGWIN__
 
 
 /*
@@ -347,13 +330,9 @@ void parseAddress(char *const addr, char** szHost, char** szPort)
  */
 void randomNumberInit()
 {
-#	if _MSC_VER
-	srand(GetTickCount());
-#	else
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	srand((unsigned int)(tv.tv_sec ^ tv.tv_usec));
-#	endif
 }
 
 
@@ -381,11 +360,7 @@ void* vlmcsd_malloc(size_t len)
 
 char* vlmcsd_strdup(const char* src)
 {
-#	if _MSC_VER
-	char* dst = _strdup(src);
-#	else // !_MSC_VER
 	char* dst = strdup(src);
-#	endif
 
 	if (!dst) OutOfMemory();
 	return dst;
