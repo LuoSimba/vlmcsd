@@ -96,10 +96,10 @@ else ifeq ($(FEATURES), minimum)
 				-DNO_TAP \
 				-DNO_CLIENT_LIST \
 				-DUNSAFE_DATA_LOAD \
-				-DNO_EXTERNAL_DATA \
-				-UFULL_INTERNAL_DATA \
+				-DNO_INTERNAL_DATA \
 				-DNO_HELP \
 				-U_PEDANTIC
+				#-DNO_EXTERNAL_DATA \
 
 else ifeq ($(FEATURES), most)
   BASECFLAGS += -DNO_SIGHUP -DNO_PID_FILE -DNO_LIMIT
@@ -108,8 +108,6 @@ else ifeq ($(FEATURES), inetd)
 else ifeq ($(FEATURES), fixedepids)
   BASECFLAGS += -DNO_SIGHUP -DNO_CL_PIDS -DNO_RANDOM_EPID -DNO_INI_FILE
 endif
-
-#BASECFLAGS += -DDATA_FILE=\"datafile\"
 
 ifeq ($(NO_GETIFADDRS), 1)
   BASECFLAGS += -DNO_GETIFADDRS

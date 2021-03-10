@@ -123,7 +123,6 @@ Troubleshooting options
 
 其他有用的 CFLAGS：
     -DNO_COMPILER_UAA            Do not use compiler support for byte swapping and unaligned access
-    -DFULL_INTERNAL_DATA         Embed full internal KMS data in vlmcsd.
     -DSUPPORT_WINE               Add code that the Windows version of vlmcsd runs on Wine if MSRPC=1
     -D_PEDANTIC                  Report rare error/warning conditions instead of silently ignoring them.
     -DFD_SETSIZE=<x>             Allow <x> -L statements in vlmcsd (default: 64 on Windows, 1024 on most Unixes).

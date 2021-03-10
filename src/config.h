@@ -54,15 +54,11 @@
 
 
 
-#ifndef DATA_FILE
 /*
- * Uncomment and customize the following line if you want vlmcsd to look for a KMS data file
- * at a custom default location.
+ * KMS data file
  */
+#define DATA_FILE "/vlmcsd.kmd"
 
- //#define DATA_FILE "/etc/vlmcsd.kmd"
-
-#endif // DATA_FILE
 
 
 /*
@@ -301,13 +297,12 @@
 
 
 
-#ifndef FULL_INTERNAL_DATA
 /*
  * Includes the full database in vlmcsd.
  */
 
- //#define FULL_INTERNAL_DATA
-#endif // FULL_INTERNAL_DATA
+// Embed full internal KMS data in vlmcsd.
+//#define FULL_INTERNAL_DATA
 
 
 
