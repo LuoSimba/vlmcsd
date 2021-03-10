@@ -109,9 +109,7 @@ else ifeq ($(FEATURES), fixedepids)
   BASECFLAGS += -DNO_SIGHUP -DNO_CL_PIDS -DNO_RANDOM_EPID -DNO_INI_FILE
 endif
 
-ifdef DATA
-  BASECFLAGS += -DDATA_FILE=\"$(DATA)\"
-endif
+#BASECFLAGS += -DDATA_FILE=\"datafile\"
 
 ifeq ($(NO_GETIFADDRS), 1)
   BASECFLAGS += -DNO_GETIFADDRS
