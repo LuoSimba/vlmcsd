@@ -286,10 +286,6 @@ void printPlatform()
 		" Intel Itanium"
 #		endif
 
-#		if __sparc__
-		" SPARC"
-#		endif
-
 #		if __ANDROID__
 		" Android"
 #		endif
@@ -320,10 +316,6 @@ void printPlatform()
 
 #		if __GNU__
 		" GNU"
-#		endif
-
-#		if __gnu_hurd__
-		" Hurd"
 #		endif
 
 #		if  __minix__

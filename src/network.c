@@ -481,7 +481,7 @@ void getPrivateIPAddresses(int* numAddresses, char*** ipAddresses)
 			*ipAddress = 0;
 		}
 
-#		if __UCLIBC__ || __gnu_hurd__
+#		if __UCLIBC__
 
 		size_t adrlen = strlen(ipAddress);
 
@@ -505,11 +505,11 @@ void getPrivateIPAddresses(int* numAddresses, char*** ipAddresses)
 		{
 			(*ipAddresses)[(*numAddresses)++] = ipAddress;
 		}
-#		else // !(__UCLIBC__ || __gnu_hurd__)
+#		else // !(__UCLIBC__)
 
 		(*ipAddresses)[(*numAddresses)++] = ipAddress;
 
-#		endif // !(__UCLIBC__ || __gnu_hurd__)
+#		endif
 	}
 
 	freeifaddrs(addrs);

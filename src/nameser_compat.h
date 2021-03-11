@@ -70,8 +70,7 @@
     defined(__hp9000s300) || defined(__hp9000s700) || \
     defined(__hp3000s900) || defined(__hpux) || defined(MPE) || \
     defined (BIT_ZERO_ON_LEFT) || defined(m68k) || defined(__sparc) ||  \
-    (defined(__Lynx__) && \
-     (defined(__68k__) || defined(__sparc__)))
+    (defined(__Lynx__) && defined(__68k__))
 #define BYTE_ORDER    BIG_ENDIAN
 #endif
 #endif /* __linux */
