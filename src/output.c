@@ -274,18 +274,6 @@ void printPlatform()
 		" Intel x86_64"
 #		endif
 
-#		if _M_ARM || __arm__
-		" ARM"
-#		endif
-
-#		if __aarch64__
-		" ARM64"
-#		endif
-
-#		if __ia64__
-		" Intel Itanium"
-#		endif
-
 #		if __ANDROID__
 		" Android"
 #		endif
