@@ -20,16 +20,6 @@
 #endif
 
 // ----------------
-#if defined(_WIN32)
-//#ifndef USE_MSRPC
-# include <winsock2.h>
-//#include <ws2tcpip.h>
-//#endif // USE_MSRPC
-#endif // defined(_WIN32)
-
-
-
-// ----------------
 #define ANDROID_API_LEVEL ANDROID_HELPER1(__ANDROID_API__)
 #define ANDROID_HELPER1(s) ANDROID_HELPER2(s)
 #define ANDROID_HELPER2(s) #s
@@ -37,14 +27,11 @@
 
 
 // ----------------
-#if !_WIN32
+#if !__minix__
+# include <pthread.h>
+#endif // !__minix__
 
-# if !__minix__
-#  include <pthread.h>
-# endif // !__minix__
-
-# define __declspec(x) __attribute__((__visibility__("default")))
-#endif
+#define __declspec(x) __attribute__((__visibility__("default")))
 
 
 
@@ -72,10 +59,8 @@
 
 
 // ----------------
-#ifndef _WIN32
-# include <unistd.h>
-# include <netinet/in.h>
-#endif // _WIN32
+#include <unistd.h>
+#include <netinet/in.h>
 
 
 // ----------------
@@ -124,19 +109,16 @@
 
 
 // ----------------
-#if !_WIN32
+#if !defined(_POSIX_THREADS) || (!defined(_POSIX_THREAD_PROCESS_SHARED) && !defined(USE_THREADS) && !__ANDROID__)
+# ifndef NO_CLIENT_LIST
+#  define NO_CLIENT_LIST
+# endif // !NO_CLIENT_LIST
+#endif // !defined(_POSIX_THREADS) || (!defined(_POSIX_THREAD_PROCESS_SHARED) && !defined(USE_THREADS))
 
-# if !defined(_POSIX_THREADS) || (!defined(_POSIX_THREAD_PROCESS_SHARED) && !defined(USE_THREADS) && !__ANDROID__)
-#  ifndef NO_CLIENT_LIST
-#   define NO_CLIENT_LIST
-#  endif // !NO_CLIENT_LIST
-# endif // !defined(_POSIX_THREADS) || (!defined(_POSIX_THREAD_PROCESS_SHARED) && !defined(USE_THREADS))
+#if !defined(_POSIX_THREADS) && !defined(NO_LIMIT)
+# define NO_LIMIT
+#endif // !defined(POSIX_THREADS) && !defined(NO_LIMIT)
 
-# if !defined(_POSIX_THREADS) && !defined(NO_LIMIT)
-#  define NO_LIMIT
-# endif // !defined(POSIX_THREADS) && !defined(NO_LIMIT)
-
-#endif // !_WIN32
 
 
 
@@ -244,11 +226,7 @@ typedef struct __packed
 // ----------------
 // PATH_MAX is optional in Posix. We use a default of 260 here
 #ifndef PATH_MAX
-# ifdef _WIN32
-#  define PATH_MAX MAX_PATH
-# else
-#  define PATH_MAX 260
-# endif // _WIN32
+# define PATH_MAX 260
 #endif // !PATH_MAX
 
 
@@ -270,13 +248,8 @@ typedef struct __packed
 // ----------------
 // Mutexes
 #ifdef USE_THREADS
-# if !defined(_WIN32)
-#  define lock_mutex(x) pthread_mutex_lock(x)
-#  define unlock_mutex(x) pthread_mutex_unlock(x)
-# else
-#  define lock_mutex(x) EnterCriticalSection(x)
-#  define unlock_mutex(x) LeaveCriticalSection(x)
-# endif
+# define lock_mutex(x) pthread_mutex_lock(x)
+# define unlock_mutex(x) pthread_mutex_unlock(x)
 #else // !USE_THREADS
 //defines to nothing
 # define lock_mutex(x)
@@ -286,13 +259,8 @@ typedef struct __packed
 
 // ----------------
 // Semaphores
-#ifndef _WIN32
-# define semaphore_wait(x) sem_wait(x)
-# define semaphore_post(x) sem_post(x)
-#else // _WIN32
-# define semaphore_wait(x) WaitForSingleObject(x, INFINITE)
-# define semaphore_post(x) ReleaseSemaphore(x, 1, NULL)
-#endif // _WIN32
+#define semaphore_wait(x) sem_wait(x)
+#define semaphore_post(x) sem_post(x)
 
 
 // ----------------
@@ -308,29 +276,24 @@ typedef struct __packed
 
 
 // ----------------
-#if defined(_WIN32) && !defined(NO_SOCKETS)
-# define _NTSERVICE
-#else
-# ifndef NO_TAP
-#  define NO_TAP
-# endif
+#ifndef NO_TAP
+# define NO_TAP
 #endif
 
 
 
 // ----------------
-#if (defined(_WIN32) || defined(NO_SOCKETS)) && !defined(NO_SIGHUP)
+#if defined(NO_SOCKETS) && !defined(NO_SIGHUP)
 # define NO_SIGHUP
-#endif // (defined(_WIN32) || defined(NO_SOCKETS)) && !defined(NO_SIGHUP)
+#endif // defined(NO_SOCKETS) && !defined(NO_SIGHUP)
 
 
 
 // ----------------
-#ifdef _WIN32
-# ifndef USE_THREADS
-#  define USE_THREADS
-# endif
-#endif
+// Win32 always:
+//# ifndef USE_THREADS
+//#  define USE_THREADS
+//# endif
 
 
 
@@ -347,106 +310,69 @@ typedef struct __packed
 
 
 // ----------------
-#if defined(_WIN32)
-# include <windows.h>
-//#include <VersionHelpers.h>
+typedef uint32_t		DWORD;
+typedef uint16_t		WORD;
+typedef uint8_t			BYTE;
+typedef uint16_t		WCHAR;
+typedef int32_t         BOOL;
+typedef int32_t			HRESULT;
 
- typedef char* sockopt_t;
-/* Unknown Winsock error codes */
-# define WSAENODEV -1
-
-// Map VLMCSD error codes to WSAGetLastError() and GetLastError() codes
-// Add more if you need them
-# define SOCKET_EADDRINUSE WSAEADDRINUSE
-# define SOCKET_ENODEV WSAENODEV
-# define SOCKET_EADDRNOTAVAIL WSAEADDRNOTAVAIL
-# define SOCKET_EACCES WSAEACCES
-# define SOCKET_EINVAL WSAEINVAL
-# define SOCKET_ENOTSOCK WSAENOTSOCK
-# define SOCKET_EINTR WSAEINTR
-# define SOCKET_EINPROGRESS WSAEINPROGRESS
-# define SOCKET_ECONNABORTED WSAECONNABORTED
-# define SOCKET_EALREADY WSAEALREADY
-
-# define VLMCSD_EACCES ERROR_ACCESS_DENIED
-# define VLMCSD_EINVAL ERROR_INVALID_PARAMETER
-# define VLMCSD_ENOMEM ERROR_OUTOFMEMORY
-# define VLMCSD_EPERM ERROR_CAN_NOT_COMPLETE
-
-# define socket_errno WSAGetLastError()
-# define socketclose(x) (closesocket(x))
-# define vlmcsd_strerror(x) win_strerror(x)
-# define VLMCSD_SHUT_RD SD_RECEIVE
-# define VLMCSD_SHUT_WR SD_SEND
-# define VLMCSD_SHUT_RDWR SD_BOTH
-
-#else // not _WIN32
- typedef uint32_t		DWORD;
- typedef uint16_t		WORD;
- typedef uint8_t			BYTE;
- typedef uint16_t		WCHAR;
- typedef int32_t         BOOL;
- typedef int32_t			HRESULT;
-
-# define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
-# define FAILED(hr) (((HRESULT)(hr)) < 0)
-# define S_OK	((HRESULT)0)
+#define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+#define FAILED(hr) (((HRESULT)(hr)) < 0)
+#define S_OK	((HRESULT)0)
 
 
-# define FALSE  0
-# define TRUE   !0
+#define FALSE  0
+#define TRUE   !0
 
- typedef struct {
+typedef struct {
 	DWORD  Data1;
 	WORD   Data2;
 	WORD   Data3;
 	BYTE   Data4[8];
- } /*__packed*/ GUID;
+} /*__packed*/ GUID;
 
- typedef struct {
+typedef struct {
 	DWORD  dwLowDateTime;
 	DWORD  dwHighDateTime;
- } /*__packed*/ FILETIME;
+} /*__packed*/ FILETIME;
 
-#endif // not Win32
 
 
 
 
 // ----------------
-#ifndef _WIN32
 // Map VLMCSD error codes to POSIX codes
 // Add more if you need them
-# define SOCKET_EADDRINUSE EADDRINUSE
-# define SOCKET_ENODEV ENODEV
-# define SOCKET_EADDRNOTAVAIL EADDRNOTAVAIL
-# define SOCKET_EACCES EACCES
-# define SOCKET_EINVAL EINVAL
-# define SOCKET_ENOTSOCK ENOTSOCK
-# define SOCKET_EINTR EINTR
-# define SOCKET_EINPROGRESS EINPROGRESS
-# define SOCKET_ECONNABORTED ECONNABORTED
-# define SOCKET_EALREADY EALREADY
+#define SOCKET_EADDRINUSE EADDRINUSE
+#define SOCKET_ENODEV ENODEV
+#define SOCKET_EADDRNOTAVAIL EADDRNOTAVAIL
+#define SOCKET_EACCES EACCES
+#define SOCKET_EINVAL EINVAL
+#define SOCKET_ENOTSOCK ENOTSOCK
+#define SOCKET_EINTR EINTR
+#define SOCKET_EINPROGRESS EINPROGRESS
+#define SOCKET_ECONNABORTED ECONNABORTED
+#define SOCKET_EALREADY EALREADY
 
-# define VLMCSD_EACCES EACCES
-# define VLMCSD_EINVAL EINVAL
-# define VLMCSD_EINTR EINTR
-# define VLMCSD_ENOMEM ENOMEM
-# define VLMCSD_EPERM EPERM
+#define VLMCSD_EACCES EACCES
+#define VLMCSD_EINVAL EINVAL
+#define VLMCSD_EINTR EINTR
+#define VLMCSD_ENOMEM ENOMEM
+#define VLMCSD_EPERM EPERM
 
- typedef void* sockopt_t;
+typedef void* sockopt_t;
 
-# define _countof(x)        ( sizeof(x) / sizeof(x[0]) )
-# define SOCKET int
-# define INVALID_SOCKET -1
-# define socket_errno errno
-# define socketclose(x) (close(x))
-# define vlmcsd_strerror strerror
-# define VLMCSD_SHUT_RD SHUT_RD
-# define VLMCSD_SHUT_WR SHUT_WR
-# define VLMCSD_SHUT_RDWR SHUT_RDWR
+#define _countof(x)        ( sizeof(x) / sizeof(x[0]) )
+#define SOCKET int
+#define INVALID_SOCKET -1
+#define socket_errno errno
+#define socketclose(x) (close(x))
+#define vlmcsd_strerror strerror
+#define VLMCSD_SHUT_RD SHUT_RD
+#define VLMCSD_SHUT_WR SHUT_WR
+#define VLMCSD_SHUT_RDWR SHUT_RDWR
 
-#endif // __MINGW__
 
 
 // ----------------

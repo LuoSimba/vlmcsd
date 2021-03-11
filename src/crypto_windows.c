@@ -10,7 +10,8 @@
 
 #if !_WIN32
 #error You cannot use Windows CryptoAPI on non-Windows platforms
-#else // _WIN32
+#endif 
+
 
 #include "crypto_windows.h"
 
@@ -166,5 +167,4 @@ int_fast8_t Sha256Hmac(const BYTE* key, BYTE* restrict data, DWORD len, BYTE* re
 	return (int_fast8_t)success;
 }
 
-#endif // _WIN32
 #endif // _CRYPTO_WINDOWS
