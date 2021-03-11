@@ -69,12 +69,8 @@ static void vlogger(const char *message, va_list args)
 	// We write everything to a string before we really log inside the critical section
 	// so formatting the output can be concurrent
 	int len = (int)strlen(mbstr);
-	//#	if !_MSC_VER
 
 	vlmcsd_vsnprintf(mbstr + len, sizeof(mbstr) - len, message, args);
-	//#	else
-	//	wvsprintf(mbstr + len, message, args);
-	//#	endif
 
 	lock_mutex(&logmutex);
 	fprintf(log, "%s", mbstr);

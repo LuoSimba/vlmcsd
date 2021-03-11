@@ -2,13 +2,7 @@
 #define __kms_h
 
 #include "config.h"
-
-#if _MSC_VER
-//#include <time.h>
-#else
 #include <sys/time.h>
-#endif // _MSC_VER
-//#include <stdlib.h>
 #include "types.h"
 //
 // REQUEST... types are actually fixed size

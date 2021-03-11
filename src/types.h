@@ -145,54 +145,25 @@
 
 // ----------------
 #ifndef alloca
-# if !_MSC_VER
-#  include <alloca.h>
-# else
-#  include <malloc.h>
-//#define alloca _malloca
-# endif
-
-//#define alloca _malloca
-//#endif // _MSC_VER
-#endif // alloca
+# include <alloca.h>
+#endif
 
 
 
 
 // ----------------
 #ifndef __packed
-# if _MSC_VER
-#  define __packed
-# else // !_MSC_VER
-#  define __packed  __attribute__((packed))
-# endif // !_MSC_VER
+# define __packed  __attribute__((packed))
 #endif
 
-
-
-
-// ----------------
 #ifndef __pure
-# if _MSC_VER
-#  define __pure
-# else
-#  define __pure	  __attribute__((pure))
-# endif
+# define __pure	  __attribute__((pure))
 #endif
 
-
-
-// ----------------
 #ifndef __noreturn
-# if _MSC_VER
-#  define __noreturn __declspec(noreturn)
-# else
-#  define __noreturn	__attribute__((noreturn))
-# endif
+# define __noreturn	__attribute__((noreturn))
 #endif
- 
 
-// ----------------
 #define restrict	__restrict
 
 
@@ -386,14 +357,14 @@ typedef void* sockopt_t;
 
 
 // ----------------
-#if !defined(__stdcall) && !_MSC_VER
+#if !defined(__stdcall)
 # define __stdcall
 #endif
 
-// ----------------
-#if !defined(__cdecl) && !_MSC_VER
+#if !defined(__cdecl)
 # define __cdecl
 #endif
+
 
 // ----------------
 typedef const char *const * CARGV;
@@ -406,19 +377,10 @@ typedef struct {
 
 
 // ----------------
-#ifdef _MSC_VER
-# define strcasecmp _stricmp
-# define strncasecmp _strnicmp
-# define vlmcsd_snprintf _snprintf
-# define vlmcsd_vsnprintf _vsnprintf
-# define vlmcsd_unlink DeleteFile
-# define vlmcsd_strtoll _strtoi64
-#else // !_MSC_VER
 # define vlmcsd_snprintf snprintf
 # define vlmcsd_vsnprintf vsnprintf
 # define vlmcsd_strtoll strtoll
 # define vlmcsd_unlink unlink
-#endif  // !_MSC_VER
 
 // ----------------
 
