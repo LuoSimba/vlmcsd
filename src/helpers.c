@@ -262,7 +262,7 @@ __pure unsigned int getOptionArgumentInt(const char o, const unsigned int min, c
  */
 void optReset(void)
 {
-#if __minix__ || defined(__BSD__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__)
+#if __minix__ || defined(__BSD__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 	optind = 1;
 	optreset = 1; // Makes newer BSD getopt happy
 #else
@@ -447,7 +447,7 @@ void getExeName()
 		fn_exe = vlmcsd_strdup(temp);
 	}
 
-#	elif (__linux__ || __CYGWIN__) && !defined(NO_PROCFS)
+#	elif !defined(NO_PROCFS)
 
 	fn_exe = realpath("/proc/self/exe", NULL);
 
@@ -465,10 +465,6 @@ void getExeName()
 	{
 		fn_exe = vlmcsd_strdup(path);
 	}
-
-#	elif (__DragonFly__) && !defined(NO_PROCFS)
-
-	fn_exe = realpath("/proc/curproc/file", NULL);
 
 #	elif __NetBSD__ && !defined(NO_PROCFS)
 

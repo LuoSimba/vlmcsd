@@ -310,10 +310,6 @@ void printPlatform()
 		" OpenBSD"
 #		endif
 
-#		if __DragonFly__
-		" DragonFly BSD"
-#		endif
-
 #		if defined(__CYGWIN__) && !defined(_WIN64)
 		" Cygwin32"
 #		endif
@@ -328,10 +324,6 @@ void printPlatform()
 
 #		if __gnu_hurd__
 		" Hurd"
-#		endif
-
-#		if __linux__
-		" Linux"
 #		endif
 
 #		if  __minix__

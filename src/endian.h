@@ -75,7 +75,7 @@
 #define BS64(x) bswap_64(x)
 #endif
 
-#elif __minix__ || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 
 #include <sys/types.h>
 #include <sys/endian.h>

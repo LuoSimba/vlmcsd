@@ -284,9 +284,9 @@ SOCKET connectToAddress(const char *const addr, const int AddressFamily, int_fas
 }
 
 // fix for lame tomato toolchain
-#	if !defined(IPV6_V6ONLY) && defined(__linux__)
+#	if !defined(IPV6_V6ONLY)
 #	define IPV6_V6ONLY (26)
-#	endif // !defined(IPV6_V6ONLY) && defined(__linux__)
+#	endif // !defined(IPV6_V6ONLY)
 
 
 #ifndef NO_SOCKETS

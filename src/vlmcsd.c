@@ -47,7 +47,7 @@
 #endif // NO_LIMIT
 #endif // !_WIN32
 
-#if __linux__ && defined(USE_AUXV)
+#if defined(USE_AUXV)
 #include <sys/auxv.h>
 #endif
 
