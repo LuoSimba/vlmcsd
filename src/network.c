@@ -579,9 +579,9 @@ static int listenOnAddress(const struct addrinfo *const ai, SOCKET *s)
 	allowSocketReuse(*s);
 
 #	if HAVE_FREEBIND
-#	if (defined(IP_NONLOCALOK) || __FreeBSD_kernel__ || __FreeBSD__) && !defined(IPV6_BINDANY)
+#	if defined(IP_NONLOCALOK) && !defined(IPV6_BINDANY)
 #	define IPV6_BINDANY 64
-#	endif // (defined(IP_NONLOCALOK) || __FreeBSD_kernel__ || __FreeBSD__) && !defined(IPV6_BINDANY)
+#	endif // defined(IP_NONLOCALOK) && !defined(IPV6_BINDANY)
 
 	if (freebind)
 	{

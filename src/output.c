@@ -294,10 +294,6 @@ void printPlatform()
 		" (API level " ANDROID_API_LEVEL ")"
 #		endif
 
-#		if __FreeBSD__ || __FreeBSD_kernel__
-		" FreeBSD"
-#		endif
-
 #		if __NetBSD__
 		" NetBSD"
 #		endif

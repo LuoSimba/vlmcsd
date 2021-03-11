@@ -31,10 +31,6 @@
 #include <sys/auxv.h>
 #endif
 
-#if __FreeBSD__ || __FreeBSD_kernel__
-#include <sys/sysctl.h>
-#endif
-
  /*
   *  UCS2 <-> UTF-8 functions
   *  All functions use little endian UCS2 since we only need it to communicate with Windows via RPC
@@ -262,7 +258,7 @@ __pure unsigned int getOptionArgumentInt(const char o, const unsigned int min, c
  */
 void optReset(void)
 {
-#if __minix__ || defined(__BSD__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#if __minix__ || defined(__BSD__) || defined(__APPLE__) || defined(__NetBSD__) || defined(__OpenBSD__)
 	optind = 1;
 	optreset = 1; // Makes newer BSD getopt happy
 #else
@@ -438,7 +434,7 @@ void getExeName()
 
 	fn_exe = (char*)getauxval(AT_EXECFN);
 
-#	elif (__ANDROID__ && __ANDROID_API__ < 16) || (__UCLIBC__ && __UCLIBC_MAJOR__ < 1 && !defined(NO_PROCFS)) // Workaround for older uclibc
+#	elif __ANDROID__ || (__UCLIBC__ && __UCLIBC_MAJOR__ < 1 && !defined(NO_PROCFS)) // Workaround for older uclibc
 
 	char temp[PATH_MAX + 1];
 
@@ -450,21 +446,6 @@ void getExeName()
 #	elif !defined(NO_PROCFS)
 
 	fn_exe = realpath("/proc/self/exe", NULL);
-
-#	elif (__FreeBSD__ || __FreeBSD_kernel__)
-
-	int mib[4];
-	mib[0] = CTL_KERN;
-	mib[1] = KERN_PROC;
-	mib[2] = KERN_PROC_PATHNAME;
-	mib[3] = -1;
-	char path[PATH_MAX + 1];
-	size_t cb = sizeof(path);
-
-	if (!sysctl(mib, 4, path, &cb, NULL, 0))
-	{
-		fn_exe = vlmcsd_strdup(path);
-	}
 
 #	elif __NetBSD__ && !defined(NO_PROCFS)
 

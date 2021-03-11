@@ -153,7 +153,7 @@ static int getDnsRawAnswer(const char *restrict query, unsigned char** receive_b
 
 	if (*query == '.')
 	{
-#		if __linux__ || __FreeBSD__ || __NetBSD__ || __OpenBSD__ || __sun__
+#		if __linux__ || __NetBSD__ || __OpenBSD__ || __sun__
 		bytes_received = res_querydomain("_vlmcs._tcp", query + 1, ns_c_in, ns_t_srv, *receive_buffer, RECEIVE_BUFFER_SIZE);
 #		else
 		char* querystring = (char*)alloca(strlen(query) + 12);

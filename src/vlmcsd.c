@@ -51,10 +51,6 @@
 #include <sys/auxv.h>
 #endif
 
-#if __FreeBSD__
-#include <sys/sysctl.h>
-#endif
-
 #include "vlmcsd.h"
 // ReSharper disable CppUnusedIncludeDirective
 #include "endian.h"
