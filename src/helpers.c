@@ -447,9 +447,6 @@ void getExeName()
 
 	fn_exe = realpath("/proc/self/exe", NULL);
 
-#	elif __sun__
-
-	fn_exe = getexecname();
 
 #	elif __APPLE__
 
