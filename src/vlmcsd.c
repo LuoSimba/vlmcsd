@@ -4,7 +4,7 @@
 
 #include "config.h"
 
-#if defined(USE_MSRPC) && !defined(_WIN32) && !defined(__CYGWIN__)
+#if defined(USE_MSRPC) && !defined(_WIN32)
 #error Microsoft RPC is only available on Windows and Cygwin
 #endif
 
@@ -1063,13 +1063,7 @@ static DWORD daemonizeAndSetSignalAction()
 #if !defined(NO_INI_FILE) || !defined(NO_LOG) || !defined(NO_CL_PIDS) || !defined(NO_EXTERNAL_DATA)
 __pure static char* getCommandLineArg(char* const restrict arg)
 {
-#	if !__CYGWIN__ || defined(USE_THREADS) || defined(NO_SOCKETS)
 	return arg;
-#	else
-	if (!IsNTService) return arg;
-
-	return vlmcsd_strdup(arg);
-#	endif
 }
 #endif // !defined(NO_INI_FILE) || !defined(NO_LOG) || !defined(NO_CL_PIDS) || !defined(NO_EXTERNAL_DATA)
 
@@ -1646,9 +1640,9 @@ int newmain()
 
 #  ifndef NO_LOG
 // Initialize the Critical Section for proper logging
-#    if _WIN32 || __CYGWIN__
+#    if _WIN32 
 	InitializeCriticalSection(&logmutex);
-#    endif // _WIN32 || __CYGWIN__
+#    endif // _WIN32
 #  endif // NO_LOG
 
 #endif // USE_THREADS

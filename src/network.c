@@ -293,8 +293,6 @@ SOCKET connectToAddress(const char *const addr, const int AddressFamily, int_fas
 
 static int_fast8_t allowSocketReuse(SOCKET s)
 {
-#	if !__CYGWIN__
-
 	BOOL socketOption = TRUE;
 
 #	if !_WIN32
@@ -311,7 +309,6 @@ static int_fast8_t allowSocketReuse(SOCKET s)
 	}
 
 #	undef VLMCSD_SOCKET_OPTION
-#	endif // !__CYGWIN__
 
 	return 0;
 }
@@ -563,13 +560,13 @@ static int listenOnAddress(const struct addrinfo *const ai, SOCKET *s)
 	if (ai->ai_family == AF_INET6 && setsockopt(*s, IPPROTO_IPV6, IPV6_V6ONLY, (sockopt_t)&socketOption, sizeof(socketOption)))
 	{
 #		ifdef _PEDANTIC
-#		if defined(_WIN32) || defined(__CYGWIN__)
+#		if defined(_WIN32)
 		//		if (IsWindowsVistaOrGreater()) //Doesn't work with older version of MingW32-w64 toolchain
 		if ((GetVersion() & 0xff) > 5)
 		{
 #		endif // _WIN32
 			printerrorf("Warning: %s does not support socket option IPV6_V6ONLY: %s\n", ipstr, vlmcsd_strerror(socket_errno));
-#		if defined(_WIN32) || defined(__CYGWIN__)
+#		if defined(_WIN32)
 		}
 #		endif // _WIN32
 #		endif // _PEDANTIC
@@ -857,7 +854,7 @@ static void wait_sem(void)
 
 #if defined(USE_THREADS) && !defined(NO_SOCKETS)
 
-#if defined(_WIN32) || defined(__CYGWIN__) // Win32 Threads
+#if defined(_WIN32) // Win32 Threads
 static DWORD WINAPI serveClientThreadProc(PCLDATA clData)
 #else // Posix threads
 static void *serveClientThreadProc(PCLDATA clData)
@@ -875,7 +872,7 @@ static void *serveClientThreadProc(PCLDATA clData)
 
 #ifndef NO_SOCKETS
 
-#if defined(USE_THREADS) && (defined(_WIN32) || defined(__CYGWIN__)) // Windows Threads
+#if defined(USE_THREADS) && defined(_WIN32) // Windows Threads
 static int serveClientAsyncWinThreads(PCLDATA thr_CLData)
 {
 	wait_sem();
@@ -898,7 +895,7 @@ static int serveClientAsyncWinThreads(PCLDATA thr_CLData)
 #endif // defined(USE_THREADS) && defined(_WIN32) // Windows Threads
 
 
-#if defined(USE_THREADS) && !defined(_WIN32) && !defined(__CYGWIN__) // Posix Threads
+#if defined(USE_THREADS) && !defined(_WIN32) // Posix Threads
 static int ServeClientAsyncPosixThreads(const PCLDATA thr_CLData)
 {
 	pthread_t p_thr;
@@ -993,7 +990,7 @@ int serveClientAsync(const SOCKET s_client, const DWORD RpcAssocGroup)
 	thr_CLData->socket = s_client;
 	thr_CLData->RpcAssocGroup = RpcAssocGroup;
 
-#if defined(_WIN32) || defined (__CYGWIN__) // Windows threads
+#if defined(_WIN32) // Windows threads
 
 	return serveClientAsyncWinThreads(thr_CLData);
 

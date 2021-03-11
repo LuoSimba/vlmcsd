@@ -37,7 +37,7 @@
 
 
 // ----------------
-#if !_WIN32 && !__CYGWIN__
+#if !_WIN32
 
 # if !__minix__
 #  include <pthread.h>
@@ -124,7 +124,7 @@
 
 
 // ----------------
-#if !_WIN32 && !__CYGWIN__
+#if !_WIN32
 
 # if !defined(_POSIX_THREADS) || (!defined(_POSIX_THREAD_PROCESS_SHARED) && !defined(USE_THREADS) && !__ANDROID__)
 #  ifndef NO_CLIENT_LIST
@@ -136,7 +136,7 @@
 #  define NO_LIMIT
 # endif // !defined(POSIX_THREADS) && !defined(NO_LIMIT)
 
-#endif // !_WIN32 && !__CYGWIN__
+#endif // !_WIN32
 
 
 
@@ -270,7 +270,7 @@ typedef struct __packed
 // ----------------
 // Mutexes
 #ifdef USE_THREADS
-# if !defined(_WIN32) && !defined(__CYGWIN__)
+# if !defined(_WIN32)
 #  define lock_mutex(x) pthread_mutex_lock(x)
 #  define unlock_mutex(x) pthread_mutex_unlock(x)
 # else
@@ -308,7 +308,7 @@ typedef struct __packed
 
 
 // ----------------
-#if (defined(_WIN32) || defined(__CYGWIN__)) && !defined(NO_SOCKETS)
+#if defined(_WIN32) && !defined(NO_SOCKETS)
 # define _NTSERVICE
 #else
 # ifndef NO_TAP
@@ -319,9 +319,9 @@ typedef struct __packed
 
 
 // ----------------
-#if (defined(__CYGWIN__) || defined(_WIN32) || defined(NO_SOCKETS)) && !defined(NO_SIGHUP)
+#if (defined(_WIN32) || defined(NO_SOCKETS)) && !defined(NO_SIGHUP)
 # define NO_SIGHUP
-#endif // (defined(__CYGWIN__) || defined(_WIN32) || defined(NO_SOCKETS)) && !defined(NO_SIGHUP)
+#endif // (defined(_WIN32) || defined(NO_SOCKETS)) && !defined(NO_SIGHUP)
 
 
 
@@ -380,17 +380,7 @@ typedef struct __packed
 # define VLMCSD_SHUT_WR SD_SEND
 # define VLMCSD_SHUT_RDWR SD_BOTH
 
-#elif defined(__CYGWIN__)
-# include <windows.h>
-
-
-// Resolve conflicts between OpenSSL and MS Crypto API
-# ifdef _CRYPTO_OPENSSL
-#  undef OCSP_RESPONSE
-#  undef X509_NAME
-# endif
-
-#else // not _WIN32 and not __CYGWIN__
+#else // not _WIN32
  typedef uint32_t		DWORD;
  typedef uint16_t		WORD;
  typedef uint8_t			BYTE;
@@ -418,7 +408,7 @@ typedef struct __packed
 	DWORD  dwHighDateTime;
  } /*__packed*/ FILETIME;
 
-#endif // defined(__CYGWIN__)
+#endif // not Win32
 
 
 

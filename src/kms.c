@@ -166,7 +166,7 @@ __pure int64_t fileTimeToUnixTime(FILETIME* ts)
 static PClientList_t ClientLists;
 static BYTE ZeroGuid[16] = { 0 };
 
-#if !defined(_WIN32) && !defined(__CYGWIN__)
+#if !defined(_WIN32)
 pthread_mutex_t* mutex;
 #define mutex_size (((sizeof(pthread_mutex_t)+7)>>3)<<3)
 #else
@@ -178,7 +178,7 @@ CRITICAL_SECTION* mutex;
 static int shmid_clients = -1;
 #endif // USE_THREADS
 
-#if !defined(_WIN32) && !defined(__CYGWIN__)
+#if !defined(_WIN32)
 #define lock_client_lists() pthread_mutex_lock(mutex)
 #define unlock_client_lists() pthread_mutex_unlock(mutex)
 #define mutex_t pthread_mutex_t
@@ -215,26 +215,21 @@ void InitializeClientLists()
 
 	ClientLists = (PClientList_t)((BYTE*)mutex + mutex_size);
 
-#	if __CYGWIN__
-	InitializeCriticalSection(mutex);
-#	else // !__CYGWIN__
 	pthread_mutexattr_t mutex_attr;
 	pthread_mutexattr_init(&mutex_attr);
 	pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED);
 	pthread_mutex_init(mutex, &mutex_attr);
-
-#	endif // !__CYGWIN__
 
 #	else // USE_THREADS
 
 	ClientLists = (PClientList_t)vlmcsd_malloc(sizeof(ClientList_t) * KmsData->AppItemCount);
 	mutex = (mutex_t*)vlmcsd_malloc(sizeof(mutex_t));
 
-#	if !_WIN32 && !__CYGWIN__
+#	if !_WIN32
 	pthread_mutex_init(mutex, NULL);
-#	else //_WIN32 || __CYGWIN__
+#	else //_WIN32
 	InitializeCriticalSection(mutex);
-#   endif //_WIN32 || __CYGWIN__
+#   endif //_WIN32
 
 #	endif // USE_THREADS
 

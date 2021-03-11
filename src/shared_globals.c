@@ -137,11 +137,11 @@ int_fast8_t ServiceShutdown = FALSE;
 
 #ifndef NO_LOG
 #ifdef USE_THREADS
-#if !defined(_WIN32) && !defined(__CYGWIN__)
+#if !defined(_WIN32)
 pthread_mutex_t logmutex = PTHREAD_MUTEX_INITIALIZER;
 #else
 CRITICAL_SECTION logmutex;
-#endif // !defined(_WIN32) && !defined(__CYGWIN__)
+#endif // !defined(_WIN32)
 #endif // USE_THREADS
 #endif // NO_LOG
 

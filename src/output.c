@@ -282,14 +282,6 @@ void printPlatform()
 		" (API level " ANDROID_API_LEVEL ")"
 #		endif
 
-#		if defined(__CYGWIN__) && !defined(_WIN64)
-		" Cygwin32"
-#		endif
-
-#		if defined(__CYGWIN__) && defined(_WIN64)
-		" Cygwin64"
-#		endif
-
 #		if __GNU__
 		" GNU"
 #		endif
@@ -489,13 +481,13 @@ void printServerFlags()
 		" NO_CLIENT_LIST"
 #		endif // NO_CLIENT_LIST
 
-#		if (_WIN32 || __CYGWIN__) && (!defined(USE_MSRPC) || defined(SUPPORT_WINE))
+#		if _WIN32 && (!defined(USE_MSRPC) || defined(SUPPORT_WINE))
 		" SUPPORT_WINE"
-#		endif // (_WIN32 || __CYGWIN__) && (!defined(USE_MSRPC) || defined(SUPPORT_WINE))
+#		endif // _WIN32 && (!defined(USE_MSRPC) || defined(SUPPORT_WINE))
 
-#		if (_WIN32 || __CYGWIN__) && defined(NO_TAP)
+#		if _WIN32 && defined(NO_TAP)
 		" NO_TAP"
-#		endif // (_WIN32 || __CYGWIN__) && defined(NO_TAP)
+#		endif // _WIN32 && defined(NO_TAP)
 
 #		if !HAVE_FREEBIND
 		" NO_FREEBIND"

@@ -5,7 +5,7 @@
 
 #ifdef USE_MSRPC
 
-#if !defined(_WIN32) && !defined(__CYGWIN__)
+#if !defined(_WIN32)
 #error MSRPC is only available with native Windows or Cygwin
 #endif
 

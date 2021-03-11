@@ -6,9 +6,9 @@
 #ifndef CRYPTO_WINDOWS_H_
 #define CRYPTO_WINDOWS_H_
 
-#if !_WIN32 && !__CYGWIN__
-#error You cannot use Windows CryptoAPI on non-Windows platforms
-#else // _WIN32 || __CYGWIN__
+#if !_WIN32
+# error You cannot use Windows CryptoAPI on non-Windows platforms
+#else // _WIN32
 
 #include "types.h"
 #if _MSC_VER
@@ -29,6 +29,6 @@ int_fast8_t Sha256HmacUpdate(Sha256HmacCtx *Ctx, BYTE *data, DWORD len);
 int_fast8_t Sha256HmacFinish(Sha256HmacCtx *Ctx, BYTE *hmac);*/
 
 
-#endif // _WIN32 || __CYGWIN__
+#endif // _WIN32
 #endif /* CRYPTO_WINDOWS_H_ */
 #endif // _CRYPTO_WINDOWS

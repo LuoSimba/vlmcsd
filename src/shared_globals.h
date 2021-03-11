@@ -200,7 +200,7 @@ extern int_fast8_t ServiceShutdown;
 
 #ifndef NO_LOG
 #ifdef USE_THREADS
-#if !defined(_WIN32) && !defined(__CYGWIN__)
+#if !defined(_WIN32)
 extern pthread_mutex_t logmutex;
 #else
 extern CRITICAL_SECTION logmutex;

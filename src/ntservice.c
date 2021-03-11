@@ -27,9 +27,9 @@ VOID WINAPI ServiceCtrlHandler(DWORD dwCtrl)
 
 		// Remove PID file and free ressources
 		cleanup();
-#			if __CYGWIN__ || defined(USE_MSRPC)
+#			if defined(USE_MSRPC)
 		ReportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
-#			endif // __CYGWIN__
+#			endif
 
 	default:
 		break;
@@ -256,7 +256,7 @@ static VOID ServiceInstaller(const char *restrict ServiceUser, const char *const
 		ServiceUser,				// LocalSystem account
 		ServicePassword);			// no password
 
-#	if __clang__ && (__CYGWIN__ || __MINGW64__ )
+#	if __clang__ && __MINGW64__
 	// Workaround for clang not understanding some GCC asm syntax used in <w32api/psdk_inc/intrin-impl.h>
 	ZeroMemory((char*)ServicePassword, strlen(ServicePassword));
 #	else
