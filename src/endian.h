@@ -58,8 +58,6 @@
 //
 // Byteorder
 //
-#if defined(__linux__)
-
 #include <endian.h>
 #include <byteswap.h>
 
@@ -75,46 +73,7 @@
 #define BS64(x) bswap_64(x)
 #endif
 
-#elif defined(__NetBSD__) || defined(__OpenBSD__)
 
-#include <sys/types.h>
-#include <sys/endian.h>
-
-#define __BYTE_ORDER     _BYTE_ORDER
-#define __LITTLE_ENDIAN  _LITTLE_ENDIAN
-#define __BIG_ENDIAN     _BIG_ENDIAN
-
-#ifdef __OpenBSD__
-
-#ifndef BS16
-#define BS16  swap16
-#endif
-
-#ifndef BS32
-#define BS32  swap32
-#endif
-
-#ifndef BS64
-#define BS64  swap64
-#endif
-
-#else // !__OpenBSD__
-
-#ifndef BS16
-#define BS16  bswap16
-#endif
-
-#ifndef BS32
-#define BS32  bswap32
-#endif
-
-#ifndef BS64
-#define BS64  bswap64
-#endif
-
-#endif // !__OpenBSD__
-
-#endif // Byteorder in different OS
 
 
 #if defined(__BYTE_ORDER) && defined(__BIG_ENDIAN) && defined(__LITTLE_ENDIAN)  \

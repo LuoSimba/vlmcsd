@@ -258,7 +258,7 @@ __pure unsigned int getOptionArgumentInt(const char o, const unsigned int min, c
  */
 void optReset(void)
 {
-#if __minix__ || defined(__BSD__) || defined(__APPLE__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#if __minix__ || defined(__BSD__) || defined(__APPLE__)
 	optind = 1;
 	optreset = 1; // Makes newer BSD getopt happy
 #else
@@ -446,10 +446,6 @@ void getExeName()
 #	elif !defined(NO_PROCFS)
 
 	fn_exe = realpath("/proc/self/exe", NULL);
-
-#	elif __NetBSD__ && !defined(NO_PROCFS)
-
-	fn_exe = realpath("/proc/curproc/exe", NULL);
 
 #	elif __sun__
 

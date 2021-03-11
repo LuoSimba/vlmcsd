@@ -294,14 +294,6 @@ void printPlatform()
 		" (API level " ANDROID_API_LEVEL ")"
 #		endif
 
-#		if __NetBSD__
-		" NetBSD"
-#		endif
-
-#		if __OpenBSD__
-		" OpenBSD"
-#		endif
-
 #		if defined(__CYGWIN__) && !defined(_WIN64)
 		" Cygwin32"
 #		endif

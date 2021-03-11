@@ -26,7 +26,7 @@ typedef struct
 	unsigned char name[1];
 } dns_srv_record_t, *dns_srv_record_ptr;
 
-#if __OpenBSD__
+#if __OpenBSD__ /* always false */
 typedef enum __ns_type {
 	ns_t_invalid = 0,	/*%< Cookie. */
 	ns_t_a = 1,		/*%< Host address. */
