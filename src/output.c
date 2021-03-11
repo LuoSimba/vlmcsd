@@ -346,18 +346,6 @@ void printPlatform()
 		" Windows64"
 #		endif
 
-#		if defined(__GLIBC__) && !defined(__UCLIBC__)
-		" glibc"
-#		endif
-
-#		if __UCLIBC__
-		" uclibc"
-#		endif
-
-#		if defined(__linux__) && !defined(__GLIBC__) && !defined(__UCLIBC__) && !defined(__ANDROID__) && !defined(__BIONIC__)
-		" musl"
-#		endif
-
 		//#		if _MIPSEL || __MIPSEL__ || __ARMEL__ || __THUMBEL__
 		//		" little-endian"
 		//#		endif

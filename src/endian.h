@@ -1,10 +1,7 @@
 #ifndef __endian_h
 #define __endian_h
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 //
 // Unaligned access
@@ -61,7 +58,7 @@
 //
 // Byteorder
 //
-#if defined(__linux__) || defined(__GLIBC__) || defined(__CYGWIN__)
+#if defined(__linux__)
 
 #include <endian.h>
 #include <byteswap.h>
@@ -76,31 +73,6 @@
 
 #ifndef BS64
 #define BS64(x) bswap_64(x)
-#endif
-
-#elif defined(__sun__)
-
-#include <sys/byteorder.h>
-
-#ifndef BS16
-#define BS16(x) BSWAP_16(x)
-#endif
-
-#ifndef BS32
-#define BS32(x) BSWAP_32(x)
-#endif
-
-#ifndef BS64
-#define BS64(x) BSWAP_64(x)
-#endif
-
-#define __LITTLE_ENDIAN 1234
-#define __BIG_ENDIAN 4321
-
-#ifdef _LITTLE_ENDIAN
-#define __BYTE_ORDER __LITTLE_ENDIAN
-#else
-#define __BYTE_ORDER __BIG_ENDIAN
 #endif
 
 #elif __minix__ || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__)
@@ -141,48 +113,6 @@
 #endif
 
 #endif // !__OpenBSD__
-
-#elif defined(__APPLE__)
-
-#include <sys/types.h>
-#include <machine/endian.h>
-#include <libkern/OSByteOrder.h>
-
-#define __BYTE_ORDER     _BYTE_ORDER
-#define __LITTLE_ENDIAN  _LITTLE_ENDIAN
-#define __BIG_ENDIAN     _BIG_ENDIAN
-
-#ifndef BS16
-#define BS16 OSSwapInt16
-#endif
-
-#ifndef BS32
-#define BS32 OSSwapInt32
-#endif
-
-#ifndef BS64
-#define BS64 OSSwapInt64
-#endif
-
-#elif defined(_WIN32)
-
-#define __LITTLE_ENDIAN 1234
-#define __BIG_ENDIAN 4321
-#define __BYTE_ORDER __LITTLE_ENDIAN
-
-#include <stdlib.h>
-
-#ifndef BS16
-#define BS16 _byteswap_ushort
-#endif
-
-#ifndef BS32
-#define BS32 _byteswap_ulong
-#endif
-
-#ifndef BS64
-#define BS64 _byteswap_uint64
-#endif
 
 #endif // Byteorder in different OS
 

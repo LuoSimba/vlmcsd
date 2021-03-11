@@ -27,7 +27,7 @@
 #include "kmsdata.h"
 #endif // NO_INTERNAL_DATA
 
-#if (__GLIBC__ || __linux__) && defined(USE_AUXV)
+#if defined(USE_AUXV)
 #include <sys/auxv.h>
 #endif
 
@@ -265,12 +265,8 @@ void optReset(void)
 #if __minix__ || defined(__BSD__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__)
 	optind = 1;
 	optreset = 1; // Makes newer BSD getopt happy
-#elif defined(__UCLIBC__) // uClibc headers also define __GLIBC__ so be careful here
-	optind = 0; // uClibc seeks compatibility with GLIBC
-#elif defined(__GLIBC__)
-	optind = 0; // Makes GLIBC getopt happy
-#else // Standard for most systems
-	optind = 1;
+#else
+	optind = 0; // Makes GLIBc getopt happy
 #endif
 }
 #endif // !IS_LIBRARY
@@ -438,7 +434,7 @@ void getExeName()
 {
 	if (fn_exe != NULL) return;
 
-#	if (__GLIBC__ || __linux__) && defined(USE_AUXV)
+#	if defined(USE_AUXV)
 
 	fn_exe = (char*)getauxval(AT_EXECFN);
 
