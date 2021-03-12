@@ -231,7 +231,7 @@ SOCKET connectToAddress(const char *const addr, const int AddressFamily, int_fas
 
 		s = socket(sa->ai_family, SOCK_STREAM, IPPROTO_TCP);
 
-#		if !defined(NO_TIMEOUT) && !__minix__
+#		if !defined(NO_TIMEOUT)
 
 		struct timeval to;
 		to.tv_sec = 10;
@@ -239,7 +239,7 @@ SOCKET connectToAddress(const char *const addr, const int AddressFamily, int_fas
 
 		setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (sockopt_t)&to, sizeof(to));
 		setsockopt(s, SOL_SOCKET, SO_SNDTIMEO, (sockopt_t)&to, sizeof(to));
-#		endif // !defined(NO_TIMEOUT) && !__minix__
+#		endif // !defined(NO_TIMEOUT)
 
 		if (!connect(s, sa->ai_addr, (int)sa->ai_addrlen))
 		{
@@ -712,7 +712,7 @@ void closeAllListeningSockets()
 
 static void serveClient(const SOCKET s_client, const DWORD RpcAssocGroup)
 {
-#	if !defined(NO_TIMEOUT) && !__minix__
+#	if !defined(NO_TIMEOUT)
 
 	struct timeval to;
 	to.tv_sec = ServerTimeout;
@@ -733,7 +733,7 @@ static void serveClient(const SOCKET s_client, const DWORD RpcAssocGroup)
 
 #   endif // !(!defined(NO_LOG) && defined(_PEDANTIC))
 
-#	endif // !defined(NO_TIMEOUT) && !__minix__
+#	endif // !defined(NO_TIMEOUT)
 
 	char ipstr[64];
 	socklen_t len;
@@ -791,23 +791,23 @@ static void serveClient(const SOCKET s_client, const DWORD RpcAssocGroup)
 #ifndef NO_SOCKETS
 static void post_sem(void)
 {
-#if !defined(NO_LIMIT) && !__minix__
+#if !defined(NO_LIMIT)
 	if (!InetdMode && MaxTasks != SEM_VALUE_MAX)
 	{
 		semaphore_post(MaxTaskSemaphore);
 	}
-#endif // !defined(NO_LIMIT) && !__minix__
+#endif // !defined(NO_LIMIT)
 }
 
 
 static void wait_sem(void)
 {
-#if !defined(NO_LIMIT) && !__minix__
+#if !defined(NO_LIMIT)
 	if (!InetdMode && MaxTasks != SEM_VALUE_MAX)
 	{
 		semaphore_wait(MaxTaskSemaphore);
 	}
-#endif // !defined(NO_LIMIT) && !__minix__
+#endif // !defined(NO_LIMIT)
 }
 #endif // NO_SOCKETS
 

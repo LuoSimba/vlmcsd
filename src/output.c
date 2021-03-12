@@ -273,10 +273,6 @@ void printPlatform()
 		" GNU"
 #		endif
 
-#		if  __minix__
-		" Minix"
-#		endif
-
 #		if defined(_WIN32) && !defined(_WIN64)
 		" Windows32"
 #		endif
@@ -358,9 +354,9 @@ void printCommonFlags()
 		" INCLUDE_BETAS"
 #		endif // INCLUDE_BETAS
 
-#		if __minix__ || defined(NO_TIMEOUT)
+#		if defined(NO_TIMEOUT)
 		" NO_TIMEOUT=1"
-#		endif // __minix__ || defined(NO_TIMEOUT)
+#		endif // defined(NO_TIMEOUT)
 	);
 }
 
@@ -448,9 +444,9 @@ void printServerFlags()
 		" AUXV=1"
 #		endif // USE_AUXV
 
-#		if defined(CHILD_HANDLER) || __minix__
+#		if defined(CHILD_HANDLER)
 		" CHILD_HANDLER=1"
-#		endif // defined(CHILD_HANDLER) || __minix__
+#		endif // defined(CHILD_HANDLER)
 
 #		if !defined(NO_SOCKETS) && defined(SIMPLE_SOCKETS)
 		" SIMPLE_SOCKETS"

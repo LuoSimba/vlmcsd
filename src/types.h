@@ -91,9 +91,9 @@
 
 
 
-//#if (__minix__ || defined(NO_SOCKETS)) && !defined(NO_STRICT_MODES)
+//#if defined(NO_SOCKETS) && !defined(NO_STRICT_MODES)
 //#define NO_STRICT_MODES
-//#endif // __minix__ && !defined(NO_STRICT_MODES)
+//#endif // !defined(NO_STRICT_MODES)
 
 
 

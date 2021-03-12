@@ -30,12 +30,12 @@
 #include <grp.h>
 #include <sys/types.h>
 
-#if !defined(NO_LIMIT) && !__minix__
+#if !defined(NO_LIMIT)
 #include <sys/ipc.h>
 #if !__ANDROID__
 #include <sys/shm.h>
 #endif // !__ANDROID__
-#endif // !defined(NO_LIMIT) && !__minix__
+#endif // !defined(NO_LIMIT)
 
 #include <sys/wait.h>
 #include <unistd.h>
@@ -126,13 +126,17 @@ static IniFileParameter_t IniFileParameterList[] =
 #	if HAVE_FREEBIND
 		{ "FreeBind", INI_PARAM_FREEBIND },
 #	endif // HAVE_FREEBIND
-#	if !defined(NO_LIMIT) && !__minix__
+
+#	if !defined(NO_LIMIT)
 		{ "MaxWorkers", INI_PARAM_MAX_WORKERS },
-#	endif // !defined(NO_LIMIT) && !__minix__
+#	endif // !defined(NO_LIMIT)
+
 #	endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
-#	if !defined(NO_TIMEOUT) && !__minix__ && !defined(USE_MSRPC) & !defined(USE_MSRPC)
+
+#	if !defined(NO_TIMEOUT) && !defined(USE_MSRPC) & !defined(USE_MSRPC)
 		{ "ConnectionTimeout", INI_PARAM_CONNECTION_TIMEOUT },
-#	endif // !defined(NO_TIMEOUT) && !__minix__ && !defined(USE_MSRPC) & !defined(USE_MSRPC)
+#	endif // !defined(NO_TIMEOUT) && !defined(USE_MSRPC) & !defined(USE_MSRPC)
+
 #	ifndef USE_MSRPC
 		{ "DisconnectClientsImmediately", INI_PARAM_DISCONNECT_IMMEDIATELY },
 #	ifndef SIMPLE_RPC
@@ -166,14 +170,14 @@ static IniFileParameter_t IniFileParameterList[] =
 #endif // NO_INI_FILE
 
 
-#if !defined(NO_LIMIT) && !defined (NO_SOCKETS) && !__minix__
+#if !defined(NO_LIMIT) && !defined (NO_SOCKETS)
 
 #if !defined(USE_THREADS) && !defined(CYGWIN) && !defined(USE_MSRPC)
 static int shmid = -1;
 #endif
 
 
-#endif // !defined(NO_LIMIT) && !defined (NO_SOCKETS) && !__minix__
+#endif // !defined(NO_LIMIT) && !defined (NO_SOCKETS)
 
 #ifndef NO_USER_SWITCH
 
@@ -269,9 +273,10 @@ static __noreturn void usage()
 #		else // defined(USE_MSRPC) || defined(SIMPLE_SOCKETS)
 		"  -P <port>\t\tuse TCP port <port> (default 1688)\n"
 #		endif // defined(USE_MSRPC) || defined(SIMPLE_SOCKETS)
-#		if !defined(NO_LIMIT) && !__minix__
+
+#		if !defined(NO_LIMIT)
 		"  -m <clients>\t\tHandle max. <clients> simultaneously (default no limit)\n"
-#		endif // !defined(NO_LIMIT) && !__minix__
+#		endif // !defined(NO_LIMIT)
 
 
 #		ifndef NO_LOG
@@ -290,9 +295,11 @@ static __noreturn void usage()
 #		endif // !NO_CLIENT_LIST
 #		endif // !NO_STRICT_MODES
 #		ifndef USE_MSRPC
-#		if !defined(NO_TIMEOUT) && !__minix__
+
+#		if !defined(NO_TIMEOUT)
 		"  -t <seconds>\t\tdisconnect clients after <seconds> of inactivity (default 30)\n"
-#		endif // !defined(NO_TIMEOUT) && !__minix__
+#		endif // !defined(NO_TIMEOUT)
+
 		"  -d\t\t\tdisconnect clients after each request\n"
 		"  -k\t\t\tdon't disconnect clients after each request (default)\n"
 #		ifndef SIMPLE_RPC
@@ -534,7 +541,8 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 		return TRUE;
 
 #	endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
-#	if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !__minix__
+
+#	if !defined(NO_LIMIT) && !defined(NO_SOCKETS)
 
 	case INI_PARAM_MAX_WORKERS:
 #		ifdef USE_MSRPC
@@ -544,7 +552,7 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 #		endif // !USE_MSRPC
 		break;
 
-#	endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !__minix__
+#	endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS)
 
 #	ifndef NO_PID_FILE
 
@@ -620,14 +628,14 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 
 #	ifndef USE_MSRPC
 
-#	if !defined(NO_TIMEOUT) && !__minix__
+#	if !defined(NO_TIMEOUT)
 
 	case INI_PARAM_CONNECTION_TIMEOUT:
 		success = getIniFileArgumentInt(&result, iniarg, 1, 600);
 		if (success) ServerTimeout = (DWORD)result;
 		break;
 
-#	endif // !defined(NO_TIMEOUT) && !__minix__
+#	endif // !defined(NO_TIMEOUT)
 
 	case INI_PARAM_DISCONNECT_IMMEDIATELY:
 		success = getIniFileArgumentBool(&DisconnectImmediately, iniarg);
@@ -943,12 +951,12 @@ __noreturn static void terminationHandler(const int signal_unused)
 }
 
 
-#if defined(CHILD_HANDLER) || __minix__
+#if defined(CHILD_HANDLER)
 static void childHandler(const int signal)
 {
 	waitpid(-1, NULL, WNOHANG);
 }
-#endif // defined(CHILD_HANDLER) || __minix__
+#endif // defined(CHILD_HANDLER)
 
 
 static int daemonizeAndSetSignalAction()
@@ -970,11 +978,11 @@ static int daemonizeAndSetSignalAction()
 	{
 #		ifndef USE_THREADS
 
-#		if defined(CHILD_HANDLER) || __minix__
+#		if defined(CHILD_HANDLER)
 		sa.sa_handler = childHandler;
-#		else // !(defined(CHILD_HANDLER) || __minix__)
+#		else // !defined(CHILD_HANDLER)
 		sa.sa_handler = SIG_IGN;
-#		endif // !(defined(CHILD_HANDLER) || __minix__)
+#		endif // !defined(CHILD_HANDLER)
 		sa.sa_flags = SA_NOCLDWAIT;
 
 		if (sigaction(SIGCHLD, &sa, NULL))
@@ -1103,7 +1111,7 @@ static void parseGeneralArguments()
 #		endif // !SIMPLE_SOCKETS
 		break;
 
-#	if !defined(NO_LIMIT) && !__minix__
+#	if !defined(NO_LIMIT)
 
 	case 'm':
 #		ifdef USE_MSRPC
@@ -1114,15 +1122,15 @@ static void parseGeneralArguments()
 		ignoreIniFileParameter(INI_PARAM_MAX_WORKERS);
 		break;
 
-#		endif // !defined(NO_LIMIT) && !__minix__
+#		endif // !defined(NO_LIMIT)
 #		endif // NO_SOCKETS
 
-#	if !defined(NO_TIMEOUT) && !__minix__ && !defined(USE_MSRPC)
+#	if !defined(NO_TIMEOUT) && !defined(USE_MSRPC)
 	case 't':
 		ServerTimeout = getOptionArgumentInt((char)o, 1, 600);
 		ignoreIniFileParameter(INI_PARAM_CONNECTION_TIMEOUT);
 		break;
-#	endif // !defined(NO_TIMEOUT) && !__minix__ && !defined(USE_MSRPC)
+#	endif // !defined(NO_TIMEOUT) && !defined(USE_MSRPC)
 
 #	ifndef NO_PID_FILE
 	case 'p':
@@ -1376,7 +1384,7 @@ void cleanup()
 #		endif // NO_PID_FILE
 		closeAllListeningSockets();
 
-#		if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32) && !__minix__
+#		if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32)
 		sem_unlink("/vlmcsd");
 #		if !defined(USE_THREADS) && !defined(CYGWIN)
 		if (shmid >= 0)
@@ -1385,7 +1393,7 @@ void cleanup()
 			shmctl(shmid, IPC_RMID, NULL);
 		}
 #		endif // !defined(USE_THREADS) && !defined(CYGWIN)
-#		endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32) && !__minix__
+#		endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32)
 
 #		ifndef NO_LOG
 		logger("vlmcsd %s was shutdown\n", Version);
@@ -1413,7 +1421,7 @@ __pure void cleanup() {}
 #endif // Neither Sockets nor RPC
 
 
-#if !defined(USE_MSRPC) && !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !__minix__
+#if !defined(USE_MSRPC) && !defined(NO_LIMIT) && !defined(NO_SOCKETS)
 // Get a semaphore for limiting the maximum concurrent tasks
 static void allocateSemaphore(void)
 {
@@ -1467,7 +1475,7 @@ static void allocateSemaphore(void)
 
 	}
 }
-#endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !__minix__
+#endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS)
 
 
 #if !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
@@ -1669,9 +1677,9 @@ int newmain()
 	}
 #endif // defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
 
-#if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !__minix__ && !defined(USE_MSRPC)
+#if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 	allocateSemaphore();
-#endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && __minix__
+#endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS)
 
 		
 #ifndef NO_TAP

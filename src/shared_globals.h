@@ -52,7 +52,7 @@ typedef struct
 	int8_t HasNDR64;
 } RpcDiag_t, *PRpcDiag_t;
 
-#if !defined(NO_LIMIT) && !__minix__
+#if !defined(NO_LIMIT)
 # ifndef SEM_VALUE_MAX // Android does not define this
 #  ifdef __ANDROID__
 #   define SEM_VALUE_MAX 0x3fffffff
@@ -60,7 +60,7 @@ typedef struct
 #   define SEM_VALUE_MAX 0x7fff // Be cautious if unknown
 #  endif // __ANDROID__
 # endif // !defined(SEM_VALUE_MAX)
-#endif // !defined(NO_LIMIT) && !__minix__
+#endif // !defined(NO_LIMIT)
 
 extern const char *const Version;
 
@@ -166,9 +166,9 @@ extern SOCKET *SocketList;
 extern int numsockets;
 #endif // !defined(SIMPLE_SOCKETS)
 
-#if !defined(NO_LIMIT) && !__minix__
+#if !defined(NO_LIMIT)
 extern sem_t *MaxTaskSemaphore;
-#endif // !defined(NO_LIMIT) && !__minix__
+#endif // !defined(NO_LIMIT)
 
 #endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
