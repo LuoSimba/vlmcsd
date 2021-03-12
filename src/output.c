@@ -415,9 +415,9 @@ void printServerFlags()
 		" NO_CLIENT_LIST"
 #		endif // NO_CLIENT_LIST
 
-#		if _WIN32 && (!defined(USE_MSRPC) || defined(SUPPORT_WINE))
-		" SUPPORT_WINE"
-#		endif // _WIN32 && (!defined(USE_MSRPC) || defined(SUPPORT_WINE))
+#		if _WIN32 && (!defined(USE_MSRPC))
+		" SUPPORT WINE"
+#		endif // _WIN32 && (!defined(USE_MSRPC))
 
 #		if _WIN32 && defined(NO_TAP)
 		" NO_TAP"

@@ -127,18 +127,6 @@ RPC_STATUS getClientIp(const RPC_BINDING_HANDLE clientBinding, RPC_CSTR *ipAddre
 	RPC_CSTR stringBinding;
 	RPC_BINDING_HANDLE serverBinding;
 
-	// Fix for wine (disabled by default, because vlmcsd runs natively on all platforms where wine runs)
-	// Feel free to #define SUPPORT_WINE if you really want to run the Windows version with MS RPC (Wine RPC in this case)
-	#ifdef SUPPORT_WINE
-	HMODULE h = GetModuleHandleA("kernel32.dll");
-
-	if (h)
-	{
-		// Since wine simply terminates the thread when RpcBindingServerFromClient is called, we exit with an error
-		if (GetProcAddress(h, "wine_get_unix_file_name")) return RPC_S_CANNOT_SUPPORT;
-	}
-	#endif // SUPPORT_WINE
-
 	if ((result = RpcBindingServerFromClient(clientBinding, &serverBinding)) != RPC_S_OK) return result;
 
 	if ((result = RpcBindingToStringBindingA(serverBinding, &stringBinding)) != RPC_S_OK)
