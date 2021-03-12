@@ -26,7 +26,6 @@
 #include <errno.h>
 #include <stdint.h>
 
-#ifndef _WIN32
 #include <pwd.h>
 #include <grp.h>
 #include <sys/types.h>
@@ -45,7 +44,6 @@
 #ifndef NO_LIMIT
 #include <semaphore.h>
 #endif // NO_LIMIT
-#endif // !_WIN32
 
 #if defined(USE_AUXV)
 #include <sys/auxv.h>
@@ -184,7 +182,6 @@ static int shmid = -1;
 #endif // !defined(NO_LIMIT) && !defined (NO_SOCKETS) && !__minix__
 
 #ifndef NO_USER_SWITCH
-#ifndef _WIN32
 
 static const char* uname = NULL, * gname = NULL;
 static gid_t gid = INVALID_GID;
@@ -231,7 +228,6 @@ static char GetUid()
 
 	return 0;
 }
-#endif // _WIN32
 #endif //NO_USER_SWITCH
 
 
@@ -242,10 +238,10 @@ static __noreturn void usage()
 		"\nUsage:\n"
 		"   %s [ options ]\n\n"
 		"Where:\n"
-#		if !defined(_WIN32) && !defined(NO_USER_SWITCH)
+#		if !defined(NO_USER_SWITCH)
 		"  -u <user>\t\tset uid to <user>\n"
 		"  -g <group>\t\tset gid to <group>\n"
-#		endif // !defined(_WIN32) && !defined(NO_USER_SWITCH)
+#		endif // !defined(NO_USER_SWITCH)
 #		ifndef NO_CL_PIDS
 		"  -a <csvlk>=<epid>\tuse <epid> for <csvlk>\n"
 #		endif // NO_CL_PIDS
@@ -284,9 +280,7 @@ static __noreturn void usage()
 #		endif // !defined(NO_LIMIT) && !__minix__
 #		ifdef _NTSERVICE
 		"  -s\t\t\tinstall vlmcsd as an NT service. Ignores -e"
-#		ifndef _WIN32
 		", -f and -D"
-#		endif // _WIN32
 		"\n"
 		"  -S\t\t\tremove vlmcsd service. Ignores all other options\n"
 		"  -U <username>\t\trun NT service as <username>. Must be used with -s\n"
@@ -295,11 +289,9 @@ static __noreturn void usage()
 #		ifndef NO_LOG
 		"  -e\t\t\tlog to stdout\n"
 #		endif // NO_LOG
-#		ifndef _WIN32 //
+
 		"  -D\t\t\trun in foreground\n"
-#		else // _WIN32
-		"  -D\t\t\tdoes nothing. Provided for compatibility with POSIX versions only\n"
-#		endif // _WIN32
+
 #		endif // NO_SOCKETS
 #		ifndef NO_STRICT_MODES
 		"  -K 0|1|2|3\t\tset white-listing level for KMS IDs (default -K0)\n"
@@ -334,9 +326,9 @@ static __noreturn void usage()
 		"  -A <interval>\t\tretry activation every <interval> (default 2h)\n"
 #		endif // NO_CUSTOM_INTERVALS
 #		ifndef NO_LOG
-#		ifndef _WIN32
+
 		"  -l syslog		log to syslog\n"
-#		endif // _WIN32
+
 		"  -l <file>\t\tlog to <file>\n"
 		"  -T0, -T1\t\tdisable/enable logging with time and date (default -T1)\n"
 #		ifndef NO_VERBOSE_LOG
@@ -490,7 +482,7 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 
 #	endif // NO_TAP
 
-#	if !defined(NO_USER_SWITCH) && !_WIN32
+#	if !defined(NO_USER_SWITCH)
 
 	case INI_PARAM_GID:
 	{
@@ -518,7 +510,7 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 		break;
 	}
 
-#	endif // !defined(NO_USER_SWITCH) && !defined(_WIN32)
+#	endif // !defined(NO_USER_SWITCH)
 
 #	ifndef NO_RANDOM_EPID
 
@@ -1075,12 +1067,12 @@ static void parseGeneralArguments()
 	for (opterr = 0; (o = getopt(global_argc, (char* const*)global_argv, (const char*)optstring)) > 0; )
     switch (o)
 	{
-#	if !defined(NO_SOCKETS) && !defined(NO_SIGHUP) && !defined(_WIN32)
+#	if !defined(NO_SOCKETS) && !defined(NO_SIGHUP)
 	case 'Z':
 		IsRestarted = TRUE;
 		nodaemon = TRUE;
 		break;
-#	endif // !defined(NO_SOCKETS) && !defined(NO_SIGHUP) && !defined(_WIN32)
+#	endif // !defined(NO_SOCKETS) && !defined(NO_SIGHUP)
 
 #	ifndef NO_TAP
 
@@ -1257,13 +1249,7 @@ static void parseGeneralArguments()
 #	endif // !NO_STRICT_MODES
 
 	case 'D':
-#		ifndef _WIN32
 		nodaemon = 1;
-#		else // _WIN32
-#		ifdef _PEDANTIC
-		printerrorf("Warning: Option -D has no effect in the Windows version of vlmcsd.\n");
-#		endif // _PEDANTIC
-#		endif // _WIN32
 		break;
 
 #	ifndef NO_LOG
@@ -1478,13 +1464,10 @@ static void allocateSemaphore(void)
 #	define sharemode 1
 #	endif
 
-#	ifndef _WIN32
 	sem_unlink("/vlmcsd");
-#	endif
 
 	if (MaxTasks < SEM_VALUE_MAX && !InetdMode)
 	{
-#		ifndef _WIN32
 
 #		if !defined(USE_THREADS) && !defined(CYGWIN)
 
@@ -1523,15 +1506,6 @@ static void allocateSemaphore(void)
 
 #		endif // THREADS or CYGWIN
 
-#		else // _WIN32
-
-		if (!((MaxTaskSemaphore = CreateSemaphoreA(NULL, MaxTasks, MaxTasks, NULL))))
-		{
-			printerrorf("Warning: Could not create semaphore: %s\n", vlmcsd_strerror(GetLastError()));
-			MaxTasks = SEM_VALUE_MAX;
-		}
-
-#		endif // _WIN32
 	}
 }
 #endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !__minix__
@@ -1635,22 +1609,9 @@ int main(int argc, CARGV argv)
 
 int newmain()
 {
-	// Initialize thread synchronization objects for Windows and Cygwin
-#ifdef USE_THREADS
-
-#  ifndef NO_LOG
-// Initialize the Critical Section for proper logging
-#    if _WIN32 
-	InitializeCriticalSection(&logmutex);
-#    endif // _WIN32
-#  endif // NO_LOG
-
-#endif // USE_THREADS
-
-
 	parseGeneralArguments(); // Does not return if an error occurs
 
-#if !defined(_WIN32) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
 	struct stat statbuf;
 	fstat(STDIN_FILENO, &statbuf);
@@ -1670,7 +1631,7 @@ int newmain()
 #  endif // !NO_LOG
 	}
 
-#endif // !defined(_WIN32) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
 
 
@@ -1771,7 +1732,7 @@ int newmain()
 #endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
 	// After sockets have been set up, we may switch to a lower privileged user
-#if !defined(_WIN32) && !defined(NO_USER_SWITCH)
+#if !defined(NO_USER_SWITCH)
 
 #  ifndef NO_SIGHUP
 	if (!IsRestarted)
@@ -1801,7 +1762,7 @@ int newmain()
 	}
 #  endif // NO_SIGHUP
 
-#endif // !defined(_WIN32) && !defined(NO_USER_SWITCH)
+#endif // !defined(NO_USER_SWITCH)
 
 	randomNumberInit();
 

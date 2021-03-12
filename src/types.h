@@ -25,12 +25,8 @@
 #define ANDROID_HELPER2(s) #s
 
 
-
 // ----------------
-#if !__minix__
-# include <pthread.h>
-#endif // !__minix__
-
+#include <pthread.h>
 #define __declspec(x) __attribute__((__visibility__("default")))
 
 

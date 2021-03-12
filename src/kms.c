@@ -13,13 +13,11 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <time.h>
-#if !defined(_WIN32)
 #if !__ANDROID__
 #include <sys/shm.h>
 #endif // !__ANDROID__
 #include <sys/socket.h>
 #include <sys/ipc.h>
-#endif // !defined(_WIN32)
 
 #include "output.h"
 #include "crypto.h"
@@ -166,27 +164,20 @@ __pure int64_t fileTimeToUnixTime(FILETIME* ts)
 static PClientList_t ClientLists;
 static BYTE ZeroGuid[16] = { 0 };
 
-#if !defined(_WIN32)
+
 pthread_mutex_t* mutex;
 #define mutex_size (((sizeof(pthread_mutex_t)+7)>>3)<<3)
-#else
-CRITICAL_SECTION* mutex;
-#define mutex_size (((sizeof(CRITICAL_SECTION)+7)>>3)<<3)
-#endif // _WIN32
+
 
 #ifndef USE_THREADS
 static int shmid_clients = -1;
 #endif // USE_THREADS
 
-#if !defined(_WIN32)
+
 #define lock_client_lists() pthread_mutex_lock(mutex)
 #define unlock_client_lists() pthread_mutex_unlock(mutex)
 #define mutex_t pthread_mutex_t
-#else
-#define lock_client_lists() EnterCriticalSection(mutex)
-#define unlock_client_lists() LeaveCriticalSection(mutex)
-#define mutex_t CRITICAL_SECTION
-#endif
+
 
 void CleanUpClientLists()
 {
@@ -225,11 +216,8 @@ void InitializeClientLists()
 	ClientLists = (PClientList_t)vlmcsd_malloc(sizeof(ClientList_t) * KmsData->AppItemCount);
 	mutex = (mutex_t*)vlmcsd_malloc(sizeof(mutex_t));
 
-#	if !_WIN32
 	pthread_mutex_init(mutex, NULL);
-#	else //_WIN32
-	InitializeCriticalSection(mutex);
-#   endif //_WIN32
+
 
 #	endif // USE_THREADS
 

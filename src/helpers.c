@@ -443,13 +443,6 @@ void getExeName()
 
 	fn_exe = realpath("/proc/self/exe", NULL);
 
-#	elif _WIN32
-
-	char path[512];
-	GetModuleFileName(GetModuleHandle(NULL), path, 512);
-	path[511] = 0;
-	fn_exe = vlmcsd_strdup(path);
-
 #	else
 	// Sorry no exe detection
 #	endif
@@ -457,17 +450,6 @@ void getExeName()
 #endif // defined(DATA_FILE) && defined(NO_SIGHUP)
 
 #if !defined(DATA_FILE) && !defined(NO_EXTERNAL_DATA)
-#ifdef _WIN32
-static void getDefaultDataFile()
-{
-	char fileName[MAX_PATH];
-	getExeName();
-	strncpy(fileName, fn_exe, MAX_PATH);
-	PathRemoveFileSpec(fileName);
-	strncat(fileName, "\\vlmcsd.kmd", MAX_PATH - 11);
-	fn_data = vlmcsd_strdup(fileName);
-}
-#else // !_WIN32
 static void getDefaultDataFile()
 {
 	char fileName[512];
@@ -485,7 +467,6 @@ static void getDefaultDataFile()
 	strncat(fileName, "/vlmcsd.kmd", 500);
 	fn_data = vlmcsd_strdup(fileName);
 }
-#endif // !_WIN32
 #endif // !defined(DATA_FILE) && !defined(NO_EXTERNAL_DATA)
 
 void loadKmsData()

@@ -1,8 +1,4 @@
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
-
+#include "config.h"
 #include "shared_globals.h"
 
 int global_argc, multi_argc = 0;
@@ -49,21 +45,21 @@ uint32_t PublicIPProtectionLevel = 0;
 KmsResponseParam_t* KmsResponseParameters;
 #endif // !defined(NO_RANDOM_EPID) || !defined(NO_CL_PIDS) || !defined(NO_INI_FILE)
 
-#if !defined(NO_SOCKETS) && !defined(NO_SIGHUP) && !defined(_WIN32)
+#if !defined(NO_SOCKETS) && !defined(NO_SIGHUP)
 int_fast8_t IsRestarted = FALSE;
-#endif // !defined(NO_SOCKETS) && !defined(NO_SIGHUP) && !defined(_WIN32)
+#endif // !defined(NO_SOCKETS) && !defined(NO_SIGHUP)
 
-#if !defined(NO_TIMEOUT) && !__minix__
+#if !defined(NO_TIMEOUT)
 DWORD ServerTimeout = 30;
-#endif // !defined(NO_TIMEOUT) && !__minix__
+#endif // !defined(NO_TIMEOUT)
 
-#if !defined(NO_LIMIT) && !defined (NO_SOCKETS) && !__minix__
+#if !defined(NO_LIMIT) && !defined (NO_SOCKETS)
 #ifdef USE_MSRPC
 uint32_t MaxTasks = RPC_C_LISTEN_MAX_CALLS_DEFAULT;
 #else // !USE_MSRPC
 uint32_t MaxTasks = SEM_VALUE_MAX;
 #endif // !USE_MSRPC
-#endif // !defined(NO_LIMIT) && !defined (NO_SOCKETS) && !__minix__
+#endif // !defined(NO_LIMIT) && !defined (NO_SOCKETS)
 
 #ifndef NO_LOG
 int_fast8_t LogDateAndTime = TRUE;
@@ -76,15 +72,10 @@ int_fast8_t logverbose = 0;
 
 #ifndef NO_SOCKETS
 int_fast8_t ExitLevel = 0;
-
-#ifndef _WIN32
 int_fast8_t nodaemon = 0;
-#endif // _WIN32
 int_fast8_t InetdMode = 0;
 #else
-#ifndef _WIN32
 int_fast8_t nodaemon = 1;
-#endif // _WIN32
 int_fast8_t InetdMode = 1;
 #endif // NO_SOCKETS
 
@@ -120,14 +111,9 @@ SOCKET *SocketList;
 int numsockets = 0;
 #endif
 
-#if !defined(NO_LIMIT) && !__minix__
-#ifndef _WIN32 // Posix
-sem_t *MaxTaskSemaphore;
-#else // _WIN32
-HANDLE MaxTaskSemaphore;
-#endif // _WIN32
-
-#endif // !defined(NO_LIMIT) && !__minix__
+#if !defined(NO_LIMIT)
+sem_t *MaxTaskSemaphore; // Posix
+#endif // !defined(NO_LIMIT)
 #endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
 #ifdef _NTSERVICE
@@ -137,19 +123,12 @@ int_fast8_t ServiceShutdown = FALSE;
 
 #ifndef NO_LOG
 #ifdef USE_THREADS
-#if !defined(_WIN32)
 pthread_mutex_t logmutex = PTHREAD_MUTEX_INITIALIZER;
-#else
-CRITICAL_SECTION logmutex;
-#endif // !defined(_WIN32)
 #endif // USE_THREADS
 #endif // NO_LOG
 
 #if HAVE_FREEBIND
 int_fast8_t freebind = FALSE;
 #endif // HAVE_FREEBIND
-
-
-
 
 

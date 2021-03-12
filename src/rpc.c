@@ -15,10 +15,9 @@
 #include <stdint.h>
 //#include <ctype.h>
 //#include <time.h>
-#if !defined(_WIN32)
 #include <sys/socket.h>
 #include <netdb.h>
-#endif
+
 #include "rpc.h"
 #include "output.h"
 //#include "crypto.h"
