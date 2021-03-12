@@ -258,12 +258,8 @@ __pure unsigned int getOptionArgumentInt(const char o, const unsigned int min, c
  */
 void optReset(void)
 {
-#if __minix__ || defined(__BSD__) || defined(__APPLE__)
-	optind = 1;
-	optreset = 1; // Makes newer BSD getopt happy
-#else
-	optind = 0; // Makes GLIBc getopt happy
-#endif
+    // Makes GLIBc getopt happy
+	optind = 0;
 }
 #endif // !IS_LIBRARY
 
@@ -446,17 +442,6 @@ void getExeName()
 #	elif !defined(NO_PROCFS)
 
 	fn_exe = realpath("/proc/self/exe", NULL);
-
-
-#	elif __APPLE__
-
-	char path[PATH_MAX + 1];
-	uint32_t size = sizeof(path);
-
-	if (_NSGetExecutablePath(path, &size) == 0)
-	{
-		fn_exe = vlmcsd_strdup(path);
-	}
 
 #	elif _WIN32
 
