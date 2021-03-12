@@ -20,15 +20,9 @@
 #include <errno.h>
 #include <netdb.h>
  //#ifndef DNS_PARSER_INTERNAL
-#if __ANDROID__
-#include <netinet/in.h>
-#include "nameser.h"
-#include "resolv.h"
-#else // other Unix non-Android
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
-#endif // other Unix non-Android
 //#endif // DNS_PARSER_INTERNAL
 
 #include "helpers.h"

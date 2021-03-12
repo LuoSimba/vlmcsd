@@ -13,9 +13,7 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <time.h>
-#if !__ANDROID__
 #include <sys/shm.h>
-#endif // !__ANDROID__
 #include <sys/socket.h>
 #include <sys/ipc.h>
 

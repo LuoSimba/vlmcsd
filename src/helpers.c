@@ -430,7 +430,7 @@ void getExeName()
 
 	fn_exe = (char*)getauxval(AT_EXECFN);
 
-#	elif __ANDROID__ || (__UCLIBC__ && __UCLIBC_MAJOR__ < 1 && !defined(NO_PROCFS)) // Workaround for older uclibc
+#	elif __UCLIBC__ && __UCLIBC_MAJOR__ < 1 && !defined(NO_PROCFS) // Workaround for older uclibc
 
 	char temp[PATH_MAX + 1];
 

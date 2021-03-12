@@ -54,11 +54,7 @@ typedef struct
 
 #if !defined(NO_LIMIT)
 # ifndef SEM_VALUE_MAX // Android does not define this
-#  ifdef __ANDROID__
-#   define SEM_VALUE_MAX 0x3fffffff
-#  else
 #   define SEM_VALUE_MAX 0x7fff // Be cautious if unknown
-#  endif // __ANDROID__
 # endif // !defined(SEM_VALUE_MAX)
 #endif // !defined(NO_LIMIT)
 

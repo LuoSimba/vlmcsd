@@ -48,13 +48,6 @@
 
 
 // ----------------
-#ifdef __ANDROID__
-# include <android/api-level.h>
-#endif // __ANDROID__
-
-
-
-// ----------------
 #include <unistd.h>
 #include <netinet/in.h>
 
@@ -105,7 +98,7 @@
 
 
 // ----------------
-#if !defined(_POSIX_THREADS) || (!defined(_POSIX_THREAD_PROCESS_SHARED) && !defined(USE_THREADS) && !__ANDROID__)
+#if !defined(_POSIX_THREADS) || (!defined(_POSIX_THREAD_PROCESS_SHARED) && !defined(USE_THREADS))
 # ifndef NO_CLIENT_LIST
 #  define NO_CLIENT_LIST
 # endif // !NO_CLIENT_LIST

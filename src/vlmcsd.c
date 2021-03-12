@@ -32,9 +32,7 @@
 
 #if !defined(NO_LIMIT)
 #include <sys/ipc.h>
-#if !__ANDROID__
 #include <sys/shm.h>
-#endif // !__ANDROID__
 #endif // !defined(NO_LIMIT)
 
 #include <sys/wait.h>
@@ -172,7 +170,7 @@ static IniFileParameter_t IniFileParameterList[] =
 
 #if !defined(NO_LIMIT) && !defined (NO_SOCKETS)
 
-#if !defined(USE_THREADS) && !defined(CYGWIN) && !defined(USE_MSRPC)
+#if !defined(USE_THREADS) && !defined(USE_MSRPC)
 static int shmid = -1;
 #endif
 
@@ -1386,13 +1384,13 @@ void cleanup()
 
 #		if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32)
 		sem_unlink("/vlmcsd");
-#		if !defined(USE_THREADS) && !defined(CYGWIN)
+#		if !defined(USE_THREADS)
 		if (shmid >= 0)
 		{
 			if (MaxTaskSemaphore != (sem_t*)-1) shmdt(MaxTaskSemaphore);
 			shmctl(shmid, IPC_RMID, NULL);
 		}
-#		endif // !defined(USE_THREADS) && !defined(CYGWIN)
+#		endif // !defined(USE_THREADS)
 #		endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32)
 
 #		ifndef NO_LOG
@@ -1436,7 +1434,7 @@ static void allocateSemaphore(void)
 	if (MaxTasks < SEM_VALUE_MAX && !InetdMode)
 	{
 
-#		if !defined(USE_THREADS) && !defined(CYGWIN)
+#		if !defined(USE_THREADS)
 
 		if ((MaxTaskSemaphore = sem_open("/vlmcsd", O_CREAT /*| O_EXCL*/, 0700, MaxTasks)) == SEM_FAILED) // fails on many systems
 		{
@@ -1456,7 +1454,7 @@ static void allocateSemaphore(void)
 			}
 		}
 
-#		else // THREADS or CYGWIN
+#		else // THREADS 
 
 		MaxTaskSemaphore = (sem_t*)vlmcsd_malloc(sizeof(sem_t));
 
@@ -1471,7 +1469,7 @@ static void allocateSemaphore(void)
 			}
 		}
 
-#		endif // THREADS or CYGWIN
+#		endif // THREADS 
 
 	}
 }

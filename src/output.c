@@ -261,10 +261,6 @@ void printPlatform()
 		" Intel x86_64"
 #		endif
 
-#		if __ANDROID__
-		" Android"
-#		endif
-
 #		if __ANDROID_API__
 		" (API level " ANDROID_API_LEVEL ")"
 #		endif
@@ -280,14 +276,6 @@ void printPlatform()
 #		if defined(_WIN32) && defined(_WIN64)
 		" Windows64"
 #		endif
-
-		//#		if _MIPSEL || __MIPSEL__ || __ARMEL__ || __THUMBEL__
-		//		" little-endian"
-		//#		endif
-		//
-		//#		if _MIPSEB || __MIPSEB__ || __ARMEB__ || __THUMBEB__
-		//		" big-endian"
-		//#		endif
 	);
 }
 

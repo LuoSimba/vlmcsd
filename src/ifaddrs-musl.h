@@ -9,9 +9,7 @@ extern "C" {
 #error ifaddrs-musl.h only works with a Linux kernel
 #endif
 
-#if __ANDROID__
-#error ifaddrs-musl.h does not work with Android
-#endif
+// ifaddrs-musl.h does not work with Android
 
 #include <features.h>
 #include <netinet/in.h>

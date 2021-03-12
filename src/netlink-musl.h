@@ -5,9 +5,7 @@
 #error netlink-musl.h only works with a linux kernel
 #endif
 
-#if __ANDROID__
-#error netlink-musl.h does not work with Android
-#endif
+// netlink-musl.h does not work with Android
 
 #include <stdint.h>
 

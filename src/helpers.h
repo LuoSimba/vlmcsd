@@ -9,10 +9,6 @@
 #include <stdint.h>
 #include "types.h"
 
-#if __ANDROID__
-#include <sys/syscall.h>
-#endif // __ANDROID__
-
 #define GUID_LE 0
 #define GUID_BE 1
 #define GUID_SWAP 2
