@@ -19,11 +19,8 @@ static void vlogger(const char *message, va_list args)
 {
 	FILE *log;
 
-#	ifdef _NTSERVICE
-	if (!IsNTService && logstdout) log = stdout;
-#	else
-	if (logstdout) log = stdout;
-#	endif
+	if (logstdout)
+        log = stdout;
 	else
 	{
 		if (fn_log == NULL) return;
@@ -118,11 +115,7 @@ int printerrorf(const char *const fmt, ...)
 #	else // !IS_LIBRARY
 
 #	ifndef NO_LOG
-#	ifdef _NTSERVICE
-	if (InetdMode || IsNTService)
-#	else // !_NTSERVICE
 	if (InetdMode)
-#	endif // NTSERVIICE
 		vlogger(fmt, arglist);
 	else
 #	endif //NO_LOG

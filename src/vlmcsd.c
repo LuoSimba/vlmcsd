@@ -74,12 +74,6 @@ static uint_fast8_t maxsockets = 0;
 
 #endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
 
-#ifdef _NTSERVICE
-static int_fast8_t installService = 0;
-static const char* restrict ServiceUser = NULL;
-static const char* restrict ServicePassword = "";
-#endif
-
 #ifndef NO_PID_FILE
 static const char* fn_pid = NULL;
 #endif
@@ -278,14 +272,8 @@ static __noreturn void usage()
 #		if !defined(NO_LIMIT) && !__minix__
 		"  -m <clients>\t\tHandle max. <clients> simultaneously (default no limit)\n"
 #		endif // !defined(NO_LIMIT) && !__minix__
-#		ifdef _NTSERVICE
-		"  -s\t\t\tinstall vlmcsd as an NT service. Ignores -e"
-		", -f and -D"
-		"\n"
-		"  -S\t\t\tremove vlmcsd service. Ignores all other options\n"
-		"  -U <username>\t\trun NT service as <username>. Must be used with -s\n"
-		"  -W <password>\t\toptional <password> for -U. Must be used with -s\n"
-#		endif // _NTSERVICE
+
+
 #		ifndef NO_LOG
 		"  -e\t\t\tlog to stdout\n"
 #		endif // NO_LOG
@@ -888,10 +876,7 @@ static BOOL readIniFile(const uint_fast8_t pass)
 
 	if (pass == INI_FILE_PASS_1 && !InetdMode && result)
 	{
-#		ifdef _NTSERVICE
-		if (!installService)
-#		endif // _NTSERVICE
-			logger("Read ini file %s\n", fn_ini);
+        logger("Read ini file %s\n", fn_ini);
 	}
 
 #	endif // !defined(NO_SOCKETS) && !defined(NO_LOG)
@@ -1201,27 +1186,6 @@ static void parseGeneralArguments()
 #	endif // HAVE_FREEBIND
 #	endif // !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
 
-#	ifdef _NTSERVICE
-	case 'U':
-		ServiceUser = optarg;
-		break;
-
-	case 'W':
-		ServicePassword = optarg;
-		break;
-
-	case 's':
-#		ifndef USE_MSRPC
-		if (InetdMode) usage();
-#		endif // USE_MSRPC
-		if (!IsNTService) installService = 1; // Install
-		break;
-
-	case 'S':
-		if (!IsNTService) installService = 2; // Remove
-		break;
-#	endif // _NTSERVICE
-
 #	ifndef NO_STRICT_MODES
 
 	case 'K':
@@ -1365,11 +1329,6 @@ static void parseGeneralArguments()
 	// Do not allow non-option arguments
 	if (optind != global_argc)
 		usage();
-
-#	ifdef _NTSERVICE
-	// -U and -W must be used with -s
-	if ((ServiceUser || *ServicePassword) && installService != 1) usage();
-#	endif // _NTSERVICE
 }
 
 

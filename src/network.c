@@ -1036,10 +1036,6 @@ int runServer()
 			error = socket_errno;
 			if (error == SOCKET_EINTR || error == SOCKET_ECONNABORTED) continue;
 
-#			ifdef _NTSERVICE
-			if (ServiceShutdown) return 0;
-#			endif
-
 #			ifndef NO_LOG
 			logger("Fatal: %s\n", vlmcsd_strerror(error));
 #			endif
