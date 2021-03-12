@@ -96,11 +96,7 @@ struct __res_state; /* forward */
  */
 
 #ifndef _PATH_RESCONF
-#ifdef ANDROID_CHANGES
-#define _PATH_RESCONF        "/etc/ppp/resolv.conf"
-#else
 #define _PATH_RESCONF        "/etc/resolv.conf"
-#endif
 #endif
 
 typedef enum { res_goahead, res_nextns, res_modified, res_done, res_error }
@@ -277,14 +273,12 @@ __BEGIN_DECLS
 extern struct __res_state *__res_get_state(void);
 extern void __res_put_state(struct __res_state *);
 
-#ifndef ANDROID_CHANGES
 /*
  * Source and Binary compatibility; _res will not work properly
  * with multi-threaded programs.
  */
 extern struct __res_state *__res_state(void);
 #define _res (*__res_state())
-#endif
 
 __END_DECLS
 
@@ -415,10 +409,8 @@ int        res_dnok(const char *);
 int        sym_ston(const struct res_sym *, const char *, int *);
 const char *    sym_ntos(const struct res_sym *, int, int *);
 const char *    sym_ntop(const struct res_sym *, int, int *);
-#ifndef ANDROID_CHANGES
 int        b64_ntop(u_char const *, size_t, char *, size_t);
 int        b64_pton(char const *, u_char *, size_t);
-#endif
 int        loc_aton(const char *, u_char *);
 const char *    loc_ntoa(const u_char *, char *);
 int        dn_skipname(const u_char *, const u_char *);
