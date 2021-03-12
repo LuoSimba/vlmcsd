@@ -99,9 +99,9 @@
 # endif // !NO_CLIENT_LIST
 #endif // !defined(_POSIX_THREADS) || (!defined(_POSIX_THREAD_PROCESS_SHARED) && !defined(USE_THREADS))
 
-#if !defined(_POSIX_THREADS) && !defined(NO_LIMIT)
+#if !defined(_POSIX_THREADS)
 # define NO_LIMIT
-#endif // !defined(POSIX_THREADS) && !defined(NO_LIMIT)
+#endif // !defined(POSIX_THREADS)
 
 
 

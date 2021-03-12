@@ -53,13 +53,13 @@ int_fast8_t IsRestarted = FALSE;
 DWORD ServerTimeout = 30;
 #endif // !defined(NO_TIMEOUT)
 
-#if !defined(NO_LIMIT) && !defined (NO_SOCKETS)
+#if !defined (NO_SOCKETS)
 #ifdef USE_MSRPC
 uint32_t MaxTasks = RPC_C_LISTEN_MAX_CALLS_DEFAULT;
 #else // !USE_MSRPC
 uint32_t MaxTasks = SEM_VALUE_MAX;
 #endif // !USE_MSRPC
-#endif // !defined(NO_LIMIT) && !defined (NO_SOCKETS)
+#endif // !defined (NO_SOCKETS)
 
 #ifndef NO_LOG
 int_fast8_t LogDateAndTime = TRUE;
@@ -111,9 +111,7 @@ SOCKET *SocketList;
 int numsockets = 0;
 #endif
 
-#if !defined(NO_LIMIT)
 sem_t *MaxTaskSemaphore; // Posix
-#endif // !defined(NO_LIMIT)
 #endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
 #ifdef _NTSERVICE

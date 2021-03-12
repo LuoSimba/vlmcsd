@@ -97,7 +97,6 @@ Features:
     -DSIMPLE_RPC                 Don't support RPC with NDR64 and BTFN in vlmcsd (but do in vlmcs). Makes emulator detection easy.
     -DNO_TAP                     Compile vlmcsd without VPN support (Windows and Cygwin only).
     -DNO_CL_PIDS                 Don't support specifying ePIDs and HwId from the command line in vlmcsd.
-    -DNO_LIMIT                   Don't support limiting concurrent clients in vlmcsd.
     -DNO_SIGHUP                  Don't support SIGHUP handling in vlmcsd.
     -DNO_VERSION_INFORMATION     Don't support displaying version information in vlmcsd and vlmcs. Removes -V option.
     -DNO_PRIVATE_IP_DETECT       Don't support protection against clients with public IP addresses in vlmcsd

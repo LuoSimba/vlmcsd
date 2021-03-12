@@ -38,13 +38,7 @@
 #endif // 32-bit
 
 
-#if !defined(NO_LIMIT)
 #define MAXCALLS MaxTasks
-#else // defined(NO_LIMIT)
-#define MAXCALLS RPC_C_LISTEN_MAX_CALLS_DEFAULT
-#endif
-
-
 
 
 /*

@@ -69,6 +69,9 @@
  * commented out.
  * ----------------------------------------------------------------------------------------
  */
+/*
+ * Do NOT use USE_THREADS and define NO_SIGHUP and NO_LIMIT.
+ */
 
 
 #ifndef CHILD_HANDLER
@@ -548,21 +551,8 @@
 
 
 
-#ifndef NO_LIMIT
-/*
- * Disables the ability to limit the number of worker threads or processes that vlmcsd uses. While you should set a
- * limit whenever possible, you may save some bytes by enabling that setting. If you do not use a limit, use vlmcsd
- * in a "friendly" environment only, i.e. do not run it without a reasonable limit on the internet.
- *
- * Removes the ability to use -m in the vlmcsd command line and MaxWorkers in the ini file.
- *
- * Some older unixoid OSses may not have pthreads. Do NOT use USE_THREADS and define NO_SIGHUP
- * and NO_LIMIT instead to disable use of the pthreads, shared memory and semaphores.
- */
 
- //#define NO_LIMIT
 
-#endif // NO_LIMIT
 
 
 

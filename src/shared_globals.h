@@ -15,9 +15,7 @@
 #include <pthread.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#if !defined(NO_LIMIT)
 #include <semaphore.h>
-#endif // !defined(NO_LIMIT)
 
 
 #include <signal.h>
@@ -52,11 +50,9 @@ typedef struct
 	int8_t HasNDR64;
 } RpcDiag_t, *PRpcDiag_t;
 
-#if !defined(NO_LIMIT)
-# ifndef SEM_VALUE_MAX // Android does not define this
-#   define SEM_VALUE_MAX 0x7fff // Be cautious if unknown
-# endif // !defined(SEM_VALUE_MAX)
-#endif // !defined(NO_LIMIT)
+#ifndef SEM_VALUE_MAX // Android does not define this
+#  define SEM_VALUE_MAX 0x7fff // Be cautious if unknown
+#endif // !defined(SEM_VALUE_MAX)
 
 extern const char *const Version;
 
@@ -131,9 +127,9 @@ extern int_fast8_t IsRestarted;
 extern DWORD ServerTimeout;
 #endif // !defined(NO_TIMEOUT)
 
-#if !defined(NO_LIMIT) && !defined (NO_SOCKETS)
+#if !defined (NO_SOCKETS)
 extern uint32_t MaxTasks;
-#endif // !defined(NO_LIMIT) && !defined (NO_SOCKETS)
+#endif // !defined (NO_SOCKETS)
 
 #ifndef NO_LOG
 extern int_fast8_t LogDateAndTime;
@@ -162,9 +158,7 @@ extern SOCKET *SocketList;
 extern int numsockets;
 #endif // !defined(SIMPLE_SOCKETS)
 
-#if !defined(NO_LIMIT)
 extern sem_t *MaxTaskSemaphore;
-#endif // !defined(NO_LIMIT)
 
 #endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 

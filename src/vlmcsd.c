@@ -29,19 +29,14 @@
 #include <pwd.h>
 #include <grp.h>
 #include <sys/types.h>
-
-#if !defined(NO_LIMIT)
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#endif // !defined(NO_LIMIT)
 
 #include <sys/wait.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#ifndef NO_LIMIT
 #include <semaphore.h>
-#endif // NO_LIMIT
 
 #if defined(USE_AUXV)
 #include <sys/auxv.h>
@@ -125,9 +120,7 @@ static IniFileParameter_t IniFileParameterList[] =
 		{ "FreeBind", INI_PARAM_FREEBIND },
 #	endif // HAVE_FREEBIND
 
-#	if !defined(NO_LIMIT)
 		{ "MaxWorkers", INI_PARAM_MAX_WORKERS },
-#	endif // !defined(NO_LIMIT)
 
 #	endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
@@ -168,14 +161,13 @@ static IniFileParameter_t IniFileParameterList[] =
 #endif // NO_INI_FILE
 
 
-#if !defined(NO_LIMIT) && !defined (NO_SOCKETS)
+#if !defined (NO_SOCKETS)
 
 #if !defined(USE_THREADS) && !defined(USE_MSRPC)
 static int shmid = -1;
 #endif
 
-
-#endif // !defined(NO_LIMIT) && !defined (NO_SOCKETS)
+#endif // !defined (NO_SOCKETS)
 
 #ifndef NO_USER_SWITCH
 
@@ -272,10 +264,7 @@ static __noreturn void usage()
 		"  -P <port>\t\tuse TCP port <port> (default 1688)\n"
 #		endif // defined(USE_MSRPC) || defined(SIMPLE_SOCKETS)
 
-#		if !defined(NO_LIMIT)
 		"  -m <clients>\t\tHandle max. <clients> simultaneously (default no limit)\n"
-#		endif // !defined(NO_LIMIT)
-
 
 #		ifndef NO_LOG
 		"  -e\t\t\tlog to stdout\n"
@@ -540,7 +529,7 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 
 #	endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
 
-#	if !defined(NO_LIMIT) && !defined(NO_SOCKETS)
+#	if !defined(NO_SOCKETS)
 
 	case INI_PARAM_MAX_WORKERS:
 #		ifdef USE_MSRPC
@@ -550,7 +539,7 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 #		endif // !USE_MSRPC
 		break;
 
-#	endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS)
+#	endif // !defined(NO_SOCKETS)
 
 #	ifndef NO_PID_FILE
 
@@ -1109,8 +1098,6 @@ static void parseGeneralArguments()
 #		endif // !SIMPLE_SOCKETS
 		break;
 
-#	if !defined(NO_LIMIT)
-
 	case 'm':
 #		ifdef USE_MSRPC
 		MaxTasks = getOptionArgumentInt(o, 1, RPC_C_LISTEN_MAX_CALLS_DEFAULT);
@@ -1120,7 +1107,6 @@ static void parseGeneralArguments()
 		ignoreIniFileParameter(INI_PARAM_MAX_WORKERS);
 		break;
 
-#		endif // !defined(NO_LIMIT)
 #		endif // NO_SOCKETS
 
 #	if !defined(NO_TIMEOUT) && !defined(USE_MSRPC)
@@ -1381,7 +1367,7 @@ void cleanup()
 #		endif // NO_PID_FILE
 		closeAllListeningSockets();
 
-#		if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32)
+#		if !defined(NO_SOCKETS) && !defined(_WIN32)
 		sem_unlink("/vlmcsd");
 #		if !defined(USE_THREADS)
 		if (shmid >= 0)
@@ -1390,7 +1376,7 @@ void cleanup()
 			shmctl(shmid, IPC_RMID, NULL);
 		}
 #		endif // !defined(USE_THREADS)
-#		endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32)
+#		endif // !defined(NO_SOCKETS) && !defined(_WIN32)
 
 #		ifndef NO_LOG
 		logger("vlmcsd %s was shutdown\n", Version);
@@ -1418,7 +1404,7 @@ __pure void cleanup() {}
 #endif // Neither Sockets nor RPC
 
 
-#if !defined(USE_MSRPC) && !defined(NO_LIMIT) && !defined(NO_SOCKETS)
+#if !defined(USE_MSRPC) && !defined(NO_SOCKETS)
 // Get a semaphore for limiting the maximum concurrent tasks
 static void allocateSemaphore(void)
 {
@@ -1472,7 +1458,7 @@ static void allocateSemaphore(void)
 
 	}
 }
-#endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS)
+#endif // !defined(NO_SOCKETS)
 
 
 #if !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
@@ -1674,9 +1660,9 @@ int newmain()
 	}
 #endif // defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
 
-#if !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 	allocateSemaphore();
-#endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS)
+#endif // !defined(NO_SOCKETS)
 
 		
 #ifndef NO_TAP

@@ -789,23 +789,19 @@ static void serveClient(const SOCKET s_client, const DWORD RpcAssocGroup)
 #ifndef NO_SOCKETS
 static void post_sem(void)
 {
-#if !defined(NO_LIMIT)
 	if (!InetdMode && MaxTasks != SEM_VALUE_MAX)
 	{
 		semaphore_post(MaxTaskSemaphore);
 	}
-#endif // !defined(NO_LIMIT)
 }
 
 
 static void wait_sem(void)
 {
-#if !defined(NO_LIMIT)
 	if (!InetdMode && MaxTasks != SEM_VALUE_MAX)
 	{
 		semaphore_wait(MaxTaskSemaphore);
 	}
-#endif // !defined(NO_LIMIT)
 }
 #endif // NO_SOCKETS
 

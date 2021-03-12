@@ -379,10 +379,6 @@ void printServerFlags()
 		" NO_CL_PIDS"
 #		endif // NO_CL_PIDS
 
-#		ifdef NO_LIMIT
-		" NO_LIMIT"
-#		endif // NO_LIMIT
-
 #		ifdef NO_SIGHUP
 		" NO_SIGHUP"
 #		endif // NO_SIGHUP
