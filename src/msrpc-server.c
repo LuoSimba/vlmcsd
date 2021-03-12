@@ -22,6 +22,7 @@
 #include "endian.h"
 #include "types.h"
 
+// _M_AMD64 = Intel x86_64
 #if __amd64 || defined(_M_AMD64) // 64-bit
 
 #ifndef _M_AMD64

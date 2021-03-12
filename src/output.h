@@ -14,7 +14,6 @@ int errorout(const char* fmt, ...);
 void logRequestVerbose(REQUEST* Request, const PRINTFUNC p);
 void logResponseVerbose(const char *const ePID, const BYTE *const hwid, RESPONSE* response, const PRINTFUNC p);
 
-void printPlatform();
 void printCommonFlags();
 void printServerFlags();
 void printClientFlags();

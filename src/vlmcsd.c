@@ -1323,7 +1323,6 @@ static void parseGeneralArguments()
 		printf("vlmcsd %s %i-bit\n",
                 Version,
                 (int)sizeof(void*) << 3);
-		printPlatform();
 		printCommonFlags();
 		printServerFlags();
 		exit(0);

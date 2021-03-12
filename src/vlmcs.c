@@ -572,7 +572,6 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 		printf("vlmcs %s %i-bit\n",
                 Version,
                 (int)sizeof(void*) << 3);
-		printPlatform();
 		printCommonFlags();
 		printClientFlags();
 		exit(0);

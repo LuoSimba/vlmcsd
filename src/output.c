@@ -247,35 +247,6 @@ void logResponseVerbose(const char *const ePID, const BYTE *const hwid, RESPONSE
 }
 
 
-void printPlatform()
-{
-	printf
-	(
-		"Intended platform:%s\n", ""
-
-#		if __i386__ || _M_IX86
-		" Intel x86"
-#		endif
-
-#		if __x86_64__ || __amd64__ || _M_X64 || _M_AMD64
-		" Intel x86_64"
-#		endif
-
-#		if __GNU__
-		" GNU"
-#		endif
-
-#		if defined(_WIN32) && !defined(_WIN64)
-		" Windows32"
-#		endif
-
-#		if defined(_WIN32) && defined(_WIN64)
-		" Windows64"
-#		endif
-	);
-}
-
-
 void printCommonFlags()
 {
 	printf
