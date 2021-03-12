@@ -261,10 +261,6 @@ void printPlatform()
 		" Intel x86_64"
 #		endif
 
-#		if __ANDROID_API__
-		" (API level " ANDROID_API_LEVEL ")"
-#		endif
-
 #		if __GNU__
 		" GNU"
 #		endif

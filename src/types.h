@@ -19,11 +19,6 @@
 # error NO_INTERAL_DATA and NO_EXTERNAL_DATA cannot be used together
 #endif
 
-// ----------------
-#define ANDROID_API_LEVEL ANDROID_HELPER1(__ANDROID_API__)
-#define ANDROID_HELPER1(s) ANDROID_HELPER2(s)
-#define ANDROID_HELPER2(s) #s
-
 
 // ----------------
 #include <pthread.h>
