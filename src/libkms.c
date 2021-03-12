@@ -19,32 +19,13 @@
 #include "shared_globals.h"
 #include "network.h"
 #include "helpers.h"
-
-#ifndef _WIN32
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <netinet/in.h>
-#endif // WIN32
 
 static int_fast8_t IsServerStarted = FALSE;
-
-#ifdef _WIN32
-#ifndef USE_MSRPC
-
-static int_fast8_t SocketsInitialized = FALSE;
-WSADATA wsadata;
-
-static int initializeWinSockets()
-{
-	if (SocketsInitialized) return 0;
-	SocketsInitialized = TRUE;
-	return WSAStartup(0x0202, &wsadata);
-}
-
-#endif // USE_MSRPC
-#endif // _WIN32
 
 EXTERNC __declspec(EXTERNAL) char* __cdecl GetErrorMessage()
 {
@@ -55,10 +36,6 @@ EXTERNC __declspec(EXTERNAL)SOCKET __cdecl ConnectToServer(const char* host, con
 {
 	SOCKET sock;
 	*ErrorMessage = 0;
-
-#	if defined(_WIN32) && !defined(USE_MSRPC)
-	initializeWinSockets();
-#	endif // defined(_WIN32) && !defined(USE_MSRPC)
 
 	size_t adrlen = strlen(host) + 16;
 	char* RemoteAddr = (char*)alloca(adrlen);
@@ -108,11 +85,6 @@ EXTERNC __declspec(EXTERNAL)DWORD __cdecl StartKmsServer(const int port, Request
 
 	if (IsServerStarted) return SOCKET_EALREADY;
 
-#	ifdef _WIN32
-	int error = initializeWinSockets();
-	if (error) return error;
-#	endif // _WIN32
-
 	CreateResponseBase = requestCallback;
 
 	int maxsockets = 0;
@@ -156,11 +128,6 @@ EXTERNC __declspec(EXTERNAL)DWORD __cdecl StartKmsServer(const int port, Request
 
 	if (IsServerStarted) return SOCKET_EALREADY;
 	int error;
-
-#	ifdef _WIN32
-	error = initializeWinSockets();
-	if (error) return error;
-#	endif // _WIN32
 
 	defaultport = vlmcsd_malloc(16);
 	vlmcsd_snprintf((char*)defaultport, (size_t)16, "%i", port);

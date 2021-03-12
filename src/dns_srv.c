@@ -1,14 +1,12 @@
 /*
  * dns_srv.c
  *
- * This file contains the code for KMS SRV record lookup in DNS (_vlmcs._tcp.example.com IN SRV 0 0 1688 mykms.example.com)
+ * This file contains the code for KMS SRV record lookup in DNS
  *
+ * (_vlmcs._tcp.example.com IN SRV 0 0 1688 mykms.example.com)
  */
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
 #ifndef NO_DNS
 
@@ -16,7 +14,6 @@
 
 #include <string.h>
 #include <stdio.h>
-#ifndef _WIN32
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -33,15 +30,12 @@
 #include <resolv.h>
 #endif // other Unix non-Android
 //#endif // DNS_PARSER_INTERNAL
-#else // WIN32
-#include <windns.h>
-#endif // WIN32
 
 #include "helpers.h"
 #include "output.h"
 #include "endian.h"
 
-#if defined(DNS_PARSER_INTERNAL) && !defined(_WIN32)
+#if defined(DNS_PARSER_INTERNAL)
 
 #include "ns_name.h"
 #include "ns_parse.h"
@@ -77,7 +71,7 @@
 #define NS_MAXLABEL 63
 #endif
 
-#endif // defined(DNS_PARSER_INTERNAL) && !defined(_WIN32)
+#endif // defined(DNS_PARSER_INTERNAL)
 
 
 //TODO: maybe move to helpers.c
@@ -132,7 +126,15 @@ void sortSrvRecords(kms_server_dns_ptr* serverlist, const int answers)
 
 
 #define RECEIVE_BUFFER_SIZE 2048
-#ifndef _WIN32 // UNIX resolver
+
+
+
+
+
+
+
+
+// UNIX resolver
 
 /*
  * Retrieves a raw DNS answer (a buffer of what came over the net)
@@ -244,8 +246,10 @@ int getKmsServerList(kms_server_dns_ptr** serverlist, const char *restrict query
 	return answers;
 }
 
-#else // WIN32 (Windows Resolver)
 
+
+
+#ifdef _WIN32
 /*
  * Retrieves an unsorted array of SRV records (Windows)
  */
@@ -322,6 +326,9 @@ int getKmsServerList(kms_server_dns_ptr** serverlist, const char *const restrict
 #	undef MAX_DNS_NAME_SIZE
 }
 #endif // _WIN32
+
+
+
 #undef RECEIVE_BUFFER_SIZE
 #endif // NO_DNS
 

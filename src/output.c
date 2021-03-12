@@ -25,7 +25,6 @@ static void vlogger(const char *message, va_list args)
 	{
 		if (fn_log == NULL) return;
 
-#		ifndef _WIN32
 		if (!strcmp(fn_log, "syslog"))
 		{
 			openlog("vlmcsd", LOG_CONS | LOG_PID, LOG_USER);
@@ -36,7 +35,6 @@ static void vlogger(const char *message, va_list args)
 			closelog();
 			return;
 		}
-#		endif // _WIN32
 
 		log = fopen(fn_log, "a");
 		if (!log) return;

@@ -56,8 +56,6 @@ typedef struct
 # ifndef SEM_VALUE_MAX // Android does not define this
 #  ifdef __ANDROID__
 #   define SEM_VALUE_MAX 0x3fffffff
-#  elif defined(_WIN32)
-#   define SEM_VALUE_MAX 0x7fffffff
 #  else
 #   define SEM_VALUE_MAX 0x7fff // Be cautious if unknown
 #  endif // __ANDROID__

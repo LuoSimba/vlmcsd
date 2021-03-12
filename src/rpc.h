@@ -9,7 +9,6 @@
 #include "types.h"
 #include "shared_globals.h"
 
-#if !defined(_WIN32)
 #define RPC_S_OK 0
 #define RPC_S_INVALID_ARG 87
 #define RPC_S_OUT_OF_MEMORY 14
@@ -139,7 +138,6 @@
 #define RPC_S_PRF_ELT_NOT_REMOVED 1927
 #define RPC_S_GRP_ELT_NOT_ADDED 1928
 #define RPC_S_GRP_ELT_NOT_REMOVED 1929
-#endif // !defined(_WIN32)
 
 
 typedef struct {

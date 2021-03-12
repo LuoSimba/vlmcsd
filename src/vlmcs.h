@@ -2,11 +2,6 @@
 #define VLMCS_H_
 
 #include "config.h"
-
-#if !defined(USE_MSRPC) && defined(_WIN32)
-#include <winsock2.h>
-#endif // defined(USE_MSRPC) && defined(_WIN32)
-
 #include "types.h"
 
 #ifndef USE_MSRPC

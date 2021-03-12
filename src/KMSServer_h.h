@@ -18,10 +18,6 @@
 */
 /* @@MIDL_FILE_HEADING(  ) */
 
-#if _WIN32
-#include "winsock2.h"
-#endif
-
 #pragma warning( disable: 4049 )  /* more than 64k source lines */
 
 

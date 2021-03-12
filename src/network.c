@@ -10,14 +10,7 @@
 #endif
 
 #include "types.h"
-
-#if HAVE_GETIFADDR && _WIN32
-#include <iphlpapi.h>
-#endif
-
 #include <string.h>
-
-#ifndef _WIN32
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -36,7 +29,7 @@
 #endif // getifaddrs from OS
 
 #endif // HAVE_GETIFADDR
-#endif // !WIN32
+
 
 #include "network.h"
 #include "endian.h"
@@ -45,11 +38,7 @@
 #include "shared_globals.h"
 #include "rpc.h"
 
-#ifndef _WIN32
 typedef ssize_t(*sendrecv_t)(int, void*, size_t, int);
-#else
-typedef int (WINAPI *sendrecv_t)(SOCKET, void*, int, int);
-#endif
 
 
 // Send or receive a fixed number of bytes regardless if received in one or more chunks
@@ -130,14 +119,8 @@ static int_fast8_t getSocketList(struct addrinfo **saList, const char *const add
 
 static int_fast8_t setBlockingEnabled(SOCKET fd, int_fast8_t blocking)
 {
-	if (fd == INVALID_SOCKET) return FALSE;
-
-#ifdef _WIN32
-
-	unsigned long mode = blocking ? 0 : 1;
-	return (ioctlsocket(fd, FIONBIO, &mode) == 0) ? TRUE : FALSE;
-
-#else // POSIX
+	if (fd == INVALID_SOCKET)
+        return FALSE;
 
 	int flags = fcntl(fd, F_GETFL, 0);
 
@@ -145,8 +128,6 @@ static int_fast8_t setBlockingEnabled(SOCKET fd, int_fast8_t blocking)
 
 	flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
 	return (fcntl(fd, F_SETFL, flags) == 0) ? TRUE : FALSE;
-
-#endif // POSIX
 }
 
 
@@ -251,17 +232,10 @@ SOCKET connectToAddress(const char *const addr, const int AddressFamily, int_fas
 		s = socket(sa->ai_family, SOCK_STREAM, IPPROTO_TCP);
 
 #		if !defined(NO_TIMEOUT) && !__minix__
-#		ifndef _WIN32 // Standard Posix timeout structure
 
 		struct timeval to;
 		to.tv_sec = 10;
 		to.tv_usec = 0;
-
-#		else // Windows requires a DWORD with milliseconds
-
-		DWORD to = 10000;
-
-#		endif // _WIN32
 
 		setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (sockopt_t)&to, sizeof(to));
 		setsockopt(s, SOL_SOCKET, SO_SNDTIMEO, (sockopt_t)&to, sizeof(to));
@@ -295,11 +269,7 @@ static int_fast8_t allowSocketReuse(SOCKET s)
 {
 	BOOL socketOption = TRUE;
 
-#	if !_WIN32
 #	define VLMCSD_SOCKET_OPTION SO_REUSEADDR
-#	else // _WIN32
-#	define VLMCSD_SOCKET_OPTION SO_EXCLUSIVEADDRUSE
-#	endif // _WIN32
 
 	if (setsockopt(s, SOL_SOCKET, VLMCSD_SOCKET_OPTION, (sockopt_t)&socketOption, sizeof(socketOption)))
 	{
@@ -536,7 +506,7 @@ static int listenOnAddress(const struct addrinfo *const ai, SOCKET *s)
 		return error;
 	}
 
-#	if !defined(_WIN32) && !defined(NO_SIGHUP)
+#	if !defined(NO_SIGHUP)
 
 	int flags = fcntl(*s, F_GETFD, 0);
 
@@ -552,7 +522,7 @@ static int listenOnAddress(const struct addrinfo *const ai, SOCKET *s)
 	}
 #	endif // _PEDANTIC
 
-#	endif // !defined(_WIN32) && !defined(NO_SIGHUP)
+#	endif // !defined(NO_SIGHUP)
 
 	BOOL socketOption = TRUE;
 
@@ -560,15 +530,12 @@ static int listenOnAddress(const struct addrinfo *const ai, SOCKET *s)
 	if (ai->ai_family == AF_INET6 && setsockopt(*s, IPPROTO_IPV6, IPV6_V6ONLY, (sockopt_t)&socketOption, sizeof(socketOption)))
 	{
 #		ifdef _PEDANTIC
-#		if defined(_WIN32)
-		//		if (IsWindowsVistaOrGreater()) //Doesn't work with older version of MingW32-w64 toolchain
-		if ((GetVersion() & 0xff) > 5)
-		{
-#		endif // _WIN32
-			printerrorf("Warning: %s does not support socket option IPV6_V6ONLY: %s\n", ipstr, vlmcsd_strerror(socket_errno));
-#		if defined(_WIN32)
-		}
-#		endif // _WIN32
+
+        printerrorf("Warning: %s does not support socket option IPV6_V6ONLY: %s\n",
+                ipstr,
+                vlmcsd_strerror(socket_errno)
+                );
+
 #		endif // _PEDANTIC
 	}
 #	endif
@@ -747,17 +714,9 @@ static void serveClient(const SOCKET s_client, const DWORD RpcAssocGroup)
 {
 #	if !defined(NO_TIMEOUT) && !__minix__
 
-#	ifndef _WIN32 // Standard Posix timeout structure
-
 	struct timeval to;
 	to.tv_sec = ServerTimeout;
 	to.tv_usec = 0;
-
-#else // Windows requires a DWORD with milliseconds
-
-	DWORD to = ServerTimeout * 1000;
-
-#	endif // _WIN32
 
 #	if !defined(NO_LOG) && defined(_PEDANTIC)
 
@@ -854,11 +813,8 @@ static void wait_sem(void)
 
 #if defined(USE_THREADS) && !defined(NO_SOCKETS)
 
-#if defined(_WIN32) // Win32 Threads
-static DWORD WINAPI serveClientThreadProc(PCLDATA clData)
-#else // Posix threads
+
 static void *serveClientThreadProc(PCLDATA clData)
-#endif // Thread proc is identical in WIN32 and Posix threads
 {
 	serveClient(clData->socket, clData->RpcAssocGroup);
 	free(clData);
@@ -872,30 +828,7 @@ static void *serveClientThreadProc(PCLDATA clData)
 
 #ifndef NO_SOCKETS
 
-#if defined(USE_THREADS) && defined(_WIN32) // Windows Threads
-static int serveClientAsyncWinThreads(PCLDATA thr_CLData)
-{
-	wait_sem();
-
-	HANDLE h = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)serveClientThreadProc, thr_CLData, 0, NULL);
-
-	if (h)
-	{
-		CloseHandle(h);
-		return NO_ERROR;
-	}
-	else
-	{
-		socketclose(thr_CLData->socket);
-		free(thr_CLData);
-		post_sem();
-		return GetLastError();
-	}
-}
-#endif // defined(USE_THREADS) && defined(_WIN32) // Windows Threads
-
-
-#if defined(USE_THREADS) && !defined(_WIN32) // Posix Threads
+#if defined(USE_THREADS) // Posix Threads
 static int ServeClientAsyncPosixThreads(const PCLDATA thr_CLData)
 {
 	pthread_t p_thr;
@@ -917,7 +850,7 @@ static int ServeClientAsyncPosixThreads(const PCLDATA thr_CLData)
 
 	return 0;
 }
-#endif //  defined(USE_THREADS) && !defined(_WIN32) // Posix Threads
+#endif //  defined(USE_THREADS) // Posix Threads
 
 #ifndef USE_THREADS // fork() implementation
 static void ChildSignalHandler(const int signal)
@@ -990,15 +923,7 @@ int serveClientAsync(const SOCKET s_client, const DWORD RpcAssocGroup)
 	thr_CLData->socket = s_client;
 	thr_CLData->RpcAssocGroup = RpcAssocGroup;
 
-#if defined(_WIN32) // Windows threads
-
-	return serveClientAsyncWinThreads(thr_CLData);
-
-#else // Posix Threads
-
 	return ServeClientAsyncPosixThreads(thr_CLData);
-
-#endif // Posix Threads
 
 #endif // USE_THREADS
 }
