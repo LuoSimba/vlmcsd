@@ -27,10 +27,6 @@
 #include "kmsdata.h"
 #endif // NO_INTERNAL_DATA
 
-#if defined(USE_AUXV)
-#include <sys/auxv.h>
-#endif
-
  /*
   *  UCS2 <-> UTF-8 functions
   *  All functions use little endian UCS2 since we only need it to communicate with Windows via RPC
@@ -426,11 +422,7 @@ void getExeName()
 {
 	if (fn_exe != NULL) return;
 
-#	if defined(USE_AUXV)
-
-	fn_exe = (char*)getauxval(AT_EXECFN);
-
-#	elif __UCLIBC__ && __UCLIBC_MAJOR__ < 1 && !defined(NO_PROCFS) // Workaround for older uclibc
+#	if __UCLIBC__ && __UCLIBC_MAJOR__ < 1 && !defined(NO_PROCFS) // Workaround for older uclibc
 
 	char temp[PATH_MAX + 1];
 

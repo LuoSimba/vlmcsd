@@ -37,11 +37,6 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <semaphore.h>
-
-#if defined(USE_AUXV)
-#include <sys/auxv.h>
-#endif
-
 #include "vlmcsd.h"
 // ReSharper disable CppUnusedIncludeDirective
 #include "endian.h"

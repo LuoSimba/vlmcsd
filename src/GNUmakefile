@@ -144,10 +144,6 @@ ifeq ($(NOPROCFS), 1)
   BASECFLAGS += -DNO_PROCFS
 endif
 
-ifeq ($(AUXV), 1)
-  BASECFLAGS += -DUSE_AUXV
-endif
-
 ifneq ($(NOLPTHREAD), 1)
   ifeq ($(THREADS), 1)
     SERVERLDFLAGS += -lpthread

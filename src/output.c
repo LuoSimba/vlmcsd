@@ -391,10 +391,6 @@ void printServerFlags()
 		" THREADS=1"
 #		endif // USE_THREADS
 
-#		ifdef USE_AUXV
-		" AUXV=1"
-#		endif // USE_AUXV
-
 #		if defined(CHILD_HANDLER)
 		" CHILD_HANDLER=1"
 #		endif // defined(CHILD_HANDLER)

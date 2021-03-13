@@ -150,29 +150,6 @@
 
 
 
-#ifndef USE_AUXV
-/*
- * Linux only:
- *    Use the process' ELF aux vector to determine the executable name.
- *    This is actually the best method but is supported only with
- *
- *        * the musl library
- *        * the glbic library 2.16 or newer
- *
- *    It does NOT work with uclibc (most routers and other small devices) and glibc < 2.16.
- *    Use it only if your system supports it and you do not plan to use the binary on older systems.
- *    It won't work on debian 7 or Red Hat 6.x.
- *
- *    It is safe to try this by yourself. vlmcsd won't compile if your system doesn't support it.
- */
-
- //#define USE_AUXV
-
-#endif // USE_AUXV
-
-
-
-
 #ifndef _OPENSSL_NO_HMAC
 /*
  * If you configured vlmcsd to use OpenSSL (which you shouldn't) you may use this option
@@ -560,8 +537,7 @@
 #ifndef NO_SIGHUP
 /*
  * Disables the ability to signal hangup (SIGHUP) to vlmcsd to restart it (rereading the ini file). The SIGHUP
- * handler makes heavy use of OS specific code. It should not cause any trouble on Solaris, Mac OS X and iOS. On Linux
- * use "#define USE_AUXV" (see troubleshooting options) if this is supported by your C runtime library.
+ * handler makes heavy use of OS specific code. It should not cause any trouble on Solaris, Mac OS X and iOS.
  *
  * You may save some bytes by enabling this option. Use it also if the SIGHUP handler causes any trouble on your
  * platform. Please note that with no SIGHUP handler at all. vlmcsd will simply terminate (uncleanly) if it receives
