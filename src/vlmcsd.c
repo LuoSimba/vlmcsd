@@ -1432,7 +1432,7 @@ int setupListeningSockets()
 	const int_fast8_t haveIPv6Stack = checkProtocolStack(AF_INET6);
 
 	// Reset getopt since we've alread used it
-	optReset();
+    optind = 0;
 
 	for (opterr = 0; (o = getopt(global_argc, (char* const*)global_argv, (const char*)optstring)) > 0; ) switch (o)
 	{
@@ -1569,7 +1569,7 @@ int newmain()
 #endif // !defined(NO_RANDOM_EPID) || !defined(NO_CL_PIDS) || !defined(NO_INI_FILE)
 
 #ifndef NO_CL_PIDS
-	optReset();
+    optind = 0; // reset
 	int o;
 
 	for (opterr = 0; (o = getopt(global_argc, (char* const*)global_argv, (const char*)optstring)) > 0; ) switch (o)

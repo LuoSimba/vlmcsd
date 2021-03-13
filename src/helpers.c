@@ -249,14 +249,6 @@ __pure unsigned int getOptionArgumentInt(const char o, const unsigned int min, c
 	return result;
 }
 
-/**
- * Resets getopt() to start parsing from the beginning
- */
-void optReset(void)
-{
-    // Makes GLIBc getopt happy
-	optind = 0;
-}
 #endif // !IS_LIBRARY
 
 /**

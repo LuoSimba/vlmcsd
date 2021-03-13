@@ -310,7 +310,7 @@ static const char* const client_optstring = "+N:B:i:j:l:a:s:k:c:w:r:n:t:g:G:o:K:
 static void parseCommandLinePass0(const int argc, CARGV argv)
 {
 	int o;
-	optReset();
+    optind = 0; // reset
 
 	for (opterr = 0; (o = getopt(argc, (char* const*)argv, client_optstring)) > 0; )
     switch (o)
@@ -335,7 +335,7 @@ static void parseCommandLinePass0(const int argc, CARGV argv)
 static void parseCommandLinePass1(const int argc, CARGV argv)
 {
 	int o;
-	optReset();
+    optind = 0; // reset
 
 	for (opterr = 0; (o = getopt(argc, (char* const*)argv, client_optstring)) > 0; )
     switch (o)
@@ -377,7 +377,7 @@ static void parseCommandLinePass1(const int argc, CARGV argv)
 static void parseCommandLinePass2(const char *const programName, const int argc, CARGV argv)
 {
 	int o;
-	optReset();
+    optind = 0; // reset
 
 	for (opterr = 0; (o = getopt(argc, (char* const*)argv, client_optstring)) > 0; ) switch (o)
 	{

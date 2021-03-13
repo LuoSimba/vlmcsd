@@ -15,7 +15,6 @@
 
 BOOL stringToInt(const char *const szValue, const unsigned int min, const unsigned int max, unsigned int *const value);
 unsigned int getOptionArgumentInt(const char o, const unsigned int min, const unsigned int max);
-void optReset(void);
 __pure DWORD timeSpanString2Seconds(const char *const restrict argument);
 #define timeSpanString2Minutes(x) (timeSpanString2Seconds(x) / 60)
 char* win_strerror(const int message);
