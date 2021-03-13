@@ -1,13 +1,13 @@
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
-
-#ifdef USE_MSRPC
+#include "config.h"
 
 #if !defined(_WIN32)
 #error MSRPC is only available with native Windows or Cygwin
 #endif
+
+#ifndef USE_MSRPC
+#error You must define macro USE_MSRPC.
+#endif
+
 
 #if _WIN32 && !defined(NO_PRIVATE_IP_DETECT)
 #include <winsock2.h>
@@ -291,4 +291,3 @@ void __RPC_USER midl_user_free(void __RPC_FAR *ptr)
 }
 
 
-#endif // USE_MSRPC

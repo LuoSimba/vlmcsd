@@ -5,6 +5,9 @@
 #include "types.h"
 
 #ifdef _NTSERVICE
+// global
+extern int_fast8_t IsNTService;
+extern int_fast8_t ServiceShutdown;
 
 //#include <strsafe.h>
 

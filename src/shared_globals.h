@@ -160,11 +160,6 @@ extern sem_t *MaxTaskSemaphore;
 
 #endif // !defined(NO_SOCKETS)
 
-#ifdef _NTSERVICE
-extern int_fast8_t IsNTService;
-extern int_fast8_t ServiceShutdown;
-#endif
-
 #ifndef NO_LOG
 #ifdef USE_THREADS
 

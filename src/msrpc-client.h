@@ -1,8 +1,8 @@
-/*
- * msrpc-client.h
- */
 
-#ifdef USE_MSRPC
+#ifndef USE_MSRPC
+#error You must define macro USE_MSRPC.
+#endif
+
 #ifndef MSRPC_CLIENT_H_
 #define MSRPC_CLIENT_H_
 
@@ -21,6 +21,5 @@ RpcStatus rpcSendRequest(const RpcCtx handle, BYTE* KmsRequest, size_t requestSi
 RpcStatus closeRpc(RpcCtx s);
 
 #define INVALID_RPCCTX ((RpcCtx)~0)
-#endif // USE_MSRPC
 
 #endif /* MSRPC_CLIENT_H_ */

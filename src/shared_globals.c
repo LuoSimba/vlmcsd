@@ -108,11 +108,6 @@ int numsockets = 0;
 sem_t *MaxTaskSemaphore; // Posix
 #endif // !defined(NO_SOCKETS)
 
-#ifdef _NTSERVICE
-int_fast8_t IsNTService = TRUE;
-int_fast8_t ServiceShutdown = FALSE;
-#endif // _NTSERVICE
-
 #ifndef NO_LOG
 #ifdef USE_THREADS
 pthread_mutex_t logmutex = PTHREAD_MUTEX_INITIALIZER;

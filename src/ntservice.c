@@ -10,6 +10,11 @@
 #error You must define macro _NTSERVICE to use this source file.
 #endif
 
+// global
+int_fast8_t IsNTService = TRUE;
+int_fast8_t ServiceShutdown = FALSE;
+
+
 SERVICE_STATUS          gSvcStatus;
 SERVICE_STATUS_HANDLE   gSvcStatusHandle;
 
@@ -26,9 +31,6 @@ VOID WINAPI ServiceCtrlHandler(DWORD dwCtrl)
 
 		// Remove PID file and free ressources
 		cleanup();
-#			if defined(USE_MSRPC)
-		ReportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
-#			endif
 
 	default:
 		break;

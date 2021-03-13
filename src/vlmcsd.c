@@ -95,9 +95,9 @@ static IniFileParameter_t IniFileParameterList[] =
 		{ "LCID", INI_PARAM_LCID },
 		{ "HostBuild", INI_PARAM_HOST_BUILD },
 #	endif // NO_RANDOM_EPID
-#	if !defined(NO_SOCKETS) && (defined(USE_MSRPC) || defined(SIMPLE_SOCKETS) || defined(HAVE_GETIFADDR))
+#	if !defined(NO_SOCKETS) && (defined(SIMPLE_SOCKETS) || defined(HAVE_GETIFADDR))
 		{ "Port", INI_PARAM_PORT },
-#	endif // defined(USE_MSRPC) || defined(SIMPLE_SOCKETS)
+#	endif // defined(SIMPLE_SOCKETS)
 #	if !defined(NO_SOCKETS)
 #	ifndef SIMPLE_SOCKETS
 		{ "Listen", INI_PARAM_LISTEN },
@@ -110,17 +110,15 @@ static IniFileParameter_t IniFileParameterList[] =
 
 #	endif // !defined(NO_SOCKETS)
 
-#	if !defined(NO_TIMEOUT) && !defined(USE_MSRPC) & !defined(USE_MSRPC)
+#	if !defined(NO_TIMEOUT)
 		{ "ConnectionTimeout", INI_PARAM_CONNECTION_TIMEOUT },
-#	endif // !defined(NO_TIMEOUT) && !defined(USE_MSRPC) & !defined(USE_MSRPC)
+#	endif // !defined(NO_TIMEOUT)
 
-#	ifndef USE_MSRPC
 		{ "DisconnectClientsImmediately", INI_PARAM_DISCONNECT_IMMEDIATELY },
 #	ifndef SIMPLE_RPC
 		{ "UseNDR64", INI_PARAM_RPC_NDR64 },
 		{ "UseBTFN", INI_PARAM_RPC_BTFN },
 #	endif // !SIMPLE_RPC
-#	endif // USE_MSRPC
 #	ifndef NO_PID_FILE
 		{ "PIDFile", INI_PARAM_PID_FILE },
 #	endif // NO_PID_FILE
@@ -236,15 +234,15 @@ static __noreturn void usage()
 #		endif
 #		ifndef NO_SOCKETS
 		"  -x <level>\t\texit if warning <level> reached (default 0)\n"
-#		if !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#		if !defined(SIMPLE_SOCKETS)
 		"  -L <address>[:<port>]\tlisten on IP address <address> with optional <port>\n"
 		"  -P <port>\t\tset TCP port <port> for subsequent -L statements (default 1688)\n"
 #		if HAVE_FREEBIND
 		"  -F0, -F1\t\tdisable/enable binding to foreign IP addresses\n"
 #		endif // HAVE_FREEBIND
-#		else // defined(USE_MSRPC) || defined(SIMPLE_SOCKETS)
+#		else // defined(SIMPLE_SOCKETS)
 		"  -P <port>\t\tuse TCP port <port> (default 1688)\n"
-#		endif // defined(USE_MSRPC) || defined(SIMPLE_SOCKETS)
+#		endif // defined(SIMPLE_SOCKETS)
 
 		"  -m <clients>\t\tHandle max. <clients> simultaneously (default no limit)\n"
 
@@ -493,21 +491,21 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 
 #	endif // NO_RANDOM_EPID
 
-#	if (defined(USE_MSRPC) || defined(SIMPLE_SOCKETS) || defined(HAVE_GETIFADDR)) && !defined(NO_SOCKETS)
+#	if (defined(SIMPLE_SOCKETS) || defined(HAVE_GETIFADDR)) && !defined(NO_SOCKETS)
 
 	case INI_PARAM_PORT:
 		defaultport = vlmcsd_strdup(iniarg);
 		break;
 
-#	endif // (defined(USE_MSRPC) || defined(SIMPLE_SOCKETS) || defined(HAVE_GETIFADDR)) && !defined(NO_SOCKETS)
+#	endif // (defined(SIMPLE_SOCKETS) || defined(HAVE_GETIFADDR)) && !defined(NO_SOCKETS)
 
-#	if !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#	if !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 
 	case INI_PARAM_LISTEN:
 		maxsockets++;
 		return TRUE;
 
-#	endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#	endif // !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 
 #	if !defined(NO_SOCKETS)
 
@@ -589,7 +587,6 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 
 #	endif // NO_CUSTOM_INTERVALS
 
-#	ifndef USE_MSRPC
 
 #	if !defined(NO_TIMEOUT)
 
@@ -612,8 +609,6 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 	case INI_PARAM_RPC_BTFN:
 		success = getIniFileArgumentBool(&UseServerRpcBTFN, iniarg);
 		break;
-
-#	endif // USE_MSRPC
 
 #	ifndef NO_SOCKETS
 
@@ -765,7 +760,7 @@ static BOOL handleIniFileParameter(const char* s)
 }
 
 
-#if !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 static BOOL setupListeningSocketsFromIniFile(const char* s)
 {
 	if (!maxsockets) return TRUE;
@@ -776,7 +771,7 @@ static BOOL setupListeningSocketsFromIniFile(const char* s)
 	IniFileErrorMessage = IniFileErrorBuffer;
 	return addListeningSocket(s);
 }
-#endif // !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 
 
 static BOOL readIniFile(const uint_fast8_t pass)
@@ -820,7 +815,7 @@ static BOOL readIniFile(const uint_fast8_t pass)
 			if (handleIniFileEpidParameter(s, TRUE, fn_ini)) continue;
 			lineParseError = TRUE;
 		}
-#		if !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS) && !defined(USE_MSRPC)
+#		if !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 		else if (pass == INI_FILE_PASS_3)
 		{
 			lineParseError = !setupListeningSocketsFromIniFile(s);
@@ -829,7 +824,7 @@ static BOOL readIniFile(const uint_fast8_t pass)
 		{
 			return FALSE;
 		}
-#		endif // !defined(NO_SOCKETS) &&  && !defined(SIMPLE_SOCKETS) && !defined(USE_MSRPC)
+#		endif // !defined(NO_SOCKETS) &&  && !defined(SIMPLE_SOCKETS)
 
 		if (lineParseError)
 		{
@@ -1067,7 +1062,7 @@ static void parseGeneralArguments()
 
 	case 'P':
 		ignoreIniFileParameter(INI_PARAM_PORT);
-#		if !defined(SIMPLE_SOCKETS) && !defined(USE_MSRPC)
+#		if !defined(SIMPLE_SOCKETS)
 		ignoreIniFileParameter(INI_PARAM_LISTEN);
 #		else
 		defaultport = optarg;
@@ -1075,22 +1070,18 @@ static void parseGeneralArguments()
 		break;
 
 	case 'm':
-#		ifdef USE_MSRPC
-		MaxTasks = getOptionArgumentInt(o, 1, RPC_C_LISTEN_MAX_CALLS_DEFAULT);
-#		else // !USE_MSRPC
 		MaxTasks = getOptionArgumentInt((char)o, 1, SEM_VALUE_MAX);
-#		endif // !USE_MSRPC
 		ignoreIniFileParameter(INI_PARAM_MAX_WORKERS);
 		break;
 
 #		endif // NO_SOCKETS
 
-#	if !defined(NO_TIMEOUT) && !defined(USE_MSRPC)
+#	if !defined(NO_TIMEOUT)
 	case 't':
 		ServerTimeout = getOptionArgumentInt((char)o, 1, 600);
 		ignoreIniFileParameter(INI_PARAM_CONNECTION_TIMEOUT);
 		break;
-#	endif // !defined(NO_TIMEOUT) && !defined(USE_MSRPC)
+#	endif // !defined(NO_TIMEOUT)
 
 #	ifndef NO_PID_FILE
 	case 'p':
@@ -1141,7 +1132,7 @@ static void parseGeneralArguments()
 #	endif // !defined(NO_PRIVATE_IP_DETECT)
 
 #	ifndef NO_SOCKETS
-#	if !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#	if !defined(SIMPLE_SOCKETS)
 	case 'L':
 		maxsockets++;
 		ignoreIniFileParameter(INI_PARAM_LISTEN);
@@ -1152,7 +1143,7 @@ static void parseGeneralArguments()
 		ignoreIniFileParameter(INI_PARAM_FREEBIND);
 		break;
 #	endif // HAVE_FREEBIND
-#	endif // !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#	endif // !defined(SIMPLE_SOCKETS)
 
 #	ifndef NO_STRICT_MODES
 
@@ -1326,7 +1317,7 @@ static void writePidFile()
 #define writePidFile()
 #endif // !defined(NO_PID_FILE)
 
-#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS)
 
 void cleanup()
 {
@@ -1358,19 +1349,6 @@ void cleanup()
 	}
 }
 
-#elif defined(USE_MSRPC)
-
-void cleanup()
-{
-#	ifndef NO_PID_FILE
-	if (fn_pid) unlink(fn_pid);
-#	endif // NO_PID_FILE
-
-#	ifndef NO_LOG
-	logger("vlmcsd %s was shutdown\n", Version);
-#	endif // NO_LOG
-}
-
 #else // Neither Sockets nor RPC
 
 __pure void cleanup() {}
@@ -1378,7 +1356,7 @@ __pure void cleanup() {}
 #endif // Neither Sockets nor RPC
 
 
-#if !defined(USE_MSRPC) && !defined(NO_SOCKETS)
+#if !defined(NO_SOCKETS)
 // Get a semaphore for limiting the maximum concurrent tasks
 static void allocateSemaphore(void)
 {
@@ -1624,12 +1602,6 @@ int newmain()
 	if (MaintainClients) InitializeClientLists();
 #endif // !NO_CLIENT_LIST
 
-#if defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
-	if (PublicIPProtectionLevel)
-	{
-		printerrorf("Warning: Public IP address protection using MS RPC is poor. See vlmcsd.8\n");
-	}
-#endif // defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
 
 #if !defined(NO_SOCKETS)
 	allocateSemaphore();
