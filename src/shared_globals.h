@@ -100,7 +100,6 @@ extern int_fast8_t StartEmpty;
 #endif // !NO_STRICT_MODES
 
 
-#ifndef USE_MSRPC
 extern int_fast8_t UseMultiplexedRpc;
 #ifndef SIMPLE_RPC
 extern int_fast8_t UseServerRpcNDR64;
@@ -108,7 +107,6 @@ extern int_fast8_t UseServerRpcBTFN;
 #endif // !SIMPLE_RPC
 extern int_fast8_t UseClientRpcNDR64;
 extern int_fast8_t UseClientRpcBTFN;
-#endif // USE_MSRPC
 
 #ifndef NO_SOCKETS
 extern int_fast8_t ExitLevel;
@@ -140,7 +138,7 @@ extern int_fast8_t logverbose;
 #endif
 #endif
 
-#if !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#if !defined(SIMPLE_RPC)
 extern uint8_t IsNDR64Defined;
 #endif 
 
@@ -150,7 +148,7 @@ extern uint16_t Lcid;
 extern uint16_t HostBuild;
 #endif
 
-#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS)
 #if defined(SIMPLE_SOCKETS)
 extern SOCKET s_server;
 #else // !defined(SIMPLE_SOCKETS)
@@ -160,7 +158,7 @@ extern int numsockets;
 
 extern sem_t *MaxTaskSemaphore;
 
-#endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_SOCKETS)
 
 #ifdef _NTSERVICE
 extern int_fast8_t IsNTService;

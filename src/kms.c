@@ -261,11 +261,11 @@ static char* itoc(char *const c, const int i, uint_fast8_t digits)
 
 static uint8_t getRandomServerType()
 {
-#	if defined(USE_MSRPC) || defined(SIMPLE_RPC)
+#	if defined(SIMPLE_RPC)
 
 	return rand() % KmsData->HostBuildCount;
 
-#	else // !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#	else // !defined(SIMPLE_RPC)
 	while (TRUE)
 	{
 		const uint32_t buildIndex = rand() % KmsData->HostBuildCount;
@@ -275,7 +275,7 @@ static uint8_t getRandomServerType()
 			return (uint8_t)buildIndex;
 		}
 	}
-#	endif // !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#	endif // !defined(SIMPLE_RPC)
 }
 
 
@@ -352,9 +352,9 @@ void randomPidInit()
 		{
 			uint8_t index;
 
-#if defined(USE_MSRPC) || defined(SIMPLE_RPC)
+#if defined(SIMPLE_RPC)
 			index = getRandomServerType();
-#else // !(defined(USE_MSRPC) || defined(SIMPLE_RPC))
+#else // !defined(SIMPLE_RPC)
 			if (IsNDR64Defined)
 			{
 				index = getRandomServerType();
@@ -364,7 +364,7 @@ void randomPidInit()
 				index = (uint8_t)(rand() % KmsData->HostBuildCount);
 				UseServerRpcNDR64 = !!(KmsData->HostBuildList[index].Flags & UseNdr64);
 			}
-#endif // !(defined(USE_MSRPC) || defined(SIMPLE_RPC))
+#endif // !defined(SIMPLE_RPC)
 
 			HostBuild = (uint16_t)KmsData->HostBuildList[index].BuildNumber;
 		}

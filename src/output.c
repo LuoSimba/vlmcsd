@@ -273,10 +273,6 @@ void printCommonFlags()
 
 #		endif // !defined(NO_EXTERNAL_DATA)
 
-#		ifdef USE_MSRPC
-		" USE_MSRPC"
-#		endif // USE_MSRPC
-
 #		ifdef _CRYPTO_OPENSSL
 		" _CRYPTO_OPENSSL"
 #		endif // _CRYPTO_OPENSSL
@@ -410,10 +406,6 @@ void printServerFlags()
 #		ifdef NO_CLIENT_LIST
 		" NO_CLIENT_LIST"
 #		endif // NO_CLIENT_LIST
-
-#		if _WIN32 && (!defined(USE_MSRPC))
-		" SUPPORT WINE"
-#		endif // _WIN32 && (!defined(USE_MSRPC))
 
 #		if _WIN32 && defined(NO_TAP)
 		" NO_TAP"

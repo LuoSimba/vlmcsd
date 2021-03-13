@@ -1,12 +1,9 @@
 #ifndef INCLUDED_NTSERVICE_H
 #define INCLUDED_NTSERVICE_H
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
-
+#include "config.h"
 #include "types.h"
+
 #ifdef _NTSERVICE
 
 //#include <strsafe.h>

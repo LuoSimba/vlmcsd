@@ -4,10 +4,6 @@
 
 #include "config.h"
 
-#if defined(USE_MSRPC) && !defined(_WIN32)
-#error Microsoft RPC is only available on Windows and Cygwin
-#endif
-
 #if defined(USE_MSRPC) && defined(SIMPLE_SOCKETS)
 #error You can only define either USE_MSRPC or SIMPLE_SOCKETS but not both
 #endif
@@ -43,11 +39,7 @@
 // ReSharper restore CppUnusedIncludeDirective
 #include "shared_globals.h"
 #include "output.h"
-#ifndef USE_MSRPC
 #include "network.h"
-#else // USE_MSRPC
-#include "msrpc-server.h"
-#endif // USE_MSRPC
 #include "ntservice.h"
 #include "helpers.h"
 
@@ -57,10 +49,9 @@
 
 static const char* const optstring = "a:N:B:m:t:A:R:u:g:L:p:i:H:P:l:r:U:W:C:c:F:O:o:x:T:K:E:M:j:SseDdVvqkZ";
 
-#if !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#if !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 static uint_fast8_t maxsockets = 0;
-
-#endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#endif // !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 
 #ifndef NO_PID_FILE
 static const char* fn_pid = NULL;
@@ -107,7 +98,7 @@ static IniFileParameter_t IniFileParameterList[] =
 #	if !defined(NO_SOCKETS) && (defined(USE_MSRPC) || defined(SIMPLE_SOCKETS) || defined(HAVE_GETIFADDR))
 		{ "Port", INI_PARAM_PORT },
 #	endif // defined(USE_MSRPC) || defined(SIMPLE_SOCKETS)
-#	if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#	if !defined(NO_SOCKETS)
 #	ifndef SIMPLE_SOCKETS
 		{ "Listen", INI_PARAM_LISTEN },
 #	endif // SIMPLE_SOCKETS
@@ -117,7 +108,7 @@ static IniFileParameter_t IniFileParameterList[] =
 
 		{ "MaxWorkers", INI_PARAM_MAX_WORKERS },
 
-#	endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#	endif // !defined(NO_SOCKETS)
 
 #	if !defined(NO_TIMEOUT) && !defined(USE_MSRPC) & !defined(USE_MSRPC)
 		{ "ConnectionTimeout", INI_PARAM_CONNECTION_TIMEOUT },
@@ -158,7 +149,7 @@ static IniFileParameter_t IniFileParameterList[] =
 
 #if !defined (NO_SOCKETS)
 
-#if !defined(USE_THREADS) && !defined(USE_MSRPC)
+#if !defined(USE_THREADS)
 static int shmid = -1;
 #endif
 
@@ -237,11 +228,7 @@ static __noreturn void usage()
 #		if HAVE_GETIFADDR
 		"  -o 0|1|2|3\t\tset protection level against clients with public IP addresses (default 0)\n"
 #		else // !HAVE_GETIFADDR
-#		ifndef USE_MSRPC
 		"  -o 0|2\t\tset protection level against clients with public IP addresses (default 0)\n"
-#		else // USE_MSRPC
-		"  -o 0|2\t\tset protection level against clients with public IP addresses (default 0). Limited use with MS RPC\n"
-#		endif // USE_MSRPC
 #		endif // !HAVE_GETIFADDR
 #		endif // !defined(NO_PRIVATE_IP_DETECT)
 #		ifndef NO_TAP
@@ -276,7 +263,6 @@ static __noreturn void usage()
 		"  -E0, -E1\t\tdisable/enable start with empty client list (default -E0, ignored if -M0)\n"
 #		endif // !NO_CLIENT_LIST
 #		endif // !NO_STRICT_MODES
-#		ifndef USE_MSRPC
 
 #		if !defined(NO_TIMEOUT)
 		"  -t <seconds>\t\tdisconnect clients after <seconds> of inactivity (default 30)\n"
@@ -288,7 +274,6 @@ static __noreturn void usage()
 		"  -N0, -N1\t\tdisable/enable NDR64\n"
 		"  -B0, -B1\t\tdisable/enable bind time feature negotiation\n"
 #		endif // !SIMPLE_RPC
-#		endif // USE_MSRPC
 #		ifndef NO_PID_FILE
 		"  -p <file>\t\twrite pid to <file>\n"
 #		endif // NO_PID_FILE
@@ -527,11 +512,7 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char* const iniarg)
 #	if !defined(NO_SOCKETS)
 
 	case INI_PARAM_MAX_WORKERS:
-#		ifdef USE_MSRPC
-		success = getIniFileArgumentInt(&MaxTasks, iniarg, 1, RPC_C_LISTEN_MAX_CALLS_DEFAULT);
-#		else // !USE_MSRPC
 		success = getIniFileArgumentInt(&MaxTasks, iniarg, 1, SEM_VALUE_MAX);
-#		endif // !USE_MSRPC
 		break;
 
 #	endif // !defined(NO_SOCKETS)
@@ -1278,7 +1259,6 @@ static void parseGeneralArguments()
 		break;
 #	endif // NO_CUSTOM_INTERVALS
 
-#	ifndef USE_MSRPC
 	case 'd':
 	case 'k':
 		DisconnectImmediately = o == 'd';
@@ -1297,7 +1277,6 @@ static void parseGeneralArguments()
 		ignoreIniFileParameter(INI_PARAM_RPC_BTFN);
 		break;
 #	endif // !SIMPLE_RPC
-#	endif // !USE_MSRPC
 
 	case 'V':
 
@@ -1456,7 +1435,7 @@ static void allocateSemaphore(void)
 #endif // !defined(NO_SOCKETS)
 
 
-#if !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#if !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 int setupListeningSockets()
 {
 	int o;
@@ -1538,7 +1517,7 @@ int setupListeningSockets()
 
 	return 0;
 }
-#endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#endif // !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS)
 
 
 /**
@@ -1556,7 +1535,7 @@ int newmain()
 {
 	parseGeneralArguments(); // Does not return if an error occurs
 
-#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS)
 
 	struct stat statbuf;
 	fstat(STDIN_FILENO, &statbuf);
@@ -1576,7 +1555,7 @@ int newmain()
 #  endif // !NO_LOG
 	}
 
-#endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_SOCKETS)
 
 
 
@@ -1591,12 +1570,9 @@ int newmain()
 
 	loadKmsData();
 
-#if !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#if !defined(SIMPLE_RPC)
 
-	if
-		(
-			!IsNDR64Defined
-			)
+	if ( !IsNDR64Defined )
 	{
 		UseServerRpcNDR64 = !!(KmsData->Flags & KMS_OPTIONS_USENDR64);
 #  ifndef NO_RANDOM_EPID
@@ -1606,7 +1582,7 @@ int newmain()
 		}
 #  endif 
 	}
-#endif // !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#endif // !defined(SIMPLE_RPC)
 
 
 #if !defined(NO_RANDOM_EPID) || !defined(NO_CL_PIDS) || !defined(NO_INI_FILE)
@@ -1655,7 +1631,7 @@ int newmain()
 	}
 #endif // defined(USE_MSRPC) && !defined(NO_PRIVATE_IP_DETECT)
 
-#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS)
 	allocateSemaphore();
 #endif // !defined(NO_SOCKETS)
 
@@ -1664,7 +1640,7 @@ int newmain()
 	if (tapArgument && !InetdMode) startTap(tapArgument);
 #endif // NO_TAP
 
-#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS)
 	if (!InetdMode)
 	{
 		int error;
@@ -1674,7 +1650,7 @@ int newmain()
 		if ((error = setupListeningSockets())) return error;
 #  endif // !SIMPLE_SOCKETS
 	}
-#endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_SOCKETS)
 
 	// After sockets have been set up, we may switch to a lower privileged user
 #if !defined(NO_USER_SWITCH)
@@ -1741,10 +1717,10 @@ int newmain()
 
 	writePidFile();
 
-#if !defined(NO_LOG) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_LOG) && !defined(NO_SOCKETS)
 	if (!InetdMode)
 		logger("vlmcsd %s started successfully\n", Version);
-#endif // !defined(NO_LOG) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_LOG) && !defined(NO_SOCKETS)
 
 
 	int rc;

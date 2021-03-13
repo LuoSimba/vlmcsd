@@ -2,13 +2,7 @@
 #define _DEFAULT_SOURCE
 #endif // _DEFAULT_SOURCE
 
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
-
-#ifndef USE_MSRPC
-
+#include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -1251,4 +1245,3 @@ end:
 	return status;
 }
 
-#endif // USE_MSRPC

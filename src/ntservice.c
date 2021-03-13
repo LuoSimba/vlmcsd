@@ -1,15 +1,14 @@
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
 
+#include "config.h"
 #include "ntservice.h"
 #include "shared_globals.h"
 #include "vlmcsd.h"
 #include "output.h"
 #include "helpers.h"
 
-#ifdef _NTSERVICE
+#ifndef _NTSERVICE
+#error You must define macro _NTSERVICE to use this source file.
+#endif
 
 SERVICE_STATUS          gSvcStatus;
 SERVICE_STATUS_HANDLE   gSvcStatusHandle;
@@ -334,4 +333,4 @@ int NtServiceInstallation(const int_fast8_t installService, const char *restrict
 
 	return(0);
 }
-#endif // _NTSERVICE
+

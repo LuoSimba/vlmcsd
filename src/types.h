@@ -66,14 +66,14 @@
 
 
 // ----------------
-#if (IP_BINDANY || IP_FREEBIND || IPV6_BINDANY || IP_NONLOCALOK) && !defined(NO_FREEBIND) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS)
+#if (IP_BINDANY || IP_FREEBIND || IPV6_BINDANY || IP_NONLOCALOK) && !defined(NO_FREEBIND) && !defined(SIMPLE_SOCKETS)
 # define HAVE_FREEBIND 1
 #endif
 
 
 
 // ----------------
-#if !defined(NO_GETIFADDRS) && !defined(USE_MSRPC) && !defined(SIMPLE_SOCKETS) && !defined(NO_SOCKETS) && !defined(NO_PRIVATE_IP_DETECT) 
+#if !defined(NO_GETIFADDRS) && !defined(SIMPLE_SOCKETS) && !defined(NO_SOCKETS) && !defined(NO_PRIVATE_IP_DETECT) 
 # define HAVE_GETIFADDR 1
 #endif
 

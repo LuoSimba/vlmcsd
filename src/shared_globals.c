@@ -23,7 +23,6 @@ int_fast8_t StartEmpty = FALSE;
 #endif // NO_CLIENT_LIST
 #endif // !NO_STRICT_MODES
 
-#ifndef USE_MSRPC
 int_fast8_t UseMultiplexedRpc = TRUE;
 #ifndef SIMPLE_RPC
 int_fast8_t UseServerRpcNDR64 = TRUE;
@@ -31,7 +30,6 @@ int_fast8_t UseServerRpcBTFN = TRUE;
 #endif // !SIMPLE_RPC
 int_fast8_t UseClientRpcNDR64 = TRUE;
 int_fast8_t UseClientRpcBTFN = TRUE;
-#endif // USE_MSRPC
 
 #ifndef NO_SOCKETS
 char *defaultport = (char*)"1688";
@@ -54,11 +52,7 @@ DWORD ServerTimeout = 30;
 #endif // !defined(NO_TIMEOUT)
 
 #if !defined (NO_SOCKETS)
-#ifdef USE_MSRPC
-uint32_t MaxTasks = RPC_C_LISTEN_MAX_CALLS_DEFAULT;
-#else // !USE_MSRPC
 uint32_t MaxTasks = SEM_VALUE_MAX;
-#endif // !USE_MSRPC
 #endif // !defined (NO_SOCKETS)
 
 #ifndef NO_LOG
@@ -98,12 +92,12 @@ uint16_t Lcid = 0;
 uint16_t HostBuild = 0;
 #endif
 
-#if !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#if !defined(SIMPLE_RPC)
 uint8_t IsNDR64Defined = FALSE;
-#endif // !defined(USE_MSRPC) && !defined(SIMPLE_RPC)
+#endif // !defined(SIMPLE_RPC)
 
 
-#if !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#if !defined(NO_SOCKETS)
 #ifdef SIMPLE_SOCKETS
 SOCKET s_server;
 #else
@@ -112,7 +106,7 @@ int numsockets = 0;
 #endif
 
 sem_t *MaxTaskSemaphore; // Posix
-#endif // !defined(NO_SOCKETS) && !defined(USE_MSRPC)
+#endif // !defined(NO_SOCKETS)
 
 #ifdef _NTSERVICE
 int_fast8_t IsNTService = TRUE;

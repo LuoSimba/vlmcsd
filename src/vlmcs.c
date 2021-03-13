@@ -26,14 +26,8 @@
 #include "endian.h"
 #include "shared_globals.h"
 #include "output.h"
-
-#ifndef USE_MSRPC
 #include "network.h"
 #include "rpc.h"
-#else // USE_MSRPC
-#include "msrpc-client.h"
-#endif // USE_MSRPC
-
 #include "kms.h"
 #include "helpers.h"
 #include "dns_srv.h"
@@ -61,13 +55,7 @@ static const char *WorkstationName = NULL;
 static int BindingExpiration = 43200; //30 days
 static const char *RemoteAddr;
 static int_fast8_t ReconnectForEachRequest = FALSE;
-
-#ifndef USE_MSRPC
 static int AddressFamily = AF_UNSPEC;
-#else
-static int AddressFamily = 0;
-#endif // USE_MSRPC
-
 static int_fast8_t incompatibleOptions = 0;
 static const char* fn_ini_client = NULL;
 //static int_fast16_t kmsVersionMinor = 0;
@@ -134,9 +122,7 @@ __noreturn static void clientUsage(const char* const programName)
 		"  -4 Force V4 protocol\n"
 		"  -5 Force V5 protocol\n"
 		"  -6 Force V6 protocol\n"
-#		ifndef USE_MSRPC
 		"  -i <IpVersion> Use IP protocol (4 or 6)\n"
-#		endif // USE_MSRPC
 #		ifndef NO_EXTERNAL_DATA
 		"  -j <file> Load external KMS data file <file>\n"
 #		endif // NO_EXTERNAL_DATA
@@ -158,19 +144,15 @@ __noreturn static void clientUsage(const char* const programName)
 		"  -n <Requests> Fixed # of requests (Default: Enough to charge)\n"
 		"  -m Pretend to be a virtual machine\n"
 		"  -G <file> Get ePID/HwId data and write to <file>. Can't be used with -l, -4, -5, -6, -a, -s, -k, -r and -n\n"
-#		ifndef USE_MSRPC
 		"  -T Use a new TCP connection for each request.\n"
 		"  -N <0|1> disable or enable NDR64. Default: 1\n"
 		"  -B <0|1> disable or enable RPC bind time feature negotiation. Default: 1\n"
-#		endif // USE_MSRPC
 		"  -t <LicenseStatus> Use specfic license status (0 <= T <= 6)\n"
 		"  -g <BindingExpiration> Use a specfic binding expiration time in minutes. Default 43200\n"
 #		ifndef NO_DNS
 		"  -P Ignore priority and weight in DNS SRV records\n"
 #		endif // NO_DNS
-#		ifndef USE_MSRPC
 		"  -p Don't use multiplexed RPC bind\n"
-#		endif // USE_MSRPC
 		"\n"
 
 		"<port>:\t\tTCP port name of the KMS to use. Default 1688.\n"
@@ -426,8 +408,6 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 		fn_ini_client = optarg;
 		break;
 
-#	ifndef USE_MSRPC
-
 	case 'N':
 		if (!getArgumentBool(&UseClientRpcNDR64, optarg)) clientUsage(programName);
 		break;
@@ -457,8 +437,6 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 
 		UseMultiplexedRpc = FALSE;
 		break;
-
-#	endif // USE_MSRPC
 
 	case 'n': // Fixed number of Requests (regardless, whether they are required)
 
@@ -553,14 +531,10 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 		if ((unsigned int)LicenseStatus > 6) errorout("Warning: Correct license status is 0 <= license status <= 6.\n");
 		break;
 
-#			ifndef USE_MSRPC
-
 	case 'T':
 
 		ReconnectForEachRequest = TRUE;
 		break;
-
-#			endif // USE_MSRPC
 
 	case 'l':
 		incompatibleOptions |= VLMCS_OPTION_NO_GRAB_INI;
@@ -596,7 +570,6 @@ static void parseCommandLinePass2(const char *const programName, const int argc,
 //}
 
 
-#ifndef USE_MSRPC
 static void checkRpcLevel(const REQUEST* request, RESPONSE* response)
 {
 	if (!RpcFlags.HasNDR32)
@@ -610,7 +583,6 @@ static void checkRpcLevel(const REQUEST* request, RESPONSE* response)
 	//		errorout("\nWARNING: A server with pre-Vista RPC activated a product other than Office 2010.\n");
 	//#	endif // NO_BASIC_PRODUCT_LIST
 }
-#endif // USE_MSRPC
 
 
 static void displayResponse(const RESPONSE_RESULT result, const REQUEST* request, RESPONSE* response, BYTE *hwid)
@@ -633,9 +605,7 @@ static void displayResponse(const RESPONSE_RESULT result, const REQUEST* request
 		errorout("\n\007WARNING: Size of RPC payload (KMS Message) should be %u but is %u.", result.correctResponseSize, result.effectiveResponseSize);
 	}
 
-#	ifndef USE_MSRPC
 	checkRpcLevel(request, response);
-#	endif // USE_MSRPC
 
 	if (!result.DecryptSuccess) return; // Makes no sense to display anything
 
@@ -1196,11 +1166,7 @@ int main(int argc, CARGV argv)
 
 	if (useDefaultHost)
 	{
-#	ifndef USE_MSRPC
 		RemoteAddr = AddressFamily == AF_INET6 ? "::1" : "127.0.0.1";
-#	else
-		RemoteAddr = "127.0.0.1";
-#	endif
 	}
 
 	if (fn_ini_client != NULL)

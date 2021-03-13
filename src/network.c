@@ -1,9 +1,5 @@
-#ifndef CONFIG
-#define CONFIG "config.h"
-#endif // CONFIG
-#include CONFIG
+#include "config.h"
 
-#ifndef USE_MSRPC
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -980,4 +976,3 @@ int runServer()
 #	endif // NO_SOCKETS
 }
 
-#endif // USE_MSRPC

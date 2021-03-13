@@ -63,7 +63,6 @@ Compilation FAQ
     CRYPTO=openssl_with_aes_soft EXPERIMENTAL: Use openssl for SHA256/HMAC and AES calculations (software).
     CRYPTO=polarssl              Use polarssl instead of internal crypto code for SHA256/HMAC calculations.
     CRYPTO=windows               Use Windows CryptoAPI instead of internal crypto code for SHA256/HMAC calculations.
-    MSRPC=1                      Use Microsoft RPC instead of vlmcsd's internal RPC. Only works with Windows and Cygwin targets.
     AR=<x>                       Use <x> instead of ar to build libkms.a. Set to gcc-ar if you want to use gcc's LTO feature.
     CFLAGS=<x>                   Pass <x> as additional arguments to the compiler.
     BASECFLAGS=<x>               Pass only <x> as arguments to the compiler (advanced users only).

@@ -173,12 +173,15 @@ ifdef CAT
 endif
 
 # Common source files.
+# remove network.c, rpc.c if use MSRPC
 SRCS = crypto.c \
 	   kms.c \
 	   endian.c \
 	   output.c \
 	   shared_globals.c \
-	   helpers.c
+	   helpers.c \
+	   network.c \
+	   rpc.c  
 
 HEADERS = config.h \
 		  types.h \
@@ -220,15 +223,15 @@ endif
 
 endif
 
-ifeq ($(MSRPC),1)
-  VLMCSD_SRCS += msrpc-server.c
-  VLMCS_SRCS += msrpc-client.c
-  DLL_SRCS += msrpc-server.c
-  BASECFLAGS += -DUSE_MSRPC -Wno-unknown-pragmas
-  BASELDFLAGS += -lrpcrt4
-else
-  SRCS += network.c rpc.c  
-endif
+
+# Microsoft RPC is only available on Windows and Cygwin
+# -------------------------
+#VLMCSD_SRCS += msrpc-server.c
+#VLMCS_SRCS += msrpc-client.c
+#DLL_SRCS += msrpc-server.c
+#BASECFLAGS += -DUSE_MSRPC -Wno-unknown-pragmas
+#BASELDFLAGS += -lrpcrt4
+# -------------------------
 
 ifeq ($(GETIFADDRS),musl)
 ifneq ($(NO_GETIFADDRS),1)
@@ -311,31 +314,31 @@ endif
 
 ../build/%-a.o: %.c
   ifeq ($(VERBOSE),1)
-	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -MM -MF $*.d $<
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+@$(CC) -xc  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -MM -MF $*.d $<
   endif
   endif
 
 ../build/%-l.o: %.c
   ifeq ($(VERBOSE),1)
-	+$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
-	+$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -MM -MF $*.d $<
   endif
   else
 	+@echo "$(COMPILER)	CC	$(notdir $@) <- $<"
-	+@$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -o $@ -c $<
+	+@$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -o $@ -c $<
   ifeq ($(DEPENDENCIES),1)
 	+@echo "$(COMPILER)	DEP	$*.d <- $<"
-	+@$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC -MM -MF $*.d $<
+	+@$(CC) -xc $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS)  $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -MM -MF $*.d $<
   endif
   endif
 
@@ -368,8 +371,8 @@ ARINFOCOMMAND = +@echo "$(ARCHIVER)	AR      	$@ <. $(notdir $^)"
 
 
 VLMCS_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(CLIENTLDFLAGS)
-DLL_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -shared -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
-OBJ_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
+DLL_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND) $(PICFLAGS)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -shared -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS
+OBJ_COMMAND = $(BUILDCOMMANDPREFIX)$(BUILDCOMMAND)  $(BASECFLAGS) $(CFLAGS) $(BASELDFLAGS) $(SERVERLDFLAGS) -fvisibility=hidden -c -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS
 
 
 # KMS server.
@@ -408,7 +411,7 @@ endif
 ifdef CAT
 $(A_NAME): $(OBJ_NAME)
 else
-$(A_NAME): BASECFLAGS += -fvisibility=hidden -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS -UUSE_MSRPC
+$(A_NAME): BASECFLAGS += -fvisibility=hidden -DIS_LIBRARY=1 $(LIBRARY_CFLAGS) -UNO_SOCKETS
 $(A_NAME): $(A_OBJS)
 endif
   ifneq ($(VERBOSE),1)
